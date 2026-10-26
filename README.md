@@ -1,46 +1,42 @@
-# 🧩 Sudoku Modern Web App
+# 🧩 Sudoku Web App
 
-> **Trò chơi trí tuệ kinh điển với giao diện hiện đại, hoạt ảnh mượt mà, sinh đề chuẩn quốc tế và lưu trữ dữ liệu bền vững.**
+> **Trò chơi trí tuệ kinh điển.**
 
 Một ứng dụng web Sudoku hoàn chỉnh được xây dựng thuần túy bằng **HTML5, CSS3 và JavaScript (ES6+)**, không phụ thuộc vào bất kỳ thư viện hay framework bên thứ ba nào, không cần cài đặt `node_modules`, có thể khởi chạy trực tiếp trên mọi trình duyệt hiện đại hoặc máy tính bảng / điện thoại.
 
 ---
 
-## 🌟 Điểm Nổi Bật (Key Features)
+## Trọng tâm dự án
 
-### 1. Màn Hình Khởi Đầu (Splash Screen)
-* Hoạt ảnh chuyển động SVG 3x3 gradient thanh lịch kết hợp các con số bay lơ lửng tạo chiều sâu thị giác.
-* Nút bấm phát sáng hiệu ứng nhịp tim (Pulse) **"Khám phá ngay"** với cơ chế Fallback đa tầng, chạm là chuyển cảnh tức thì vào Sảnh chính.
-
-### 2. Sảnh Chính 3 Mục (Main Lobby)
-Thanh điều hướng cố định phía dưới (Bottom Navigation Bar) gồm đúng 3 mục:
+### Sảnh chính
+Thanh điều hướng cố định gồm 3 mục:
 * **Trang chủ (Cổ điển):**
   * Thiết kế tối giản, tập trung vào trải nghiệm cốt lõi.
-  * Tích hợp nút viên thuốc **"(?) Cách chơi"** mở hướng dẫn tương tác.
-  * **Xử lý lưu tạm ván dở:** Tự động phát hiện ván chơi chưa kết thúc từ phiên trước, ưu tiên hiển thị nút **"Tiếp Tục Ván Đang Chơi"** (ghi rõ độ khó và thời gian đã chơi, ví dụ: `Trung bình — 04:12`) kèm nút **"Bỏ Cuộc / Hủy Ván"** có hộp thoại xác nhận an toàn.
+  * Tích hợp nút **"(?) Cách chơi"** mở hướng dẫn tương tác.
+  * **Xử lý lưu tạm ván dở:** Tự động phát hiện ván chơi chưa kết thúc từ phiên trước, ưu tiên hiển thị nút **"Tiếp Tục Ván Đang Chơi"** kèm nút **"Bỏ Cuộc / Hủy Ván"** có hộp thoại xác nhận an toàn.
 * **Biến thể (Khám phá):**
   * 4 thẻ minh họa các biến thể Sudoku nổi tiếng thế giới: **Killer Sudoku**, **Sudoku Đường Chéo (Sudoku X)**, **Samurai Sudoku (5 bảng chồng)**, và **Jigsaw Sudoku**.
   * Tương tác mượt mà với Custom Toast thông báo trạng thái cập nhật thân thiện.
 * **Hồ sơ cá nhân & Thành tích (Profile & Stats):**
   * Avatar tự vẽ bằng SVG, cho phép đổi tên người chơi trực tiếp và lưu vĩnh viễn.
   * Bộ lọc 3 tab: **Dễ** | **Trung bình** | **Khó**.
-  * **Biểu đồ vòng tròn (Donut Chart SVG):** Thể hiện trực quan Tỉ lệ thắng (%) và Tỉ lệ thắng hoàn hảo (0 lỗi).
+  * **Biểu đồ vòng tròn:** Thể hiện trực quan Tỉ lệ thắng (%) và Tỉ lệ thắng hoàn hảo (0 lỗi).
   * **8 thẻ chỉ số chi tiết:** Số trận đã chơi, Số trận thắng, Thắng hoàn hảo, Tỉ lệ thắng, Chuỗi thắng hiện tại, Chuỗi thắng tốt nhất, Thời gian thắng nhanh nhất, Thời gian hoàn thành trung bình.
 
-### 3. Hoạt Ảnh Hướng Dẫn Tương Tác (Step-by-step Animated Tutorial)
-Carousel 3 bước với hoạt ảnh chuyển động mô phỏng trực tiếp trên lưới:
+### Hoạt Ảnh Hướng Dẫn Tương Tác
+Hướng dẫn 3 bước với hoạt ảnh chuyển động mô phỏng trực tiếp trên lưới:
 * **Bước 1 (Quy tắc Hàng & Cột):** Chiếu sáng một hàng ngang và một cột dọc cắt nhau trên bảng 9x9, các số còn thiếu tự động nảy vào ô trống với hiệu ứng bounce.
 * **Bước 2 (Quy tắc Khối 3×3):** Khối 3x3 zoom to nhẹ, số 9 còn thiếu tự động nhảy vào ô với màu xanh lá nổi bật.
-* **Bước 3 (Suy luận & Ghi chú):** Lưới giao điểm hiển thị cách bật bút chì nháp các số tiềm năng (mini draft grid), sau đó suy luận giải ra đáp án chính xác.
+* **Bước 3 (Suy luận & Ghi chú):** Lưới giao điểm hiển thị cách bật bút chì nháp các số tiềm năng, sau đó suy luận giải ra đáp án chính xác.
 
-### 4. Thuật Toán Sinh Đề Chuẩn Quốc Tế (Unique Solution Engine)
-* Đảm bảo **DUY NHẤT 1 LỜI GIẢI DUY NHẤT (Unique Solution)** cho mọi đề bài.
+### Thuật Toán Sinh Đề Chuẩn Quốc Tế
+* Đảm bảo **CÓ DUY NHẤT 1 LỜI GIẢI** cho mọi đề bài.
 * Tối ưu hóa bằng giải thuật Backtracking kết hợp **Bitmask Acceleration**, thời gian tạo đề cực nhanh (< 25ms):
   * **Dễ (Easy):** 38 – 45 ô cho trước (cần điền 36 – 43 ô).
   * **Trung bình (Medium):** 30 – 35 ô cho trước (cần điền 46 – 51 ô).
   * **Khó (Hard):** 24 – 28 ô cho trước (cần điền 53 – 57 ô).
 
-### 5. Giao Diện & Tính Năng Trận Đấu (Gameplay HUD)
+### Giao Diện & Tính Năng
 * Bố cục chuẩn mực: Bảng Sudoku 9x9 bên trái, Thanh công cụ và Bàn phím số 3x3 bên phải (tự co giãn linh hoạt trên thiết bị di động).
 * **Hiệu ứng Highlight thông minh:**
   * Chọn một ô: Tự động tô màu nhạt toàn bộ Hàng, Cột và Khối 3x3.
@@ -65,7 +61,7 @@ Carousel 3 bước với hoạt ảnh chuyển động mô phỏng trực tiếp
   * `H`: Dùng gợi ý.
   * Phím mũi tên `↑` `↓` `←` `→`: Di chuyển ô chọn trên bàn cờ.
 
-### 6. Lưu Trữ Bền Vững (Zero-loss Persistence)
+### Lưu Trữ Bền Vững (Zero-loss Persistence)
 * Tự động lưu trạng thái vào `LocalStorage` mỗi khi có thay đổi (mỗi nước đi, mỗi giây của bộ đếm giờ, ghi chú nháp, số lỗi).
 * Tích hợp tầng đệm **In-Memory Fallback** an toàn tuyệt đối: không bao giờ gây lỗi giao diện ngay cả khi trình duyệt chặn LocalStorage ở chế độ ẩn danh (Private Browsing).
 
@@ -116,25 +112,3 @@ python server.py
 ```
 * Máy chủ sẽ tự động dò tìm cổng trống (mặc định thử cổng `3000`, nếu bận sẽ tự nhảy lên `3001`, `3002`...) và tự động mở trình duyệt web lên địa chỉ `http://localhost:3000`.
 * Nhấn `Ctrl + C` trên cửa sổ Terminal để tắt máy chủ khi muốn dừng.
-
----
-
-## 🤝 Lộ Trình Phát Triển & Đóng Góp (Roadmap & Contributing)
-
-Dự án chào đón tất cả các bạn cùng đóng góp để hoàn thiện game tốt hơn! Dưới đây là các ý tưởng tính năng đang chờ triển khai:
-
-- [ ] **Hiện thực hóa 4 biến thể Sudoku (Gameplay Logic):**
-  - [ ] *Killer Sudoku:* Lưới có lồng nét đứt với tổng số các ô trong lồng.
-  - [ ] *Sudoku Đường Chéo (Sudoku X):* Ràng buộc hai đường chéo chính chứa đủ 1-9.
-  - [ ] *Samurai Sudoku:* Ghép 5 bảng 9x9 thành hình chữ thập.
-  - [ ] *Jigsaw Sudoku:* Khối bất quy tắc thay cho khối 3x3 hình vuông chuẩn.
-- [ ] **Âm thanh & Nhạc nền (Audio Effects):** Hiệu ứng click phím, âm thanh khi điền đúng/sai, tiếng chuông khi chiến thắng (có nút bật/tắt âm thanh).
-- [ ] **Thử thách hàng ngày (Daily Challenge):** Đề bài đặc biệt mỗi ngày kèm lịch theo dõi chuỗi ngày chiến thắng (Streak Calendar).
-- [ ] **Hệ thống Giao diện (Themes):** Chế độ Dark Mode / Light Mode / Classic Paper / Neon Cyberpunk.
-- [ ] **Bảng xếp hạng bạn bè (Leaderboard):** Đồng bộ điểm số qua Firebase hoặc WebSockets.
-
----
-
-## 📄 Bản Quyền (License)
-
-Dự án được phân phối dưới giấy phép mã nguồn mở **MIT License**. Mọi người đều có quyền tự do sử dụng, chỉnh sửa, chia sẻ và đóng góp.
