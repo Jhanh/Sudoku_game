@@ -4,6 +4,16 @@
 
 Một ứng dụng web Sudoku hoàn chỉnh được xây dựng thuần túy bằng **HTML5, CSS3 và JavaScript (ES6+)**, không phụ thuộc vào bất kỳ thư viện hay framework bên thứ ba nào, không cần cài đặt `node_modules`, có thể khởi chạy trực tiếp trên mọi trình duyệt hiện đại hoặc máy tính bảng / điện thoại.
 
+<p align="center">
+  <a href="https://jhanh.github.io/Sudoku_game/" target="_blank">
+    <img src="https://img.shields.io/badge/🎮%20Chơi%20Online%20Ngay-Click%20To%20Play-2563EB?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Play Online">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip">
+    <img src="https://img.shields.io/badge/📥%20Tải%20Bản%20Offline-Download%20ZIP-10B981?style=for-the-badge&logo=windows&logoColor=white" alt="Download ZIP">
+  </a>
+</p>
+
 ---
 
 ## Trọng tâm dự án
