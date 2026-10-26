@@ -1,69 +1,99 @@
 # 🧩 Sudoku Web App
 
-> **Trò chơi trí tuệ kinh điển.**
+<p align="center">
+  <b>Trải nghiệm giải đố trí tuệ kinh điển với giao diện hiện đại, mượt mà và tối giản.</b>
+  <br>
+  <i>Xây dựng 100% bằng HTML5, CSS3 và Vanilla JavaScript - Tinh gọn, thuần khiết, không phụ thuộc thư viện.</i>
+</p>
 
-Một ứng dụng web Sudoku hoàn chỉnh được xây dựng thuần túy bằng **HTML5, CSS3 và JavaScript (ES6+)**, không phụ thuộc vào bất kỳ thư viện hay framework bên thứ ba nào, không cần cài đặt `node_modules`, có thể khởi chạy trực tiếp trên mọi trình duyệt hiện đại hoặc máy tính bảng / điện thoại.
+<p align="center">
+  <a href="https://github.com/Jhanh/Sudoku_game/releases/tag/v1.0.0">
+    <img src="https://img.shields.io/badge/Release-v1.0.0-10B981?style=for-the-badge&logo=tag&logoColor=white" alt="Release">
+  </a>
+  &nbsp;
+  <a href="https://jhanh.github.io/Sudoku_game/">
+    <img src="https://img.shields.io/badge/🎮%20Chơi%20Online-Click%20To%20Play-2563EB?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Play Online">
+  </a>
+  &nbsp;
+  <a href="https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip">
+    <img src="https://img.shields.io/badge/📥%20Tải%20Bản%20Offline-Download%20ZIP-6366F1?style=for-the-badge&logo=windows&logoColor=white" alt="Download ZIP">
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Pure%20JS-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/HTML5-Semantic-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/CSS3-Modern%20Design-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/Dependencies-0-brightgreen?style=flat-square" alt="Zero Dependencies">
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
+</p>
 
 ---
 
-## Trọng tâm dự án
+## 🌟 Trải Nghiệm Hình Ảnh (Showcase)
 
-### Sảnh chính
-Thanh điều hướng cố định gồm 3 mục:
-* **Trang chủ (Cổ điển):**
-  * Thiết kế tối giản, tập trung vào trải nghiệm cốt lõi.
-  * Tích hợp nút **"(?) Cách chơi"** mở hướng dẫn tương tác.
-  * **Xử lý lưu tạm ván dở:** Tự động phát hiện ván chơi chưa kết thúc từ phiên trước, ưu tiên hiển thị nút **"Tiếp Tục Ván Đang Chơi"** kèm nút **"Bỏ Cuộc / Hủy Ván"** có hộp thoại xác nhận an toàn.
-* **Biến thể (Khám phá):**
-  * 4 thẻ minh họa các biến thể Sudoku nổi tiếng thế giới: **Killer Sudoku**, **Sudoku Đường Chéo (Sudoku X)**, **Samurai Sudoku (5 bảng chồng)**, và **Jigsaw Sudoku**.
-  * Tương tác mượt mà với Custom Toast thông báo trạng thái cập nhật thân thiện.
-* **Hồ sơ cá nhân & Thành tích (Profile & Stats):**
-  * Avatar tự vẽ bằng SVG, cho phép đổi tên người chơi trực tiếp và lưu vĩnh viễn.
-  * Bộ lọc 3 tab: **Dễ** | **Trung bình** | **Khó**.
-  * **Biểu đồ vòng tròn:** Thể hiện trực quan Tỉ lệ thắng (%) và Tỉ lệ thắng hoàn hảo (0 lỗi).
-  * **8 thẻ chỉ số chi tiết:** Số trận đã chơi, Số trận thắng, Thắng hoàn hảo, Tỉ lệ thắng, Chuỗi thắng hiện tại, Chuỗi thắng tốt nhất, Thời gian thắng nhanh nhất, Thời gian hoàn thành trung bình.
+<p align="center">
+  <img src="screenshots/6-gameplay.png" alt="Màn hình bàn đấu Sudoku 9x9" width="48%">
+  &nbsp;
+  <img src="screenshots/2-lobby-home.png" alt="Sảnh chính" width="48%">
+</p>
+<p align="center">
+  <img src="screenshots/3-tutorial.png" alt="Hướng dẫn tương tác 3 bước" width="48%">
+  &nbsp;
+  <img src="screenshots/5-profile.png" alt="Hồ sơ thành tích & Biểu đồ thống kê" width="48%">
+</p>
 
-### Hoạt Ảnh Hướng Dẫn Tương Tác
-Hướng dẫn 3 bước với hoạt ảnh chuyển động mô phỏng trực tiếp trên lưới:
-* **Bước 1 (Quy tắc Hàng & Cột):** Chiếu sáng một hàng ngang và một cột dọc cắt nhau trên bảng 9x9, các số còn thiếu tự động nảy vào ô trống với hiệu ứng bounce.
-* **Bước 2 (Quy tắc Khối 3×3):** Khối 3x3 zoom to nhẹ, số 9 còn thiếu tự động nhảy vào ô với màu xanh lá nổi bật.
-* **Bước 3 (Suy luận & Ghi chú):** Lưới giao điểm hiển thị cách bật bút chì nháp các số tiềm năng, sau đó suy luận giải ra đáp án chính xác.
+---
 
-### Thuật Toán Sinh Đề Chuẩn Quốc Tế
-* Đảm bảo **CÓ DUY NHẤT 1 LỜI GIẢI** cho mọi đề bài.
-* Tối ưu hóa bằng giải thuật Backtracking kết hợp **Bitmask Acceleration**, thời gian tạo đề cực nhanh (< 25ms):
-  * **Dễ (Easy):** 38 – 45 ô cho trước (cần điền 36 – 43 ô).
-  * **Trung bình (Medium):** 30 – 35 ô cho trước (cần điền 46 – 51 ô).
-  * **Khó (Hard):** 24 – 28 ô cho trước (cần điền 53 – 57 ô).
+## ✨ Điểm Nổi Bật Của Sản Phẩm
 
-### Giao Diện & Tính Năng
-* Bố cục chuẩn mực: Bảng Sudoku 9x9 bên trái, Thanh công cụ và Bàn phím số 3x3 bên phải (tự co giãn linh hoạt trên thiết bị di động).
-* **Hiệu ứng Highlight thông minh:**
-  * Chọn một ô: Tự động tô màu nhạt toàn bộ Hàng, Cột và Khối 3x3.
-  * Làm nổi bật (Highlight đậm) tất cả các ô có cùng con số trên toàn bảng.
-* **Thanh thông tin trận đấu:**
-  * Hiển thị Độ khó, Điểm số, Bộ đếm thời gian (Timer).
-  * Nút Tạm dừng (Pause): Che mờ bàn cờ và dừng đồng hồ bấm giờ.
-  * Giới hạn lỗi (Mistakes): Tối đa `3 lỗi`. Có hiệu ứng cảnh báo vàng ở lỗi 1, rung lắc đỏ ở lỗi 2, và kết thúc ván khi đạt lỗi thứ 3.
-* **4 Nút công cụ tròn:**
-  * **Hoàn tác (Undo):** Quay lại nước đi trước đó (bao gồm cả hoàn tác lỗi và điểm số).
-  * **Xóa (Erase):** Xóa số hoặc ghi chú đã điền.
-  * **Ghi chú (Notes / Pencil):** Có nhãn `ON` / `OFF`. Khi bật `ON`, người chơi điền các số nháp nhỏ theo lưới 3x3 bên trong ô. Khi điền số chính thức, hệ thống **tự động loại bỏ các số nháp trùng** trên cùng hàng, cột và khối 3x3.
-  * **Gợi ý (Hint):** Mặc định 3 lượt/ván kèm hiệu ứng phát sáng ô được trợ giúp.
-* **Bàn phím 9 ô số kèm BỘ ĐẾM CÒN LẠI:**
-  * Thiết kế lưới 3x3 trực quan.
-  * Dưới mỗi số có nhãn đếm hiển thị số lượng con số còn thiếu trên bàn cờ. Khi người chơi điền đủ 9 số của chữ số đó, phím sẽ tự động mờ đi và bị vô hiệu hóa.
-* **Hỗ trợ đầy đủ phím tắt bàn phím vật lý:**
-  * Phím số `1` - `9`: Điền số hoặc ghi chú.
-  * `Backspace` / `Delete`: Xóa ô.
-  * `Ctrl + Z`: Hoàn tác.
-  * `N`: Bật/tắt chế độ Ghi chú.
-  * `H`: Dùng gợi ý.
-  * Phím mũi tên `↑` `↓` `←` `→`: Di chuyển ô chọn trên bàn cờ.
+* 🧠 **Đề Bài Chuẩn Quốc Tế:** Thuật toán tạo đề thông minh với **duy nhất 1 lời giải** cho mỗi ván chơi. Hỗ trợ 3 cấp độ phù hợp cho mọi đối tượng từ người mới đến cao thủ:
+  * **Dễ (Easy):** 38 – 45 ô cho trước — Thư giãn, giải trí nhẹ nhàng.
+  * **Trung bình (Medium):** 30 – 35 ô cho trước — Rèn luyện khả năng suy đoán.
+  * **Khó (Hard):** 24 – 28 ô cho trước — Cân não, đòi hỏi kỹ thuật giải chuyên sâu.
+* 🎨 **Giao Diện Thanh Lịch & Thân Thiện:** Tối ưu hóa thị giác với gam màu Indigo dịu mắt, hiệu ứng Highlight thông minh (tự động chiếu sáng hàng, cột, khối 3x3 và làm nổi bật các con số tương đồng trên toàn bàn đấu).
+* 🛠️ **Bộ Công Cụ Hỗ Trợ Đắc Lực:**
+  * **Ghi Chú Nháp (Pencil Notes):** Điền số nháp linh hoạt, tự động làm sạch số nháp trùng khi chốt đáp án.
+  * **Hoàn Tác & Xóa (Undo / Erase):** Sửa sai tức thì mà không lo gián đoạn mạch tư duy.
+  * **Gợi Ý Thông Minh (Hint):** Trợ giúp giải ô hóc búa kèm hiệu ứng tỏa sáng.
+  * **Bàn Phím Số Kèm Bộ Đếm:** Lưới phím 3x3 hiển thị số lượng con số còn thiếu, tự động làm mờ khi đã điền đủ 9 số.
+* 🎓 **Hướng Dẫn Tương Tác Trực Quan:** Chế độ Hướng dẫn 3 bước với hình ảnh động chuyển động ngay trên lưới cờ, giúp người chơi nắm vững quy tắc cơ bản chỉ sau 1 phút.
+* 📈 **Hồ Sơ & Thống Kê Toàn Diện:** Lưu trữ thành tích cá nhân, tính toán tỉ lệ thắng, chuỗi trận bất bại và thời gian giải nhanh nhất qua biểu đồ trực quan.
+* ⚡ **Thuần Khiết & Tiện Lợi (Zero Dependencies):** Không cần cài đặt thư viện nặng nề, không cần môi trường lập trình phức tạp. Nhấp đúp chuột là chơi ngay trên mọi thiết bị và trình duyệt.
+* 💾 **Tự Động Lưu Trạng Thái (Zero-Loss):** Tự động ghi nhớ ván chơi dở dang. Bạn có thể yên tâm đóng trình duyệt và quay lại tiếp tục bất kỳ lúc nào.
 
-### Lưu Trữ Bền Vững (Zero-loss Persistence)
-* Tự động lưu trạng thái vào `LocalStorage` mỗi khi có thay đổi (mỗi nước đi, mỗi giây của bộ đếm giờ, ghi chú nháp, số lỗi).
-* Tích hợp tầng đệm **In-Memory Fallback** an toàn tuyệt đối: không bao giờ gây lỗi giao diện ngay cả khi trình duyệt chặn LocalStorage ở chế độ ẩn danh (Private Browsing).
+---
+
+## 🚀 Cách Bắt Đầu Chơi Ngay
+
+### 🌐 Cách 1: Chơi trực tiếp trên trình duyệt
+Bạn có thể truy cập và chơi ngay không cần tải gì tại:
+👉 **[https://jhanh.github.io/Sudoku_game/](https://jhanh.github.io/Sudoku_game/)**
+
+### 💻 Cách 2: Tải về chơi Offline trên máy tính
+1. Tải tệp nén **[Sudoku-Game-v1.0.0.zip](https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip)** về máy tính.
+2. Giải nén thư mục.
+3. Nhấp đúp vào tệp **`ChoiGame.bat`** (trên Windows) hoặc mở trực tiếp tệp **`index.html`** bằng trình duyệt web yêu thích của bạn.
+
+### 🛠️ Cách 3: Chạy bằng máy chủ nội bộ Python (Dành cho Lập trình viên)
+```bash
+# Mở Terminal tại thư mục dự án và gõ:
+python server.py
+```
+> Trình duyệt sẽ tự động mở trang web tại địa chỉ `http://localhost:3000`.
+
+---
+
+## ⌨️ Phím Tắt Thao Tác Nhanh
+
+| Phím Tắt | Chức Năng |
+| :--- | :--- |
+| `1` – `9` | Điền số vào ô được chọn (hoặc điền số nháp) |
+| `Backspace` / `Delete` | Xóa số trong ô |
+| `Ctrl + Z` | Hoàn tác nước đi trước đó |
+| `N` | Bật / Tắt chế độ Ghi chú nháp (Notes) |
+| `H` | Nhận gợi ý (Hint) cho ô hiện tại |
+| `↑` `↓` `←` `→` | Di chuyển ô chọn trên bàn cờ 9x9 |
 
 ---
 
@@ -73,42 +103,36 @@ Hướng dẫn 3 bước với hoạt ảnh chuyển động mô phỏng trực 
 Sudoku_game/
 ├── index.html                 # Giao diện chính và cấu trúc DOM ứng dụng
 ├── server.py                  # Máy chủ tĩnh nội bộ Python (Auto port + No-cache)
-├── README.md                  # Tài liệu giới thiệu và hướng dẫn đóng góp
-├── .gitignore                 # Danh sách các tệp/thư mục không đưa lên Git
+├── README.md                  # Tài liệu giới thiệu sản phẩm & hướng dẫn
+├── .gitignore                 # Danh sách tệp loại trừ không lưu trên Git
+├── screenshots/               # Thư viện hình ảnh giao diện thực tế
+│   ├── 1-splash.png           # Màn hình khởi đầu ứng dụng
+│   ├── 2-lobby-home.png       # Sảnh chính & chọn chế độ
+│   ├── 3-tutorial.png         # Hoạt ảnh hướng dẫn tương tác
+│   ├── 4-variants.png         # Các biến thể mở rộng
+│   ├── 5-profile.png          # Hồ sơ người chơi & biểu đồ thống kê
+│   └── 6-gameplay.png         # Bàn cờ thi đấu 9x9 & bộ phím điều khiển
 ├── css/
-│   ├── main.css               # Reset CSS, CSS Variables, chuyển màn hình
-│   ├── splash.css             # Giao diện và hoạt ảnh Màn hình Khởi đầu
-│   ├── lobby.css              # Giao diện Sảnh chính, Navigation Bar, ván dở dang
-│   ├── gameplay.css           # Bảng 9x9, bàn phím 3x3, thanh công cụ, đếm số
-│   ├── modals.css             # Hộp thoại Hướng dẫn, Chọn độ khó, Game Over, Toast
-│   └── profile.css            # Giao diện Hồ sơ, biểu đồ Donut Chart, Stat cards
+│   ├── main.css               # Reset CSS, hệ thống màu, chuyển màn hình
+│   ├── splash.css             # Giao diện & hoạt ảnh Màn hình Khởi đầu
+│   ├── lobby.css              # Giao diện Sảnh chính, Menu, thẻ ván dở
+│   ├── gameplay.css           # Bảng 9x9, bàn phím 3x3, thanh công cụ
+│   ├── modals.css             # Hộp thoại Hướng dẫn, Cảnh báo, Game Over
+│   └── profile.css            # Hồ sơ, biểu đồ Donut Chart, chỉ số
 └── js/
-    ├── storage.js             # Lớp lưu trữ LocalStorage & Fallback Store
-    ├── sudoku-engine.js       # Thuật toán sinh đề & giải Sudoku (Unique Solution)
-    ├── game.js                # Quản lý trạng thái ván chơi, timer, mistakes, undo
-    ├── ui-board.js            # Render bàn cờ 9x9, highlight hàng/cột/khối/số
-    ├── ui-controls.js         # Quản lý bàn phím số 3x3, bộ đếm số còn lại
-    ├── tutorial.js            # Quản lý hoạt ảnh hướng dẫn 3 bước tương tác
-    ├── variants.js            # Quản lý danh sách và thẻ bài 4 biến thể
-    ├── profile.js             # Quản lý thống kê hồ sơ và biểu đồ tỉ lệ thắng
-    └── app.js                 # Router chính kết nối toàn bộ hệ thống
+    ├── storage.js             # Lớp lưu trữ LocalStorage & Memory Fallback
+    ├── sudoku-engine.js       # Thuật toán sinh đề & giải Sudoku độc bản
+    ├── game.js                # Quản lý ván chơi, bộ đếm giờ, lỗi, hoàn tác
+    ├── ui-board.js            # Render bàn cờ, highlight hàng/cột/khối
+    ├── ui-controls.js         # Bàn phím số 3x3, bộ đếm số lượng còn lại
+    ├── tutorial.js            # Quản lý các bước hướng dẫn động
+    ├── variants.js            # Danh sách thông tin 4 biến thể Sudoku
+    ├── profile.js             # Xử lý thống kê và vẽ biểu đồ tỉ lệ thắng
+    └── app.js                 # Điều hướng và khởi động ứng dụng
 ```
 
 ---
 
-## 🚀 Hướng Dẫn Chạy Game (How to Run)
+## 📄 Bản Quyền & Giấy Phép (License)
 
-Ứng dụng không cần cài đặt Node.js hay bất kỳ build tools nào (`webpack`, `vite`...). Bạn có thể chạy bằng 1 trong 2 cách:
-
-### Cách 1: Chạy trực tiếp (Nhanh nhất)
-* Mở thư mục dự án trên máy tính.
-* **Nhấp đúp chuột vào file `index.html`** để mở trên trình duyệt web bất kỳ (Chrome, Edge, Firefox, Cốc Cốc, Safari...).
-
-### Cách 2: Chạy qua máy chủ nội bộ Python
-Nếu máy tính của bạn đã cài đặt Python:
-```bash
-# Mở Terminal / PowerShell tại thư mục dự án và chạy:
-python server.py
-```
-* Máy chủ sẽ tự động dò tìm cổng trống (mặc định thử cổng `3000`, nếu bận sẽ tự nhảy lên `3001`, `3002`...) và tự động mở trình duyệt web lên địa chỉ `http://localhost:3000`.
-* Nhấn `Ctrl + C` trên cửa sổ Terminal để tắt máy chủ khi muốn dừng.
+Dự án được phân phối dưới giấy phép mã nguồn mở **MIT License**. Bạn được tự do học tập, sử dụng và phát triển thêm.
