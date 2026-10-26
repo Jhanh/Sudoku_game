@@ -1,0 +1,165 @@
+/* ===== Splash Screen ===== */
+#screen-splash {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ===== Floating Numbers Background ===== */
+.splash-floats,
+.float-num {
+  position: absolute;
+  inset: 0;
+  pointer-events: none !important;
+  overflow: hidden;
+}
+
+.float-num {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.08);
+  animation: floatNum 8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.8s);
+  user-select: none;
+  pointer-events: none !important;
+}
+
+@keyframes floatNum {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.08;
+  }
+  50% {
+    transform: translateY(-40px) rotate(15deg);
+    opacity: 0.18;
+  }
+}
+
+/* ===== Splash Center Content ===== */
+.splash-center {
+  position: relative;
+  z-index: 20;
+  text-align: center;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* ===== Splash Icon (SVG Grid) ===== */
+.splash-icon {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 2rem;
+}
+
+.splash-cell {
+  animation: cellPulse 3s ease-in-out infinite;
+  animation-delay: calc(var(--d) * 0.3s);
+  opacity: 0.15;
+}
+
+@keyframes cellPulse {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.05);
+  }
+}
+
+.splash-num {
+  animation: numFadeIn 0.6s ease-out forwards;
+  animation-delay: calc(var(--d) * 1s);
+  opacity: 0;
+}
+
+@keyframes numFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== Splash Text ===== */
+.splash-title {
+  color: #FFFFFF;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.splash-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.5;
+}
+
+/* ===== Explore Button ===== */
+.btn-explore {
+  position: relative;
+  z-index: 30;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  background: #FFFFFF;
+  color: var(--primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 16px 36px;
+  border-radius: 50px;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  animation: btnPulse 2s ease-in-out infinite;
+  user-select: none;
+}
+
+@keyframes btnPulse {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 48px rgba(59, 130, 246, 0.5);
+  }
+}
+
+.btn-explore:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 36px rgba(59, 130, 246, 0.45);
+}
+
+.btn-explore:active {
+  transform: translateY(0);
+  background: #EFF6FF;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+}
+
+.btn-explore svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.btn-explore:hover svg {
+  transform: translateX(4px);
+}
+
+/* ===== Fade In Up Animation ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

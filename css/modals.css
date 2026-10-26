@@ -1,0 +1,500 @@
+/* ========================================
+   MODAL OVERLAY
+   ======================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeOverlay 0.25s ease;
+}
+
+@keyframes fadeOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== Modal Container ===== */
+.modal {
+  background: var(--surface);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+  animation: modalSlideUp 0.3s ease;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== Modal Header ===== */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.btn-modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-modal-close:hover {
+  background: var(--highlight-row);
+  color: var(--text);
+}
+
+.btn-modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== Modal Body ===== */
+.modal-body {
+  padding: 24px;
+}
+
+/* ===== Modal Footer ===== */
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ========================================
+   TUTORIAL MODAL
+   ======================================== */
+.modal-tutorial {
+  max-width: 540px;
+}
+
+.tutorial-carousel {
+  position: relative;
+  min-height: 280px;
+  max-height: 65vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px;
+}
+
+.tut-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0 16px;
+  min-height: 140px;
+}
+
+.tut-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.tutorial-step {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.tutorial-step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tutorial-step h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.tutorial-step p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* ===== Tutorial Demo Grids ===== */
+.tut-grid {
+  display: inline-grid;
+  gap: 2px;
+  margin: 16px auto;
+  background: var(--border);
+  border: 2px solid var(--text);
+  border-radius: 4px;
+}
+
+.tut-grid.grid-9 {
+  grid-template-columns: repeat(9, 36px);
+  grid-template-rows: 36px;
+}
+
+.tut-grid.grid-3x3 {
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+}
+
+.tut-grid.grid-5x5 {
+  grid-template-columns: repeat(5, 36px);
+  grid-template-rows: repeat(5, 36px);
+}
+
+.tut-cell {
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.tut-cell.highlight {
+  background: var(--highlight-num);
+  animation: highlightPulse 1.5s ease-in-out infinite;
+}
+
+.tut-cell.fill-anim {
+  animation: fillIn 0.5s ease-out forwards;
+}
+
+@keyframes fillIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes highlightPulse {
+  0%, 100% {
+    background: var(--highlight-row);
+  }
+  50% {
+    background: var(--highlight-num);
+  }
+}
+
+.tut-cell.notes-demo {
+  font-size: 0.6rem;
+  color: var(--text-secondary);
+}
+
+/* ===== Tutorial Dots & Buttons ===== */
+.tutorial-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.tutorial-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.tutorial-dots .dot.active {
+  background: var(--primary);
+  width: 20px;
+  border-radius: 4px;
+}
+
+.tutorial-btns {
+  display: flex;
+  gap: 8px;
+}
+
+/* ========================================
+   DIFFICULTY MODAL
+   ======================================== */
+.difficulty-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.diff-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+
+.diff-card:hover {
+  border-color: var(--primary);
+  background: var(--primary-bg);
+  transform: translateY(-2px);
+}
+
+.diff-card:active {
+  transform: scale(0.97);
+}
+
+.diff-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.diff-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.diff-card small {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.diff-stars {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* ========================================
+   GAME OVER MODAL
+   ======================================== */
+.modal-gameover {
+  max-width: 400px;
+  text-align: center;
+}
+
+.modal-gameover .modal-body {
+  padding: 32px 24px;
+}
+
+.gameover-icon {
+  font-size: 4rem;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.gameover-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.gameover-subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.gameover-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.gameover-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+}
+
+.gameover-stat .stat-val {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.gameover-stat .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.gameover-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Win state */
+.modal-gameover.win .gameover-title {
+  color: var(--success);
+}
+
+/* Lose state */
+.modal-gameover.lose .gameover-title {
+  color: var(--error);
+}
+
+/* ========================================
+   CONFIRM MODAL
+   ======================================== */
+.modal-confirm {
+  max-width: 360px;
+  text-align: center;
+}
+
+.modal-confirm .modal-body {
+  padding: 32px 24px;
+}
+
+.confirm-icon {
+  margin-bottom: 8px;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.confirm-icon svg {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  color: var(--warning);
+}
+
+.confirm-footer {
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  animation: toastIn 0.4s ease;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.toast.hiding {
+  animation: toastOut 0.3s ease forwards;
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  background: var(--surface);
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.toast-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.toast-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.toast-icon.success {
+  color: var(--success);
+}
+
+.toast-icon.error {
+  color: var(--error);
+}
+
+.toast-icon.warning {
+  color: var(--warning);
+}

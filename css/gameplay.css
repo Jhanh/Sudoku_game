@@ -1,0 +1,462 @@
+/* ===== Game Screen ===== */
+#screen-game {
+  background: var(--bg);
+}
+
+/* ===== Game Header ===== */
+.game-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.game-info-bar {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.info-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.timer-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.timer-row svg {
+  width: 14px;
+  height: 14px;
+  color: var(--text-secondary);
+}
+
+.mistake-display.has-errors {
+  color: var(--error);
+}
+
+.mistake-warning {
+  color: var(--warning) !important;
+  font-weight: 700;
+}
+
+.mistake-danger {
+  color: var(--error) !important;
+  font-weight: 700;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+.btn-text-sm {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.btn-text-sm:hover {
+  background: var(--highlight-row);
+  color: var(--text);
+}
+
+.btn-danger-sm {
+  color: var(--error);
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.btn-danger-sm:hover {
+  background: #FEE2E2;
+}
+
+/* ========================================
+   GAME BODY
+   ======================================== */
+.game-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 32px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .game-body {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+  }
+}
+
+/* ========================================
+   SUDOKU BOARD
+   ======================================== */
+.board-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sudoku-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: 450px;
+  height: 450px;
+  background: var(--text);
+  gap: 1px;
+  border: 2px solid var(--text);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .sudoku-board {
+    width: min(95vw, 400px);
+    height: min(95vw, 400px);
+  }
+}
+
+/* ===== Cells ===== */
+.cell {
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.15s ease;
+  user-select: none;
+  font-size: 1.4rem;
+}
+
+@media (max-width: 768px) {
+  .cell {
+    font-size: calc(0.8rem + 1.2vw);
+  }
+}
+
+/* ===== 3x3 Box Borders ===== */
+/* Vertical separators after columns 3 and 6 (0-indexed: 2 and 5) */
+.sudoku-board > .cell:nth-child(9n+3),
+.sudoku-board > .cell:nth-child(9n+6) {
+  border-right: 2px solid var(--text);
+}
+
+/* Horizontal separators after rows 3 and 6 */
+/* Row 3 = cells 19–27, Row 6 = cells 46–54 */
+.sudoku-board > .cell:nth-child(n+19):nth-child(-n+27),
+.sudoku-board > .cell:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 2px solid var(--text);
+}
+
+/* ===== Cell States ===== */
+.cell.selected {
+  background: var(--selected) !important;
+}
+
+.cell.highlighted {
+  background: var(--highlight-row);
+}
+
+.cell.same-number {
+  background: var(--highlight-num);
+}
+
+.cell.given .cell-value {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.cell.user .cell-value {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.cell.error .cell-value {
+  color: var(--error);
+}
+
+.cell.error {
+  background: #FEE2E2;
+}
+
+.cell.hint-flash {
+  animation: hintGlow 0.8s ease-out;
+}
+
+@keyframes hintGlow {
+  0% {
+    background: #FEF3C7;
+  }
+  100% {
+    background: var(--surface);
+  }
+}
+
+/* ===== Cell Content ===== */
+.cell-value {
+  font-size: inherit;
+  line-height: 1;
+  z-index: 1;
+}
+
+.cell-notes {
+  position: absolute;
+  inset: 2px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  z-index: 1;
+}
+
+.cell-notes .note {
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .cell-notes .note {
+    font-size: 0.45rem;
+  }
+}
+
+.cell-notes .note.empty {
+  visibility: hidden;
+}
+
+/* ===== Pause Overlay ===== */
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(248, 250, 252, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 10;
+  border-radius: 4px;
+}
+
+.pause-overlay svg {
+  width: 48px;
+  height: 48px;
+  color: var(--text-secondary);
+}
+
+.pause-overlay p {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ========================================
+   CONTROLS PANEL
+   ======================================== */
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 260px;
+  max-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .controls-panel {
+    min-width: auto;
+    width: min(95vw, 400px);
+    max-width: 400px;
+  }
+}
+
+/* ===== Tools Row ===== */
+.tools-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tool-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  color: var(--text-secondary);
+  font-family: inherit;
+}
+
+.tool-btn:hover {
+  background: var(--primary-bg);
+  border-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.tool-btn:active {
+  transform: scale(0.95);
+}
+
+.tool-btn.active {
+  background: var(--primary-bg);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.tool-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.tool-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+/* ===== Tool Badges ===== */
+.tool-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 50px;
+  line-height: 1;
+}
+
+.badge-off {
+  background: var(--border);
+  color: var(--text-secondary);
+}
+
+.badge-count {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+.tool-btn.active .badge-off {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+/* ========================================
+   NUMPAD
+   ======================================== */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.num-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  min-height: 56px;
+  font-family: inherit;
+}
+
+.num-key:hover {
+  background: var(--primary-bg);
+  border-color: var(--primary-light);
+}
+
+.num-key:active {
+  transform: scale(0.93);
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+.num-key:active .num-digit {
+  color: #FFFFFF;
+}
+
+.num-key:active .num-remaining {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.num-key .num-digit {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.num-key .num-remaining {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.num-key.completed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.num-key.completed .num-digit {
+  color: var(--text-secondary);
+}
