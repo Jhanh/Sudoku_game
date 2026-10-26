@@ -104,7 +104,7 @@ const Storage = (() => {
 
   function saveStats(s) { _set(KEYS.STATS, s); }
 
-  function recordGameResult(difficulty, won, time, mistakes) {
+  function recordGameResult(difficulty, won, time, mistakes, score = 0) {
     try {
       const stats = getStats();
       const s = stats[difficulty] || _defaultDiff();
@@ -116,6 +116,7 @@ const Storage = (() => {
         if (s.currentStreak > s.bestStreak) s.bestStreak = s.currentStreak;
         if (s.bestTime === 0 || time < s.bestTime) s.bestTime = time;
         s.totalWinTime += time;
+        if (!s.bestScore || score > s.bestScore) s.bestScore = score;
       } else {
         s.currentStreak = 0;
       }
