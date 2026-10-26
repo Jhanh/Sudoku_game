@@ -44,5 +44,6 @@ pnpm-debug.log*
 test-*.js
 take-screenshots.js
 *.log
+*.zip
 tmp/
 temp/
