@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Jhanh/Sudoku_game/releases/tag/v1.0.0">
-    <img src="https://img.shields.io/badge/Release-v1.0.0-10B981?style=for-the-badge&logo=tag&logoColor=white" alt="Release">
+  <a href="https://github.com/Jhanh/Sudoku_game/releases/tag/v1.0">
+    <img src="https://img.shields.io/badge/Release-v1.0-10B981?style=for-the-badge&logo=tag&logoColor=white" alt="Release">
   </a>
   &nbsp;
   <a href="https://jhanh.github.io/Sudoku_game/">
@@ -71,7 +71,7 @@ Bạn có thể truy cập và chơi ngay không cần tải gì tại:
 👉 **[https://jhanh.github.io/Sudoku_game/](https://jhanh.github.io/Sudoku_game/)**
 
 ### 💻 Cách 2: Tải về chơi Offline trên máy tính
-1. Tải tệp nén **[Sudoku-Game-v1.0.0.zip](https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip)** về máy tính.
+1. Tải tệp nén **[Sudoku-Game-v1.0.zip](https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip)** về máy tính.
 2. Giải nén thư mục.
 3. Nhấp đúp vào tệp **`ChoiGame.bat`** (trên Windows) hoặc mở trực tiếp tệp **`index.html`** bằng trình duyệt web yêu thích của bạn.
 

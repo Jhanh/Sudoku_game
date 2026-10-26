@@ -140,4 +140,21 @@ Bảng kê chi tiết gồm các dòng thông số minh bạch:
 - Thời gian chơi & Hệ số tốc độ: [Thời gian] (× [1.0 / 1.5 / 2.0])
 - Số lỗi mắc phải: [X] lỗi
 - TỔNG ĐIỂM CUỐI CÙNG: [Điểm tích lũy] × [Hệ số thời gian] = [TỔNG ĐIỂM]
+
+--------------------------------------------------------------------------------
+VI. THỐNG KÊ ĐIỂM SỐ TRÊN HỒ SƠ NGƯỜI CHƠI (PROFILE STATS)
+--------------------------------------------------------------------------------
+Tab Hồ Sơ (Profile) lưu trữ và thống kê toàn diện dữ liệu thi đấu:
+1. Cụm Tổng Quan Trận Đấu (Overview Rectangle):
+   - Bên trái: Biểu đồ tròn hiển thị Tỉ lệ thắng (Win Rate %).
+   - Bên phải: 2 dòng thông số cụ thể:
+     + 🏆 Số trận đã thắng
+     + 🎮 Số trận đã chơi
+2. Lưới Thông Số Chi Tiết (6 Thẻ Thông Số Theo 3 Cặp Chuẩn Mực):
+   - 👑 Điểm cao nhất: Kỷ lục điểm số tối đa từng đạt được ở độ khó này.
+   - 💎 Thắng hoàn hảo: Số ván cờ hoàn thành tuyệt đối không mắc lỗi (0/3 lỗi).
+   - 🔥 Chuỗi thắng hiện tại: Số trận thắng liên tiếp hiện tại.
+   - ⚡ Chuỗi thắng tốt nhất: Kỷ lục chuỗi thắng liên tiếp dài nhất.
+   - ⏱️ Thời gian nhanh nhất: Kỷ lục hoàn thành ván cờ ngắn nhất.
+   - 📈 Thời gian trung bình: Thời gian hoàn thành trung bình trên các trận thắng.
 ================================================================================
