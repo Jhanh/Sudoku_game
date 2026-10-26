@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sudoku — Rèn luyện tư duy</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/splash.css">
+  <link rel="stylesheet" href="css/lobby.css">
+  <link rel="stylesheet" href="css/gameplay.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="stylesheet" href="css/profile.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧩</text></svg>">
+</head>
+<body>
+
+  <!-- ===================== SPLASH SCREEN ===================== -->
+  <div id="screen-splash" class="screen active">
+    <div class="splash-floats">
+      <span class="float-num" style="--i:0;--x:10%;--y:15%">2</span>
+      <span class="float-num" style="--i:1;--x:25%;--y:72%">8</span>
+      <span class="float-num" style="--i:2;--x:72%;--y:18%">6</span>
+      <span class="float-num" style="--i:3;--x:88%;--y:62%">1</span>
+      <span class="float-num" style="--i:4;--x:14%;--y:48%">4</span>
+      <span class="float-num" style="--i:5;--x:92%;--y:30%">9</span>
+      <span class="float-num" style="--i:6;--x:50%;--y:82%">3</span>
+      <span class="float-num" style="--i:7;--x:38%;--y:8%">7</span>
+      <span class="float-num" style="--i:8;--x:62%;--y:55%">5</span>
+    </div>
+
+    <div class="splash-center">
+      <svg class="splash-icon" viewBox="0 0 150 150" aria-hidden="true">
+        <defs>
+          <linearGradient id="gSplash" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3B82F6"/>
+            <stop offset="100%" stop-color="#8B5CF6"/>
+          </linearGradient>
+        </defs>
+        <rect x="5"   y="5"   width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:0"/>
+        <rect x="54"  y="5"   width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:1"/>
+        <rect x="103" y="5"   width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:2"/>
+        <rect x="5"   y="54"  width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:3"/>
+        <rect x="54"  y="54"  width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:4"/>
+        <rect x="103" y="54"  width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:5"/>
+        <rect x="5"   y="103" width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:6"/>
+        <rect x="54"  y="103" width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:7"/>
+        <rect x="103" y="103" width="42" height="42" rx="8" fill="url(#gSplash)" class="splash-cell" style="--d:8"/>
+        <text x="26"  y="35"  text-anchor="middle" fill="#fff" font-size="22" font-weight="700" class="splash-num" style="--d:.4">5</text>
+        <text x="75"  y="35"  text-anchor="middle" fill="#fff" font-size="22" font-weight="700" class="splash-num" style="--d:.7">3</text>
+        <text x="124" y="84"  text-anchor="middle" fill="#fff" font-size="22" font-weight="700" class="splash-num" style="--d:1.0">7</text>
+        <text x="26"  y="84"  text-anchor="middle" fill="#fff" font-size="22" font-weight="700" class="splash-num" style="--d:1.2">1</text>
+        <text x="75"  y="133" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" class="splash-num" style="--d:1.5">9</text>
+        <text x="124" y="133" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" class="splash-num" style="--d:1.7">4</text>
+      </svg>
+
+      <h1 class="splash-title">Chào mừng bạn đến với<br>thế giới <span class="gradient-text">Sudoku</span></h1>
+      <p class="splash-subtitle">Rèn luyện tư duy &amp; sự tập trung mỗi ngày</p>
+
+      <button id="btn-explore" class="btn-explore" onclick="if(window.App && App.goToLobby) App.goToLobby();">
+        <span>Khám phá ngay</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN LOBBY ===================== -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-content">
+
+      <!-- TAB: HOME -->
+      <div id="tab-home" class="tab-content active">
+        <div class="home-container">
+          <svg class="home-icon" viewBox="0 0 80 80" aria-hidden="true">
+            <rect x="2"  y="2"  width="24" height="24" rx="5" fill="#3B82F6" opacity=".18"/>
+            <rect x="28" y="2"  width="24" height="24" rx="5" fill="#3B82F6" opacity=".28"/>
+            <rect x="54" y="2"  width="24" height="24" rx="5" fill="#3B82F6" opacity=".18"/>
+            <rect x="2"  y="28" width="24" height="24" rx="5" fill="#3B82F6" opacity=".28"/>
+            <rect x="28" y="28" width="24" height="24" rx="5" fill="#3B82F6" opacity=".48"/>
+            <rect x="54" y="28" width="24" height="24" rx="5" fill="#3B82F6" opacity=".28"/>
+            <rect x="2"  y="54" width="24" height="24" rx="5" fill="#3B82F6" opacity=".18"/>
+            <rect x="28" y="54" width="24" height="24" rx="5" fill="#3B82F6" opacity=".28"/>
+            <rect x="54" y="54" width="24" height="24" rx="5" fill="#3B82F6" opacity=".18"/>
+            <text x="14" y="20" text-anchor="middle" fill="#3B82F6" font-size="14" font-weight="700">9</text>
+            <text x="40" y="46" text-anchor="middle" fill="#2563EB" font-size="14" font-weight="700">5</text>
+            <text x="66" y="72" text-anchor="middle" fill="#3B82F6" font-size="14" font-weight="700">1</text>
+          </svg>
+
+          <h1 class="home-title">Sudoku Cổ Điển</h1>
+          <p class="home-desc">Trò chơi trí tuệ kinh điển — điền số, rèn logic, chinh phục mọi thử thách</p>
+
+          <button id="btn-how-to-play" class="btn-pill">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Cách chơi</span>
+          </button>
+
+          <div class="home-actions" id="home-actions">
+            <button id="btn-new-game" class="btn-primary btn-large">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Bắt Đầu Thử Thách</span>
+            </button>
+
+            <div id="continue-section" class="continue-section hidden">
+              <button id="btn-continue" class="btn-primary btn-large btn-continue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <div class="continue-text">
+                  <span>Tiếp Tục Ván Đang Chơi</span>
+                  <small id="continue-info"></small>
+                </div>
+              </button>
+              <button id="btn-abandon" class="btn-text btn-danger">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                <span>Bỏ Cuộc / Hủy Ván</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: VARIANTS -->
+      <div id="tab-variants" class="tab-content">
+        <div class="variants-container">
+          <h2 class="section-title">Khám Phá Biến Thể</h2>
+          <p class="section-desc">Các phiên bản nâng cao dành cho những kỳ thủ đam mê thử thách</p>
+          <div class="variants-grid" id="variants-grid"></div>
+        </div>
+      </div>
+
+      <!-- TAB: PROFILE -->
+      <div id="tab-profile" class="tab-content">
+        <div class="profile-container">
+          <div class="profile-header">
+            <div class="avatar-wrapper">
+              <svg class="avatar-svg" viewBox="0 0 100 100" aria-hidden="true">
+                <defs>
+                  <linearGradient id="gAvatar" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#3B82F6"/>
+                    <stop offset="100%" stop-color="#8B5CF6"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="48" fill="url(#gAvatar)" opacity=".12"/>
+                <circle cx="50" cy="38" r="16" fill="url(#gAvatar)"/>
+                <ellipse cx="50" cy="78" rx="28" ry="20" fill="url(#gAvatar)"/>
+                <circle cx="44" cy="35" r="2.5" fill="#fff"/>
+                <circle cx="56" cy="35" r="2.5" fill="#fff"/>
+                <path d="M44 43 Q50 48 56 43" stroke="#fff" fill="none" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="profile-info">
+              <div class="profile-name-row">
+                <h2 id="profile-name" class="profile-name">Kỳ thủ Sudoku</h2>
+                <button id="btn-edit-name" class="btn-icon-sm" title="Đổi tên">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+              </div>
+              <p id="total-play-time" class="total-time">Tổng thời gian: 00:00:00</p>
+            </div>
+          </div>
+
+          <div id="name-edit-section" class="name-edit hidden">
+            <input type="text" id="name-input" class="name-input" maxlength="20" placeholder="Nhập tên mới…">
+            <button id="btn-save-name" class="btn-primary btn-small">Lưu</button>
+            <button id="btn-cancel-name" class="btn-secondary btn-small">Hủy</button>
+          </div>
+
+          <div class="difficulty-tabs" id="profile-diff-tabs">
+            <button class="diff-tab active" data-diff="easy">Dễ</button>
+            <button class="diff-tab" data-diff="medium">Trung bình</button>
+            <button class="diff-tab" data-diff="hard">Khó</button>
+          </div>
+
+          <div class="stats-charts">
+            <div class="chart-card">
+              <div class="donut-wrapper">
+                <svg id="donut-chart" class="donut-chart" viewBox="0 0 140 140">
+                  <circle cx="70" cy="70" r="54" fill="none" stroke="#E2E8F0" stroke-width="14"/>
+                  <circle id="donut-win" cx="70" cy="70" r="54" fill="none" stroke="#3B82F6" stroke-width="14"
+                    stroke-dasharray="339.29" stroke-dashoffset="339.29" stroke-linecap="round" transform="rotate(-90 70 70)"/>
+                  <circle id="donut-perfect" cx="70" cy="70" r="54" fill="none" stroke="#22C55E" stroke-width="14"
+                    stroke-dasharray="339.29" stroke-dashoffset="339.29" stroke-linecap="round" transform="rotate(-90 70 70)"/>
+                  <text id="donut-pct" x="70" y="66" text-anchor="middle" fill="#1E293B" font-size="28" font-weight="700">0%</text>
+                  <text x="70" y="84" text-anchor="middle" fill="#64748B" font-size="11">Tỉ lệ thắng</text>
+                </svg>
+                <div class="chart-legend">
+                  <span class="legend-item"><span class="legend-dot" style="background:#3B82F6"></span>Thắng</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#22C55E"></span>Hoàn hảo</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-grid" id="stats-grid"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+      <button class="nav-item active" data-tab="home">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Trang chủ</span>
+      </button>
+      <button class="nav-item" data-tab="variants">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Biến thể</span>
+      </button>
+      <button class="nav-item" data-tab="profile">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Hồ sơ</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ===================== GAMEPLAY SCREEN ===================== -->
+  <div id="screen-game" class="screen">
+    <div class="game-header">
+      <button id="btn-back" class="btn-icon" title="Về Sảnh chính">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="game-info-bar">
+        <div class="info-item">
+          <span class="info-label">Độ khó</span>
+          <span id="info-difficulty" class="info-value">Dễ</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Điểm</span>
+          <span id="info-score" class="info-value">0</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Lỗi</span>
+          <span id="info-mistakes" class="info-value">0/3</span>
+        </div>
+        <div class="info-item timer-item">
+          <span class="info-label">Thời gian</span>
+          <div class="timer-row">
+            <span id="info-timer" class="info-value">00:00</span>
+            <button id="btn-pause" class="btn-icon-sm" title="Tạm dừng">
+              <svg id="pause-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <button id="btn-give-up-header" class="btn-text-sm btn-danger-sm">Bỏ cuộc</button>
+    </div>
+
+    <div class="game-body">
+      <div class="board-wrapper">
+        <div id="sudoku-board" class="sudoku-board"></div>
+        <div id="pause-overlay" class="pause-overlay hidden">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+          <p>Đã Tạm Dừng</p>
+          <button id="btn-resume" class="btn-primary">Tiếp tục</button>
+        </div>
+      </div>
+
+      <div class="controls-panel">
+        <div class="tools-row">
+          <button id="btn-undo" class="tool-btn" title="Hoàn tác">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            <span class="tool-label">Hoàn tác</span>
+          </button>
+          <button id="btn-erase" class="tool-btn" title="Xóa">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+            <span class="tool-label">Xóa</span>
+          </button>
+          <button id="btn-notes" class="tool-btn" title="Ghi chú">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span class="tool-label">Ghi chú</span>
+            <span id="notes-badge" class="tool-badge badge-off">OFF</span>
+          </button>
+          <button id="btn-hint" class="tool-btn" title="Gợi ý">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+            <span class="tool-label">Gợi ý</span>
+            <span id="hint-badge" class="tool-badge badge-count">3</span>
+          </button>
+        </div>
+        <div id="numpad" class="numpad"></div>
+        <button id="btn-in-game-new" class="btn-primary btn-large btn-new-game-panel" style="margin-top: 12px;">Ván Chơi Mới</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODALS ===================== -->
+
+  <!-- Tutorial Modal -->
+  <div id="modal-tutorial" class="modal-overlay hidden">
+    <div class="modal modal-tutorial">
+      <div class="modal-header">
+        <h2>Cách Chơi Sudoku</h2>
+        <button class="btn-modal-close" data-close="modal-tutorial">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="tutorial-carousel" class="tutorial-carousel"></div>
+      </div>
+      <div class="modal-footer tutorial-footer">
+        <div id="tutorial-dots" class="tutorial-dots"></div>
+        <div class="tutorial-btns">
+          <button id="btn-tut-prev" class="btn-secondary" disabled>Quay lại</button>
+          <button id="btn-tut-next" class="btn-primary">Tiếp theo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Difficulty Selection Modal -->
+  <div id="modal-difficulty" class="modal-overlay hidden">
+    <div class="modal modal-difficulty">
+      <div class="modal-header">
+        <h2>Chọn Độ Khó</h2>
+        <button class="btn-modal-close" data-close="modal-difficulty">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="difficulty-cards">
+          <button class="diff-card" data-difficulty="easy">
+            <div class="diff-stars">⭐</div>
+            <h3>Dễ</h3>
+            <p>38 – 45 ô cho trước</p>
+            <small>Phù hợp người mới bắt đầu</small>
+          </button>
+          <button class="diff-card" data-difficulty="medium">
+            <div class="diff-stars">⭐⭐</div>
+            <h3>Trung bình</h3>
+            <p>30 – 35 ô cho trước</p>
+            <small>Thử thách vừa phải</small>
+          </button>
+          <button class="diff-card" data-difficulty="hard">
+            <div class="diff-stars">⭐⭐⭐</div>
+            <h3>Khó</h3>
+            <p>24 – 28 ô cho trước</p>
+            <small>Dành cho kỳ thủ thực thụ</small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Over Modal -->
+  <div id="modal-gameover" class="modal-overlay hidden">
+    <div class="modal modal-gameover">
+      <div id="gameover-content" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Confirm Dialog -->
+  <div id="modal-confirm" class="modal-overlay hidden">
+    <div class="modal modal-confirm">
+      <div class="modal-body">
+        <div class="confirm-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3 id="confirm-title">Xác nhận</h3>
+        <p id="confirm-message">Bạn có chắc chắn muốn thực hiện?</p>
+      </div>
+      <div class="modal-footer confirm-footer">
+        <button id="btn-confirm-cancel" class="btn-secondary">Hủy</button>
+        <button id="btn-confirm-ok" class="btn-primary btn-danger">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden">
+    <div class="toast-content">
+      <svg class="toast-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script src="js/storage.js"></script>
+  <script src="js/sudoku-engine.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui-board.js"></script>
+  <script src="js/ui-controls.js"></script>
+  <script src="js/tutorial.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/variants.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
