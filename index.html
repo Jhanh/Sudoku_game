@@ -169,20 +169,32 @@
           </div>
 
           <div class="stats-charts">
-            <div class="chart-card">
-              <div class="donut-wrapper">
-                <svg id="donut-chart" class="donut-chart" viewBox="0 0 140 140">
-                  <circle cx="70" cy="70" r="54" fill="none" stroke="#E2E8F0" stroke-width="14"/>
-                  <circle id="donut-win" cx="70" cy="70" r="54" fill="none" stroke="#3B82F6" stroke-width="14"
-                    stroke-dasharray="339.29" stroke-dashoffset="339.29" stroke-linecap="round" transform="rotate(-90 70 70)"/>
-                  <circle id="donut-perfect" cx="70" cy="70" r="54" fill="none" stroke="#22C55E" stroke-width="14"
-                    stroke-dasharray="339.29" stroke-dashoffset="339.29" stroke-linecap="round" transform="rotate(-90 70 70)"/>
-                  <text id="donut-pct" x="70" y="66" text-anchor="middle" fill="#1E293B" font-size="28" font-weight="700">0%</text>
-                  <text x="70" y="84" text-anchor="middle" fill="#64748B" font-size="11">Tỉ lệ thắng</text>
-                </svg>
-                <div class="chart-legend">
-                  <span class="legend-item"><span class="legend-dot" style="background:#3B82F6"></span>Thắng</span>
-                  <span class="legend-item"><span class="legend-dot" style="background:#22C55E"></span>Hoàn hảo</span>
+            <div class="chart-card overview-card">
+              <div class="overview-container">
+                <div class="donut-wrapper">
+                  <svg id="donut-chart" class="donut-chart" viewBox="0 0 140 140">
+                    <circle cx="70" cy="70" r="54" fill="none" stroke="#E2E8F0" stroke-width="14"/>
+                    <circle id="donut-win" cx="70" cy="70" r="54" fill="none" stroke="#3B82F6" stroke-width="14"
+                      stroke-dasharray="339.29" stroke-dashoffset="339.29" stroke-linecap="round" transform="rotate(-90 70 70)"/>
+                    <text id="donut-pct" x="70" y="66" text-anchor="middle" fill="#1E293B" font-size="28" font-weight="700">0%</text>
+                    <text x="70" y="84" text-anchor="middle" fill="#64748B" font-size="11">Tỉ lệ thắng</text>
+                  </svg>
+                </div>
+                <div class="overview-details">
+                  <div class="overview-stat-row">
+                    <div class="overview-stat-info">
+                      <span class="overview-stat-icon">🏆</span>
+                      <span class="overview-stat-label">Số trận đã thắng</span>
+                    </div>
+                    <span id="overview-won" class="overview-stat-value">0</span>
+                  </div>
+                  <div class="overview-stat-row">
+                    <div class="overview-stat-info">
+                      <span class="overview-stat-icon">🎮</span>
+                      <span class="overview-stat-label">Số trận đã chơi</span>
+                    </div>
+                    <span id="overview-played" class="overview-stat-value">0</span>
+                  </div>
                 </div>
               </div>
             </div>

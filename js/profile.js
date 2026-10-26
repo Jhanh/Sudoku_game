@@ -18,38 +18,76 @@ const Profile = (() => {
 
   function _renderStats(diff) {
     const stats = Storage.getStats();
-    const s = stats[diff];
+    const s = stats[diff] || {
+      played: 0,
+      won: 0,
+      perfectWins: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      bestTime: 0,
+      totalWinTime: 0,
+      bestScore: 0
+    };
 
-    // Donut chart
-    const circumference = 2 * Math.PI * 54; // r=54
+    // Donut chart (Tỉ lệ thắng)
+    const circumference = 2 * Math.PI * 54; // r=54 (~339.29)
     const winRate = s.played > 0 ? (s.won / s.played) : 0;
-    const perfectRate = s.played > 0 ? (s.perfectWins / s.played) : 0;
 
     const donutWin = document.getElementById('donut-win');
-    const donutPerfect = document.getElementById('donut-perfect');
     const donutPct = document.getElementById('donut-pct');
 
-    // Win ring
-    donutWin.style.strokeDashoffset = circumference * (1 - winRate);
-    // Perfect ring (on top of win ring)
-    donutPerfect.style.strokeDashoffset = circumference * (1 - perfectRate);
+    if (donutWin) {
+      donutWin.style.strokeDashoffset = circumference * (1 - winRate);
+    }
+    if (donutPct) {
+      donutPct.textContent = Math.round(winRate * 100) + '%';
+    }
 
-    donutPct.textContent = Math.round(winRate * 100) + '%';
+    // Top overview rectangle: Số trận đã thắng & Số trận đã chơi
+    const overviewWon = document.getElementById('overview-won');
+    const overviewPlayed = document.getElementById('overview-played');
+    if (overviewWon) overviewWon.textContent = s.won;
+    if (overviewPlayed) overviewPlayed.textContent = s.played;
 
-    // Stat cards
+    // Stat cards in grid (6 cards, neatly paired)
     const avgTime = s.won > 0 ? Math.round(s.totalWinTime / s.won) : 0;
     const grid = document.getElementById('stats-grid');
     grid.innerHTML = '';
 
     const cards = [
-      { icon: '🎮', label: 'Số trận đã chơi', value: s.played },
-      { icon: '🏆', label: 'Số trận đã thắng', value: s.won },
-      { icon: '💎', label: 'Thắng hoàn hảo', value: s.perfectWins, highlight: true },
-      { icon: '📊', label: 'Tỉ lệ thắng', value: Math.round(winRate * 100) + '%' },
-      { icon: '🔥', label: 'Chuỗi thắng hiện tại', value: s.currentStreak },
-      { icon: '⚡', label: 'Chuỗi thắng tốt nhất', value: s.bestStreak, highlight: true },
-      { icon: '⏱️', label: 'Thời gian nhanh nhất', value: s.bestTime > 0 ? Game.formatTime(s.bestTime) : '—' },
-      { icon: '📈', label: 'Thời gian trung bình', value: avgTime > 0 ? Game.formatTime(avgTime) : '—' }
+      {
+        icon: '👑',
+        label: 'Điểm cao nhất',
+        value: s.bestScore ? s.bestScore.toLocaleString('vi-VN') : 0,
+        highlight: true
+      },
+      {
+        icon: '💎',
+        label: 'Thắng hoàn hảo',
+        value: s.perfectWins || 0,
+        highlight: true
+      },
+      {
+        icon: '🔥',
+        label: 'Chuỗi thắng hiện tại',
+        value: s.currentStreak || 0
+      },
+      {
+        icon: '⚡',
+        label: 'Chuỗi thắng tốt nhất',
+        value: s.bestStreak || 0,
+        highlight: true
+      },
+      {
+        icon: '⏱️',
+        label: 'Thời gian nhanh nhất',
+        value: s.bestTime > 0 ? Game.formatTime(s.bestTime) : '—'
+      },
+      {
+        icon: '📈',
+        label: 'Thời gian trung bình',
+        value: avgTime > 0 ? Game.formatTime(avgTime) : '—'
+      }
     ];
 
     cards.forEach(c => {
@@ -126,7 +164,7 @@ const Profile = (() => {
         if (ok) {
           Storage.resetAllData();
           render();
-          App.showToast('Đã xóa toàn bộ dữ liệu thành công! ✨');
+          App.showToast('Đã xóa toàn bộ dữ liệu thành công! 🔄');
         }
       });
     }
@@ -134,4 +172,3 @@ const Profile = (() => {
 
   return { render, bindEvents };
 })();
-

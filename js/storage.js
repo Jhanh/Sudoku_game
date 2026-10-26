@@ -92,14 +92,20 @@ const Storage = (() => {
       currentStreak: 0,
       bestStreak: 0,
       bestTime: 0,
-      totalWinTime: 0
+      totalWinTime: 0,
+      bestScore: 0,
+      totalScore: 0
     };
   }
 
   function getStats() {
     const s = _get(KEYS.STATS);
-    if (s && s.easy && s.medium && s.hard) return s;
-    return { easy: _defaultDiff(), medium: _defaultDiff(), hard: _defaultDiff() };
+    const def = { easy: _defaultDiff(), medium: _defaultDiff(), hard: _defaultDiff() };
+    if (!s) return def;
+    ['easy', 'medium', 'hard'].forEach(diff => {
+      s[diff] = { ..._defaultDiff(), ...(s[diff] || {}) };
+    });
+    return s;
   }
 
   function saveStats(s) { _set(KEYS.STATS, s); }
@@ -117,6 +123,7 @@ const Storage = (() => {
         if (s.bestTime === 0 || time < s.bestTime) s.bestTime = time;
         s.totalWinTime += time;
         if (!s.bestScore || score > s.bestScore) s.bestScore = score;
+        s.totalScore = (s.totalScore || 0) + (score > 0 ? score : 0);
       } else {
         s.currentStreak = 0;
       }
