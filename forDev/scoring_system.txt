@@ -1,0 +1,139 @@
+================================================================================
+                    TÀI LIỆU DÀNH CHO DEVELOPER (forDev)
+       CHI TIẾT CƠ CHẾ TÍNH ĐIỂM THEO TỪNG ĐỘ KHÓ TRONG GAME SUDOKU
+================================================================================
+
+Tài liệu này ghi chép toàn bộ cơ chế tính điểm hiện tại của cả 3 cấp độ khó
+(Dễ - Trung bình - Khó) trong mã nguồn dự án, phục vụ mục đích định hình, đối soát
+và mở rộng hệ thống tính điểm nâng cao trong tương lai.
+
+--------------------------------------------------------------------------------
+I. TỔNG QUAN BẢNG THÔNG SỐ KỸ THUẬT (3 CẤP ĐỘ KHÓ)
+--------------------------------------------------------------------------------
+
++-------------+----------------+----------------+------------+------------+-------------------+
+| Độ Khó      | Ô Cho Trước    | Ô Cần Giải     | Điểm / Ô   | Thưởng Thắng| Tổng Điểm Cơ Bản |
++-------------+----------------+----------------+------------+------------+-------------------+
+| Dễ (Easy)   | 38 - 45 ô      | 36 - 43 ô      | +10 điểm   | +100 điểm  | 460 - 530 điểm    |
+| TB (Medium) | 30 - 35 ô      | 46 - 51 ô      | +20 điểm   | +200 điểm  | 1,120 - 1,220 điểm|
+| Khó (Hard)  | 24 - 28 ô      | 53 - 57 ô      | +30 điểm   | +300 điểm  | 1,890 - 2,010 điểm|
++-------------+----------------+----------------+------------+------------+-------------------+
+
+* Công thức tổng quát:
+  TỔNG ĐIỂM = (Số ô điền đúng * Điểm mỗi ô) + Điểm thưởng chiến thắng
+
+--------------------------------------------------------------------------------
+II. CHI TIẾT CÁCH TÍNH ĐIỂM TỪNG MỨC ĐỘ KHÓ
+--------------------------------------------------------------------------------
+
+1. MỨC ĐỘ DỄ (EASY)
+-------------------
+- Vị trí trong mã nguồn: js/game.js (SCORE_PER_CELL.easy = 10, WIN_BONUS.easy = 100)
+- Thiết lập bàn cờ:
+  + Cho sẵn: 38 đến 45 con số.
+  + Cần điền: 36 đến 43 ô trống.
+- Cơ chế cộng điểm:
+  + Mỗi lần điền đúng 1 con số: +10 điểm.
+  + Điền đúng toàn bộ bàn cờ (thắng ván): Thưởng thêm +100 điểm.
+- Khung điểm thực tế:
+  + Điểm tối thiểu (nếu đề có 45 ô cho trước): 36 * 10 + 100 = 460 điểm.
+  + Điểm tối đa (nếu đề có 38 ô cho trước): 43 * 10 + 100 = 530 điểm.
+  + Điểm trung bình thường gặp: ~490 - 500 điểm.
+- Thời gian giải tham chiếu:
+  + Người mới: 8 - 15 phút.
+  + Người chơi thông thường: 3 - 6 phút.
+  + Cao thủ: 1 - 2 phút.
+- Đặc điểm người chơi:
+  + Dành cho người mới làm quen hoặc muốn giải trí nhanh.
+  + Quét bằng mắt (Scanning) là giải được, hầu như không cần nháp bút chì.
+
+2. MỨC ĐỘ TRUNG BÌNH (MEDIUM)
+----------------------------
+- Vị trí trong mã nguồn: js/game.js (SCORE_PER_CELL.medium = 20, WIN_BONUS.medium = 200)
+- Thiết lập bàn cờ:
+  + Cho sẵn: 30 đến 35 con số.
+  + Cần điền: 46 đến 51 ô trống.
+- Cơ chế cộng điểm:
+  + Mỗi lần điền đúng 1 con số: +20 điểm (gấp đôi mức Dễ).
+  + Điền đúng toàn bộ bàn cờ (thắng ván): Thưởng thêm +200 điểm.
+- Khung điểm thực tế:
+  + Điểm tối thiểu (nếu đề có 35 ô cho trước): 46 * 20 + 200 = 1,120 điểm.
+  + Điểm tối đa (nếu đề có 30 ô cho trước): 51 * 20 + 200 = 1,220 điểm.
+  + Điểm trung bình thường gặp: ~1,160 điểm.
+- Thời gian giải tham chiếu:
+  + Người mới: 15 - 30 phút.
+  + Người chơi thông thường: 7 - 14 phút.
+  + Cao thủ: 3 - 5 phút.
+- Đặc điểm người chơi:
+  + Dành cho người chơi phổ thông đã quen luật.
+  + Bắt đầu phải dùng tính năng Ghi chú nháp (Pencil Notes) để đánh dấu cặp số
+    tiềm năng và giao điểm hàng/cột/khối.
+
+3. MỨC ĐỘ KHÓ (HARD)
+--------------------
+- Vị trí trong mã nguồn: js/game.js (SCORE_PER_CELL.hard = 30, WIN_BONUS.hard = 300)
+- Thiết lập bàn cờ:
+  + Cho sẵn: 24 đến 28 con số (tiệm cận mức tối thiểu toán học 17 số).
+  + Cần điền: 53 đến 57 ô trống.
+- Cơ chế cộng điểm:
+  + Mỗi lần điền đúng 1 con số: +30 điểm (gấp ba mức Dễ).
+  + Điền đúng toàn bộ bàn cờ (thắng ván): Thưởng thêm +300 điểm.
+- Khung điểm thực tế:
+  + Điểm tối thiểu (nếu đề có 28 ô cho trước): 53 * 30 + 300 = 1,890 điểm.
+  + Điểm tối đa (nếu đề có 24 ô cho trước): 57 * 30 + 300 = 2,010 điểm.
+  + Điểm trung bình thường gặp: ~1,950 điểm.
+- Thời gian giải tham chiếu:
+  + Người mới: 30 - 60+ phút (thường bỏ cuộc hoặc hết 3 lỗi).
+  + Người chơi thông thường: 15 - 25 phút.
+  + Cao thủ: 6 - 10 phút.
+- Đặc điểm người chơi:
+  + Dành cho kỳ thủ Sudoku thực thụ.
+  + Đòi hỏi các kỹ thuật nâng cao: Naked/Hidden Triples, Pointing Pairs, X-Wing.
+  + Phải phủ kín ghi chú nháp và suy luận nhiều tầng.
+
+--------------------------------------------------------------------------------
+III. CÁC QUY TẮC PHỤ TRỢ & CHỐNG GIAN LẬN (ANTI-CHEAT)
+--------------------------------------------------------------------------------
+
+1. Quy tắc Hoàn tác (Undo) và Xóa (Erase):
+   - Nếu người chơi xóa hoặc Undo một ô ĐÃ ĐIỀN ĐÚNG trước đó:
+     Hệ thống tự động trừ lại đúng số điểm của ô đó (-10, -20 hoặc -30 điểm).
+     -> Mục đích: Ngăn chặn tuyệt đối việc người chơi cố tình điền rồi xóa liên tục
+        để "cày điểm ảo" (Score Farming).
+   - Nếu người chơi Undo một ô ĐIỀN SAI:
+     Số lỗi (Mistakes) được hoàn trả giảm đi 1, nhưng điểm số không bị ảnh hưởng.
+
+2. Quy tắc Gợi ý (Hint):
+   - Khi bấm Gợi ý (tối đa 3 lần/ván), hệ thống tự động điền đáp án chuẩn vào ô.
+   - Ô này được chuyển thành trạng thái "Given" (ô cho sẵn), KHÔNG ĐƯỢC CỘNG ĐIỂM.
+     -> Người lạm dụng Hint sẽ có điểm cuối ván thấp hơn người tự suy luận.
+
+3. Giới hạn Lỗi (Mistakes 3/3):
+   - Mỗi ván cho phép sai tối đa 2 lần.
+   - Nếu mắc lỗi thứ 3: Xử thua ngay lập tức (Game Over), KHÔNG nhận được điểm
+     thưởng chiến thắng (Win Bonus), ván đấu bị hủy lưu trữ.
+
+--------------------------------------------------------------------------------
+IV. ĐỊNH HƯỚNG NÂNG CẤP HỆ THỐNG TÍNH ĐIỂM (ROADMAP)
+--------------------------------------------------------------------------------
+
+Dưới đây là các ý tưởng mở rộng cơ chế tính điểm để triển khai ở các phiên bản tiếp theo:
+
+1. Thưởng Tốc Độ (Time Bonus):
+   - Công thức gợi ý: Max(0, BaseBonus - ThoiGianGiaiGiay * HeSo)
+   - Ví dụ mức Dễ giải dưới 3 phút: Thưởng +500 điểm; mỗi giây trôi qua trừ 2 điểm.
+   - Giúp người chơi đua top thời gian giải nhanh.
+
+2. Thưởng Thắng Hoàn Hảo (Perfect Win Bonus):
+   - Thắng mà mắc 0/3 lỗi: Thưởng thêm +150 đến +300 điểm.
+   - Thưởng thêm huy hiệu ngôi sao trên màn hình kết thúc trận.
+
+3. Phạt Dùng Gợi Ý (Hint Penalty):
+   - Trừ 50 điểm cho mỗi lần bấm Hint để khuyến khích tự lực suy luận.
+
+4. Hệ Số Chuỗi Điền Đúng (Combo Multiplier):
+   - Điền đúng 3 ô liên tiếp không sai: x1.2 điểm.
+   - Điền đúng 5 ô liên tiếp: x1.5 điểm.
+   - Điền đúng 10 ô liên tiếp: x2.0 điểm.
+================================================================================
+
