@@ -317,6 +317,12 @@ const App = (() => {
     Profile.bindEvents();
     Variants.init();
 
+    // Reset via URL query param ?reset=1
+    if (typeof window !== 'undefined' && window.location && window.location.search && window.location.search.includes('reset=1')) {
+      Storage.resetAllData();
+      try { window.history.replaceState({}, document.title, window.location.pathname); } catch (_) {}
+    }
+
     // Check for saved game on load
     if (Storage.hasActiveGame()) {
       // Skip splash, go to lobby with continue option

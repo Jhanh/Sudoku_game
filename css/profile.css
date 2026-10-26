@@ -229,3 +229,35 @@
 .stat-card.highlight .stat-value {
   color: var(--primary);
 }
+
+/* ===== Danger Zone / Reset ===== */
+.profile-danger-zone {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.btn-danger-zone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger-zone:hover {
+  color: var(--error);
+  border-color: var(--error);
+  border-style: solid;
+  background: #FEF2F2;
+}
+
+.btn-danger-zone svg {
+  color: inherit;
+}

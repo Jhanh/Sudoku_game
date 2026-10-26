@@ -117,6 +117,19 @@ const Profile = (() => {
     document.getElementById('name-input').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') document.getElementById('btn-save-name').click();
     });
+
+    // Reset all data
+    const resetBtn = document.getElementById('btn-reset-data');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', async () => {
+        const ok = await App.confirm('Xóa Dữ Liệu', 'Bạn có chắc chắn muốn xóa toàn bộ lịch sử đấu, thời gian chơi và đưa game về trạng thái ban đầu?');
+        if (ok) {
+          Storage.resetAllData();
+          render();
+          App.showToast('Đã xóa toàn bộ dữ liệu thành công! ✨');
+        }
+      });
+    }
   }
 
   return { render, bindEvents };

@@ -5,3 +5,4 @@ echo           DANG KHOI CHAY GAME SUDOKU...
 echo ===================================================
 start "" "%~dp0index.html"
 exit
+

@@ -131,10 +131,25 @@ const Storage = (() => {
     }
   }
 
+  /* ---------- Reset All Data ---------- */
+  function resetAllData() {
+    clearGame();
+    _remove(KEYS.PROFILE);
+    _remove(KEYS.STATS);
+    try {
+      if (isLocalStorageAvailable) {
+        window.localStorage.removeItem(KEYS.GAME);
+        window.localStorage.removeItem(KEYS.PROFILE);
+        window.localStorage.removeItem(KEYS.STATS);
+      }
+    } catch (_) {}
+  }
+
   /* ---------- public API ---------- */
   return {
     saveGame, loadGame, clearGame, hasActiveGame,
     getProfile, saveProfile,
-    getStats, saveStats, recordGameResult
+    getStats, saveStats, recordGameResult,
+    resetAllData
   };
 })();
