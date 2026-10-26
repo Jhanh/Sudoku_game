@@ -51,30 +51,118 @@ const App = (() => {
   }
 
   /* ---- game over ---- */
-  function showGameOver(won, state) {
-    const content = document.getElementById('gameover-content');
-    const icon = won ? '🎉' : '😔';
-    const title = won ? 'Chúc mừng!' : 'Hết lượt sai!';
-    const subtitle = won ? 'Bạn đã hoàn thành bảng Sudoku thành công!' : 'Bạn đã mắc quá 3 lỗi. Hãy thử lại nhé!';
+  function showGameOver(reason, state, breakdown) {
+    if (!breakdown && typeof Game !== 'undefined' && Game.getScoreBreakdown) {
+      breakdown = Game.getScoreBreakdown(state);
+    }
+    if (!breakdown) {
+      breakdown = {
+        diffLabel: state.difficulty,
+        cellPts: 10,
+        correctCount: 0,
+        baseScore: 0,
+        comboBonus: 0,
+        rawScore: state.score || 0,
+        maxStreak: 0,
+        timer: state.timer || 0,
+        formattedTime: '00:00',
+        timeMultiplier: 1.0,
+        finalScore: state.score || 0,
+        mistakes: state.mistakes || 0
+      };
+    }
 
-    content.innerHTML = `
-      <div class="gameover-icon">${icon}</div>
-      <h2 class="gameover-title">${title}</h2>
-      <p class="gameover-subtitle">${subtitle}</p>
-      <div class="gameover-stats">
-        <div class="gameover-stat">
-          <span class="stat-val">${Game.formatTime(state.timer)}</span>
-          <span class="stat-label">Thời gian</span>
+    const modalEl = document.getElementById('modal-gameover');
+    if (modalEl) modalEl.classList.remove('win', 'lose', 'give-up');
+
+    let icon, title, subtitle;
+    if (reason === 'win' || reason === true) {
+      if (modalEl) modalEl.classList.add('win');
+      icon = '🎉';
+      title = 'Chiến Thắng!';
+      subtitle = 'Chúc mừng bạn đã hoàn thành trọn vẹn ván cờ Sudoku!';
+    } else if (reason === 'give_up') {
+      if (modalEl) modalEl.classList.add('give-up');
+      icon = '🏳️';
+      title = 'Đã Bỏ Cuộc';
+      subtitle = 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:';
+    } else if (reason === 'streak_over') {
+      if (modalEl) modalEl.classList.add('lose');
+      icon = '💀';
+      title = 'Hết Lượt Sai Liên Tiếp!';
+      const maxStreak = state.difficulty === 'hard' ? 10 : 15;
+      subtitle = `Bạn đã chọn sai ${maxStreak} lần liên tiếp ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
+    } else {
+      if (modalEl) modalEl.classList.add('lose');
+      icon = '💔';
+      title = 'Kết Thúc Trận Đấu';
+      subtitle = 'Ván đấu đã dừng lại. Hãy xem lại bảng điểm và thử lại nhé!';
+    }
+
+    const timeMultText = breakdown.timeMultiplier === 2.0 
+      ? `× 2.0 (Siêu tốc)`
+      : (breakdown.timeMultiplier === 1.5 ? `× 1.5 (Tốc độ)` : `× 1.0 (Chuẩn)`);
+
+    const contentEl = document.getElementById('gameover-content');
+    contentEl.innerHTML = `
+      <div class="gameover-header">
+        <div class="gameover-icon">${icon}</div>
+        <h2 class="gameover-title">${title}</h2>
+        <p class="gameover-subtitle">${subtitle}</p>
+      </div>
+
+      <div class="gameover-final-score">
+        <span class="final-score-label">TỔNG ĐIỂM ĐẠT ĐƯỢC</span>
+        <span class="final-score-val">${breakdown.finalScore}</span>
+      </div>
+
+      <div class="score-breakdown-card">
+        <div class="breakdown-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Chi Tiết Bảng Điểm (${breakdown.diffLabel})</span>
         </div>
-        <div class="gameover-stat">
-          <span class="stat-val">${state.score}</span>
-          <span class="stat-label">Điểm số</span>
+        <div class="breakdown-row">
+          <span class="row-label">Ô điền đúng (${breakdown.correctCount} ô × ${breakdown.cellPts}đ)</span>
+          <span class="row-val">+${breakdown.baseScore}</span>
         </div>
-        <div class="gameover-stat">
-          <span class="stat-val">${state.mistakes}/3</span>
-          <span class="stat-label">Lỗi</span>
+        <div class="breakdown-row">
+          <span class="row-label">Thưởng chuỗi combo (Max ${breakdown.maxStreak} ô)</span>
+          <span class="row-val ${breakdown.comboBonus > 0 ? 'highlight-combo' : ''}">+${breakdown.comboBonus}</span>
+        </div>
+        ${breakdown.perfectBonus > 0 ? `
+        <div class="breakdown-row">
+          <span class="row-label">⭐ Thưởng hoàn hảo (0/3 lỗi)</span>
+          <span class="row-val highlight-perfect">+${breakdown.perfectBonus}</span>
+        </div>` : ''}
+        ${breakdown.hintPenalties > 0 ? `
+        <div class="breakdown-row">
+          <span class="row-label">💡 Trừ dùng gợi ý (${state.hintsUsed || 0} lần)</span>
+          <span class="row-val highlight-penalty">-${breakdown.hintPenalties}</span>
+        </div>` : ''}
+        ${breakdown.wrongPenalties > 0 ? `
+        <div class="breakdown-row">
+          <span class="row-label">⚠️ Trừ chuỗi chọn sai</span>
+          <span class="row-val highlight-penalty">-${breakdown.wrongPenalties}</span>
+        </div>` : ''}
+        <div class="breakdown-row">
+          <span class="row-label">Điểm tích lũy bàn cờ</span>
+          <span class="row-val">${breakdown.rawScore}</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="row-label">Thời gian (${breakdown.formattedTime})</span>
+          <span class="row-val ${breakdown.timeMultiplier > 1.0 ? 'highlight-time' : ''}">${timeMultText}</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="row-label">Số lỗi mắc phải</span>
+          <span class="row-val ${breakdown.mistakes === 0 ? 'highlight-perfect' : ''}">${breakdown.mistakes}/3</span>
+        </div>
+        <div class="breakdown-divider"></div>
+        <div class="breakdown-row breakdown-total">
+          <span class="row-label">Tổng kết (${breakdown.rawScore} × ${breakdown.timeMultiplier})</span>
+          <span class="row-val total-number">${breakdown.finalScore}</span>
         </div>
       </div>
+
       <div class="gameover-actions">
         <button class="btn-primary btn-large" id="btn-go-new">Ván Chơi Mới</button>
         <button class="btn-secondary btn-large" id="btn-go-lobby">Về Sảnh Chính</button>
@@ -132,7 +220,7 @@ const App = (() => {
 
     Game.setCallbacks(
       (state) => { UIBoard.render(state); UIControls.update(state); },
-      (won, state) => showGameOver(won, state)
+      (reason, state, breakdown) => showGameOver(reason, state, breakdown)
     );
 
     // Show a brief loading indicator
@@ -154,7 +242,7 @@ const App = (() => {
 
     Game.setCallbacks(
       (state) => { UIBoard.render(state); UIControls.update(state); },
-      (won, state) => showGameOver(won, state)
+      (reason, state, breakdown) => showGameOver(reason, state, breakdown)
     );
 
     Game.resume();

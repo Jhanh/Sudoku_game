@@ -42,6 +42,174 @@
   color: var(--text);
 }
 
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.streak-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 8px;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+}
+
+.streak-badge.hidden {
+  display: none;
+}
+
+.streak-badge.tier-1 {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.streak-badge.tier-2 {
+  background: #FFEDD5;
+  color: #EA580C;
+}
+
+.streak-badge.tier-3 {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.streak-badge.tier-4 {
+  background: #F3E8FF;
+  color: #7C3AED;
+  box-shadow: 0 0 6px rgba(124, 58, 237, 0.25);
+}
+
+.mistake-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wrong-streak-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 8px;
+  line-height: 1.2;
+  background: #FEE2E2;
+  color: #DC2626;
+  border: 1px solid #FCA5A5;
+  transition: all 0.2s ease;
+  animation: streakPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.wrong-streak-badge.hidden {
+  display: none;
+}
+
+.wrong-streak-badge.stage-critical {
+  background: #7F1D1D;
+  color: #FECACA;
+  border-color: #EF4444;
+  animation: badgeCriticalPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes badgeCriticalPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); box-shadow: 0 0 8px rgba(239, 68, 68, 0.6); }
+}
+
+/* ===== Danger Screen Overlay ===== */
+.danger-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+  transition: opacity 0.35s ease, box-shadow 0.35s ease;
+  opacity: 0;
+}
+
+.danger-overlay.flash-mild {
+  opacity: 1;
+  box-shadow: inset 0 0 50px rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.05);
+  animation: flashFade 1.2s ease-out forwards;
+}
+
+@keyframes flashFade {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.danger-overlay.stage-mild {
+  opacity: 1;
+  box-shadow: inset 0 0 60px rgba(239, 68, 68, 0.38);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.danger-overlay.stage-critical {
+  opacity: 1;
+  animation: criticalDangerPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes criticalDangerPulse {
+  0%, 100% {
+    box-shadow: inset 0 0 60px rgba(220, 38, 38, 0.55);
+    background: rgba(220, 38, 38, 0.12);
+  }
+  50% {
+    box-shadow: inset 0 0 110px rgba(185, 28, 28, 0.85);
+    background: rgba(185, 28, 28, 0.22);
+  }
+}
+
+/* ===== Danger Warning Banner ===== */
+.danger-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin: 8px 16px 0 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  animation: slideDownBanner 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+@keyframes slideDownBanner {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.danger-banner.hidden {
+  display: none;
+}
+
+.danger-banner.stage-mild {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+
+.danger-banner.stage-critical {
+  background: #7F1D1D;
+  color: #FFFFFF;
+  border: 1px solid #EF4444;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+  animation: criticalBannerPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes criticalBannerPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
 .timer-row {
   display: flex;
   align-items: center;

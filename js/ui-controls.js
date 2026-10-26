@@ -52,12 +52,87 @@ const UIControls = (() => {
     // Info bar
     document.getElementById('info-difficulty').textContent = Game.DIFF_LABELS[state.difficulty] || state.difficulty;
     document.getElementById('info-score').textContent = state.score;
+
+    const streakEl = document.getElementById('info-streak');
+    if (streakEl) {
+      const streak = state.correctStreak || 0;
+      if (streak >= 41) {
+        streakEl.textContent = '⚡ x2.0';
+        streakEl.className = 'streak-badge tier-4';
+      } else if (streak >= 31) {
+        streakEl.textContent = '🔥 x1.7';
+        streakEl.className = 'streak-badge tier-3';
+      } else if (streak >= 21) {
+        streakEl.textContent = '🔥 x1.5';
+        streakEl.className = 'streak-badge tier-2';
+      } else if (streak >= 11) {
+        streakEl.textContent = '🔥 x1.2';
+        streakEl.className = 'streak-badge tier-1';
+      } else {
+        streakEl.className = 'streak-badge hidden';
+      }
+    }
     document.getElementById('info-timer').textContent = Game.formatTime(state.timer);
 
     const mistakesEl = document.getElementById('info-mistakes');
-    mistakesEl.textContent = `${state.mistakes}/3`;
-    mistakesEl.classList.toggle('mistake-warning', state.mistakes === 1);
-    mistakesEl.classList.toggle('mistake-danger', state.mistakes >= 2);
+    if (mistakesEl) {
+      mistakesEl.textContent = state.mistakes;
+      mistakesEl.classList.toggle('mistake-warning', state.wrongStreak >= 3 && state.wrongStreak < 5);
+      mistakesEl.classList.toggle('mistake-danger', state.wrongStreak >= 5);
+    }
+
+    const wrongStreakEl = document.getElementById('info-wrong-streak');
+    if (wrongStreakEl) {
+      const wStreak = state.wrongStreak || 0;
+      if (wStreak >= 1) {
+        const penalty = Game.getWrongPenalty(state.difficulty, wStreak);
+        const stage = Game.getWarningStage(state.difficulty, wStreak);
+        wrongStreakEl.textContent = `⚠️ Sai ${wStreak} (-${penalty}đ)`;
+        wrongStreakEl.className = 'wrong-streak-badge' + (stage === 3 ? ' stage-critical' : '');
+      } else {
+        wrongStreakEl.className = 'wrong-streak-badge hidden';
+      }
+    }
+
+    // Danger Screen Overlay & Warning Banner
+    const overlayEl = document.getElementById('danger-overlay');
+    const bannerEl = document.getElementById('danger-banner');
+    const stage = Game.getWarningStage(state.difficulty, state.wrongStreak || 0);
+
+    if (overlayEl) {
+      overlayEl.className = 'danger-overlay';
+      if (stage === 1) {
+        overlayEl.classList.add('flash-mild');
+      } else if (stage === 2) {
+        overlayEl.classList.add('stage-mild');
+      } else if (stage === 3) {
+        overlayEl.classList.add('stage-critical');
+      }
+    }
+
+    if (bannerEl) {
+      const bannerText = document.getElementById('danger-banner-text');
+      const bannerIcon = document.getElementById('danger-banner-icon');
+      if (stage === 0) {
+        bannerEl.className = 'danger-banner hidden';
+      } else if (stage === 1) {
+        bannerEl.className = 'danger-banner stage-mild';
+        if (bannerIcon) bannerIcon.textContent = '⚠️';
+        if (bannerText) bannerText.textContent = 'Cảnh báo: Bạn đã chọn sai 5 lần liên tiếp! Tiếp tục sai sẽ bị trừ điểm nặng hơn.';
+      } else if (stage === 2) {
+        bannerEl.className = 'danger-banner stage-mild';
+        const pen = Game.getWrongPenalty(state.difficulty, state.wrongStreak);
+        if (bannerIcon) bannerIcon.textContent = '⚠️';
+        if (bannerText) bannerText.textContent = `Cảnh báo chuỗi sai: Bạn đang bị trừ ${pen}đ cho mỗi lần chọn sai liên tiếp!`;
+      } else if (stage === 3) {
+        bannerEl.className = 'danger-banner stage-critical';
+        const pen = Game.getWrongPenalty(state.difficulty, state.wrongStreak);
+        const maxStreak = state.difficulty === 'hard' ? 10 : 15;
+        const overLimit = state.difficulty === 'hard' ? 11 : 16;
+        if (bannerIcon) bannerIcon.textContent = '🚨';
+        if (bannerText) bannerText.textContent = `NGUY HIỂM: Sai ${state.wrongStreak}/${maxStreak} lần liên tiếp (-${pen}đ/lượt)! Sang lần ${overLimit} sẽ GAME OVER!`;
+      }
+    }
 
     // Pause icon toggle
     const pauseBtn = document.getElementById('btn-pause');
