@@ -77,6 +77,7 @@ const App = (() => {
 
     let icon, title, subtitle;
     if (reason === 'win' || reason === true) {
+      if (typeof Sound !== 'undefined' && Sound.playWin) Sound.playWin();
       if (modalEl) modalEl.classList.add('win');
       icon = '🎉';
       title = 'Chiến Thắng!';
@@ -87,12 +88,14 @@ const App = (() => {
       title = 'Đã Bỏ Cuộc';
       subtitle = 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:';
     } else if (reason === 'streak_over') {
+      if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💀';
       title = 'Hết Lượt Sai Liên Tiếp!';
       const maxStreak = state.difficulty === 'hard' ? 10 : 15;
       subtitle = `Bạn đã chọn sai ${maxStreak} lần liên tiếp ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
     } else {
+      if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💔';
       title = 'Kết Thúc Trận Đấu';
@@ -297,14 +300,23 @@ const App = (() => {
 
     // Navbar tabs
     document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', () => showTab(item.dataset.tab));
+      item.addEventListener('click', () => {
+        if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+        showTab(item.dataset.tab);
+      });
     });
 
     // How to play
-    document.getElementById('btn-how-to-play').addEventListener('click', () => Tutorial.show());
+    document.getElementById('btn-how-to-play').addEventListener('click', () => {
+      if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+      Tutorial.show();
+    });
 
     // New game → difficulty modal
-    document.getElementById('btn-new-game').addEventListener('click', () => openModal('modal-difficulty'));
+    document.getElementById('btn-new-game').addEventListener('click', () => {
+      if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+      openModal('modal-difficulty');
+    });
 
     // Continue game
     document.getElementById('btn-continue').addEventListener('click', () => _resumeGame());
@@ -401,6 +413,7 @@ const App = (() => {
     });
 
     // Initialize sub-modules
+    if (typeof Sound !== 'undefined' && Sound.init) Sound.init();
     Tutorial.bindEvents();
     Profile.bindEvents();
     Variants.init();

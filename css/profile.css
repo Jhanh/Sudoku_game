@@ -259,6 +259,51 @@
   color: var(--primary);
 }
 
+/* ===== Settings Card ===== */
+.profile-settings-card {
+  margin-top: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.setting-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.setting-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.btn-sound-toggle.muted {
+  color: var(--text-muted, #94A3B8);
+  opacity: 0.65;
+}
+
+.btn-sound-toggle.muted:hover {
+  opacity: 1;
+  color: var(--text);
+}
+
 /* ===== Danger Zone / Reset ===== */
 .profile-danger-zone {
   margin-top: 28px;

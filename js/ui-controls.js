@@ -2,8 +2,10 @@
    ui-controls.js — Info bar, tools, numpad rendering
    ========================================================= */
 const UIControls = (() => {
+  let lastWarningStage = 0;
 
   function init() {
+    lastWarningStage = 0;
     _buildNumpad();
     _bindTools();
   }
@@ -98,6 +100,11 @@ const UIControls = (() => {
     const overlayEl = document.getElementById('danger-overlay');
     const bannerEl = document.getElementById('danger-banner');
     const stage = Game.getWarningStage(state.difficulty, state.wrongStreak || 0);
+
+    if (stage >= 2 && stage > lastWarningStage && typeof Sound !== 'undefined' && Sound.playDanger) {
+      Sound.playDanger();
+    }
+    lastWarningStage = stage;
 
     if (overlayEl) {
       overlayEl.className = 'danger-overlay';

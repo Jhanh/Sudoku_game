@@ -280,6 +280,7 @@ const Game = (() => {
   function selectCell(row, col) {
     if (!state || state.isFinished || state.isPaused) return;
     state.selectedCell = { row, col };
+    if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
     if (onUpdate) onUpdate(state);
   }
 
@@ -311,6 +312,7 @@ const Game = (() => {
 
     state.undoStack.push({ type: 'note', row, col, oldNotes });
     save();
+    if (typeof Sound !== 'undefined' && Sound.playNote) Sound.playNote();
     if (onUpdate) onUpdate(state);
   }
 
@@ -355,6 +357,7 @@ const Game = (() => {
         basePts: 0
       });
       save();
+      if (typeof Sound !== 'undefined' && Sound.playError) Sound.playError();
       if (onUpdate) onUpdate(state);
 
       // Check consecutive error limit:
@@ -415,6 +418,15 @@ const Game = (() => {
       return;
     }
 
+    if (typeof Sound !== 'undefined') {
+      const remainingForDigit = getRemaining(num);
+      if (remainingForDigit === 0 && Sound.playDigitComplete) {
+        Sound.playDigitComplete();
+      } else if (Sound.playCorrect) {
+        Sound.playCorrect(state.correctStreak);
+      }
+    }
+
     if (onUpdate) onUpdate(state);
   }
 
@@ -462,6 +474,7 @@ const Game = (() => {
     }
 
     save();
+    if (typeof Sound !== 'undefined' && Sound.playErase) Sound.playErase();
     if (onUpdate) onUpdate(state);
   }
 
@@ -494,6 +507,7 @@ const Game = (() => {
     state.notes[key] = [];
     state.undoStack.push({ type: 'erase', row, col, oldValue, oldNotes, wasCorrect, deductedScore, deductedBase });
     save();
+    if (typeof Sound !== 'undefined' && Sound.playErase) Sound.playErase();
     if (onUpdate) onUpdate(state);
   }
 
@@ -554,6 +568,7 @@ const Game = (() => {
     state.hintedCell = { row, col }; // For flash animation
     save();
 
+    if (typeof Sound !== 'undefined' && Sound.playHint) Sound.playHint();
     if (onUpdate) onUpdate(state);
 
     // Check completion

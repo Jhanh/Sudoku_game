@@ -5,7 +5,8 @@ const Storage = (() => {
   const KEYS = {
     GAME: 'sudoku_current_game',
     PROFILE: 'sudoku_profile',
-    STATS: 'sudoku_stats'
+    STATS: 'sudoku_stats',
+    SOUND: 'sudoku_sound_enabled'
   };
 
   // In-memory fallback if localStorage is blocked by browser security
@@ -139,16 +140,28 @@ const Storage = (() => {
     }
   }
 
+  /* ---------- Sound Settings ---------- */
+  function isSoundEnabled() {
+    const val = _get(KEYS.SOUND);
+    return val === null ? true : Boolean(val);
+  }
+
+  function setSoundEnabled(enabled) {
+    _set(KEYS.SOUND, Boolean(enabled));
+  }
+
   /* ---------- Reset All Data ---------- */
   function resetAllData() {
     clearGame();
     _remove(KEYS.PROFILE);
     _remove(KEYS.STATS);
+    _remove(KEYS.SOUND);
     try {
       if (isLocalStorageAvailable) {
         window.localStorage.removeItem(KEYS.GAME);
         window.localStorage.removeItem(KEYS.PROFILE);
         window.localStorage.removeItem(KEYS.STATS);
+        window.localStorage.removeItem(KEYS.SOUND);
       }
     } catch (_) {}
   }
@@ -158,6 +171,7 @@ const Storage = (() => {
     saveGame, loadGame, clearGame, hasActiveGame,
     getProfile, saveProfile,
     getStats, saveStats, recordGameResult,
+    isSoundEnabled, setSoundEnabled,
     resetAllData
   };
 })();

@@ -221,6 +221,23 @@ const DevTools = (() => {
             </button>
           </div>
         </div>
+
+        <!-- Section 4: Sound FX Testing -->
+        <div class="dev-hud-section">
+          <div class="dev-section-title">🔊 Thử Nghiệm Hiệu Ứng Âm Thanh (SFX)</div>
+          <div class="dev-btn-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <button id="dev-sfx-tap" class="dev-action-btn">🔊 Tap Ô / Nút</button>
+            <button id="dev-sfx-correct" class="dev-action-btn">🎵 Điền Đúng (Combo)</button>
+            <button id="dev-sfx-complete" class="dev-action-btn">🎉 Xong 9 Số</button>
+            <button id="dev-sfx-error" class="dev-action-btn">⚠️ Báo Lỗi</button>
+            <button id="dev-sfx-note" class="dev-action-btn">✏️ Ghi Chú</button>
+            <button id="dev-sfx-erase" class="dev-action-btn">🧹 Xóa / Hoàn Tác</button>
+            <button id="dev-sfx-hint" class="dev-action-btn">💡 Dùng Gợi Ý</button>
+            <button id="dev-sfx-danger" class="dev-action-btn">🚨 Nhịp Nguy Hiểm</button>
+            <button id="dev-sfx-win" class="dev-action-btn btn-win">🏆 Fanfare Thắng</button>
+            <button id="dev-sfx-gameover" class="dev-action-btn btn-danger">💀 Nhạc Game Over</button>
+          </div>
+        </div>
       </div>
     `;
     document.body.appendChild(hud);
@@ -283,6 +300,29 @@ const DevTools = (() => {
       const state = typeof Game !== 'undefined' ? Game.getState() : null;
       if (state) _setTimer((state.timer || 0) + 60);
     });
+
+    // Sound FX Tests
+    let devComboCount = 0;
+    const bindSfx = (id, fn) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', () => {
+        if (typeof Sound !== 'undefined' && fn) fn();
+      });
+    };
+    bindSfx('dev-sfx-tap', () => Sound.playTap());
+    bindSfx('dev-sfx-correct', () => {
+      devComboCount = (devComboCount % 45) + 5;
+      Sound.playCorrect(devComboCount);
+      if (typeof App !== 'undefined' && App.showToast) App.showToast(`🎵 SFX Điền đúng (Streak ${devComboCount})`);
+    });
+    bindSfx('dev-sfx-complete', () => Sound.playDigitComplete());
+    bindSfx('dev-sfx-error', () => Sound.playError());
+    bindSfx('dev-sfx-note', () => Sound.playNote());
+    bindSfx('dev-sfx-erase', () => Sound.playErase());
+    bindSfx('dev-sfx-hint', () => Sound.playHint());
+    bindSfx('dev-sfx-danger', () => Sound.playDanger());
+    bindSfx('dev-sfx-win', () => Sound.playWin());
+    bindSfx('dev-sfx-gameover', () => Sound.playGameOver());
   }
 
   /* ---------- Minimized Pill Trigger ---------- */

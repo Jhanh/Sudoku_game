@@ -8,6 +8,7 @@ const Profile = (() => {
   function render() {
     _renderProfile();
     _renderStats(currentDiff);
+    if (typeof Sound !== 'undefined' && Sound.updateUI) Sound.updateUI();
   }
 
   function _renderProfile() {
