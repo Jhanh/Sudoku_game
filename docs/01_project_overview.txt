@@ -48,6 +48,7 @@ Sudoku_game/
 │   ├── sudoku-engine.js        # Thuật toán sinh bàn cờ ngẫu nhiên, giải cờ và đào lỗ câu đố
 │   ├── game.js                 # Bộ máy quản lý ván cờ (timer, tính điểm, combo, phạt, game over)
 │   ├── storage.js              # Tầng lưu trữ Persistent Data (LocalStorage + Memory Fallback)
+│   ├── sound.js                # Hệ thống âm thanh procedural Web Audio API (Zero external audio files)
 │   ├── ui-board.js             # Xử lý render và tương tác trên bàn cờ 9x9 (highlight, animations)
 │   ├── ui-controls.js          # Xử lý bàn phím số, công cụ phụ trợ (Gợi ý, Tẩy, Ghi chú, Cảnh báo đỏ)
 │   ├── profile.js              # Xử lý hiển thị tab Hồ sơ, biểu đồ tròn tỉ lệ thắng, 6 thẻ thành tích

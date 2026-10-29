@@ -55,9 +55,10 @@ III. CHI TIẾT CÁC TÍNH NĂNG KIỂM THỬ (CORE CHEATS & QA TOOLS)
    - ĐẶC BIỆT: Đây là dạng hiển thị mờ để nhà phát triển nhìn thấy và TỰ TAY BẤM CHỌN ĐÚNG
      từng số nhằm kiểm thử chuỗi Combo Streak, hiệu ứng âm thanh và điểm cộng — chứ KHÔNG
      phải bấm vào là tự giải hết để thắng luôn!
-   - CHUYỂN SANG MÀU ĐEN KHI CHỌN: Khi bạn bấm chọn đúng số vào ô đó, con số sẽ ngay lập
-     tức chuyển từ màu tím nhạt mờ sang MÀU ĐEN ĐẬM (solid black #1E293B, font-weight 700)
-     như các con số đề bài chuẩn, giúp phân biệt rõ ràng ô nào đã được giải và ô nào còn trống.
+   - CHUYỂN SANG MÀU XANH / ĐỎ KHI CHỌN: Khi bạn bấm chọn đúng số vào ô đó, con số sẽ
+     chuyển từ màu tím nhạt sang MÀU XANH DƯƠNG thanh mảnh (#3B82F6, font-weight 500)
+     như các số người chơi điền đúng chuẩn, phân biệt hoàn toàn với màu ĐEN ĐẬM của đề bài (#1E293B, font-weight 700).
+     Nếu điền sai, ô lập tức đổi thành màu ĐỎ chữ đỏ nền đỏ (#DC2626 trên #FEE2E2) báo lỗi chuẩn.
    - Khi tắt công tắc: Mọi chữ số mờ lập tức biến mất, bàn cờ quay lại trạng thái ô trống ban đầu.
 
 3. THẮNG NGAY VÁN NÀY (INSTANT WIN):
@@ -91,5 +92,18 @@ III. CHI TIẾT CÁC TÍNH NĂNG KIỂM THỬ (CORE CHEATS & QA TOOLS)
 7. THEO DÕI THÔNG SỐ THỜI GIAN THỰC (LIVE STATS WATCHER):
    - Trên đỉnh bảng điều khiển hiển thị liên tục: Thời gian ván đấu, Điểm số hiện tại,
      và Tỷ số Chuỗi Đúng / Chuỗi Sai (Correct / Wrong Streak).
+
+8. BẢNG THỬ NGHIỆM HIỆU ỨNG ÂM THANH (SFX SOUND TESTING BOARD):
+   - Tích hợp 10 nút bấm 1-click để kiểm thử trực tiếp toàn bộ 10 hiệu ứng âm thanh procedural:
+     + [🔊 Tap Ô / Nút]: Test tiếng gõ gỗ nhẹ khi chọn ô hoặc bấm nút.
+     + [🎵 Điền Đúng (Combo)]: Test tiếng đàn Marimba tăng cao dần theo combo streak.
+     + [🎉 Xong 9 Số]: Test hợp âm thăng tiến khi lấp đủ 9 chữ số.
+     + [⚠️ Báo Lỗi]: Test âm thud trầm cảnh báo chọn sai.
+     + [✏️ Ghi Chú]: Test tiếng tick bút chì mini khi bật/tắt ghi chú.
+     + [🧹 Xóa / Hoàn Tác]: Test âm whoosh dịu khi xóa ô hoặc undo.
+     + [💡 Dùng Gợi Ý]: Test âm chuông tiên lấp lánh khi dùng gợi ý.
+     + [🚨 Nhịp Nguy Hiểm]: Test nhịp tim trầm dồn dập khi đạt ngưỡng cảnh báo đỏ.
+     + [🏆 Fanfare Thắng]: Test khúc ca chiến thắng khải hoàn rộn rã.
+     + [💀 Nhạc Game Over]: Test hợp âm thứ trầm buồn kết thúc trận đấu.
 ================================================================================
 

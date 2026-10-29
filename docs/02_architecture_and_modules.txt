@@ -15,7 +15,7 @@ I. TỔNG QUAN KIẾN TRÚC MÃ NGUỒN
     └── Quản lý dữ liệu với Storage (storage.js)
 
 --------------------------------------------------------------------------------
-II. CHI TIẾT 9 MODULE JAVASCRIPT TRONG js/
+II. CHI TIẾT 10 MODULE JAVASCRIPT TRONG js/
 --------------------------------------------------------------------------------
 
 1. js/sudoku-engine.js (Module: SudokuEngine)
@@ -167,5 +167,26 @@ II. CHI TIẾT 9 MODULE JAVASCRIPT TRONG js/
        Modal Game Over (phân loại lý do: quá 3 lỗi thông thường hoặc do chạm giới hạn chuỗi sai).
      + Modal Bảng tổng kết điểm chi tiết (Score Breakdown Modal).
      + Lắng nghe phím tắt bàn phím vật lý (Phím 1-9, Delete, Backspace, N, H, U, Arrow keys).
+
+10. js/sound.js (Module: Sound)
+    - Nhiệm vụ: Hệ thống âm thanh hiệu ứng tương tác (Sound Effects - SFX) thời gian thực.
+    - Công nghệ cốt lõi: Pure Web Audio API (AudioContext) tổng hợp âm học trực tiếp (Procedural Audio Synthesis).
+      + Hoàn toàn không sử dụng file mp3/wav ngoài (0 byte dung lượng nạp, zero network lag, zero latency).
+      + Tương thích 100% chuẩn trình duyệt hiện đại, cơ chế tự động mở khóa (Unlock AudioContext) khi người dùng tương tác lần đầu.
+    - 10 Hiệu ứng âm thanh procedural chuyên biệt:
+      1. playTap(): Tiếng gõ gỗ nhẹ (Wood Tap) ngắn gọn khi chọn ô hoặc bấm các nút thanh điều hướng.
+      2. playCorrect(streak): Tiếng đàn gõ Marimba trong trẻo, tần số cao dần theo thang âm Pentatonic (C5 đến A6) tỷ lệ thuận với chuỗi đúng (Combo Streak).
+      3. playDigitComplete(): Hợp âm thăng tiến tươi vui (C5-E5-G5-C6) reo lên khi người chơi hoàn thành trọn vẹn tất cả 9 ô của 1 chữ số.
+      4. playError(): Tiếng thud trầm đục (Low buzz) thông báo chọn sai số, rõ ràng nhưng không gây ức chế.
+      5. playNote(): Tiếng gõ bút chì siêu nhỏ (Pencil tick) khi bật/tắt ghi chú nháp trong ô.
+      6. playErase(): Tiếng gió lướt êm dịu (Soft whoosh) khi xóa số hoặc hoàn tác (Undo).
+      7. playHint(): Tiếng chuông tiên lấp lánh (Celestial chimes) khi mở gợi ý ô số.
+      8. playDanger(): Nhịp tim đập dồn dập (Sub-bass heartbeat) cảnh báo khi đạt ngưỡng nguy hiểm cấp 2 & 3.
+      9. playWin(): Khúc khải hoàn ca chiến thắng (Victory Fanfare) rộn ràng kéo dài với hợp âm rực rỡ khi giải xong bàn cờ.
+      10. playGameOver(): Bộ ba nốt thứ trầm buồn lắng dịu (Descending minor triad) khi ván đấu kết thúc.
+    - Quản lý trạng thái & Cài đặt người dùng:
+      + Nút chuyển đổi âm thanh trực quan (🔊 Bật / 🔇 Tắt) tại góc header ván chơi và trong thẻ cài đặt tab Hồ sơ.
+      + Đồng bộ và lưu trữ trạng thái bật/tắt bền vững vào LocalStorage qua Storage.isSoundEnabled() / setSoundEnabled().
+      + Tích hợp đầy đủ vào QA Dev Console để kiểm thử nhanh từng âm thanh chỉ với 1 click.
 ================================================================================
 
