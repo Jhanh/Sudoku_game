@@ -1,0 +1,124 @@
+================================================================================
+               SUDOKU WEB APP - DEV GUIDELINES & CRITICAL NOTES
+       NHỮNG LƯU Ý KỸ THUẬT SỐNG CÒN DÀNH CHO DEVELOPER & AI (ANTIGRAVITY)
+================================================================================
+
+Tài liệu này được biên soạn đặc biệt để mọi lập trình viên hoặc AI trợ lý (như Antigravity
+khi bị mất ngữ cảnh / reset bộ nhớ) có thể nắm bắt ngay lập tức các nguyên tắc bất di
+bất dịch của dự án này.
+
+--------------------------------------------------------------------------------
+I. QUY CHUẨN THÔNG ĐIỆP COMMIT (COMMIT MESSAGE STANDARDS)
+--------------------------------------------------------------------------------
+Một commit message chuẩn mực gồm 2 thành phần:
+   Cú pháp: <loại commit>( <phạm vi> ): <nội dung tóm tắt ngắn gọn>
+
+1. LOẠI COMMIT (MUST - BẮT BUỘC):
+   Là thành phần không thể thiếu của một commit message, để xác định rõ commit đó
+   có mục đích là gì. Các loại commit bao gồm:
+
+   - feature  : tính năng mới được bổ sung vào hệ thống.
+   - bugfix   : sửa lỗi phát sinh cho hệ thống.
+   - refactor : sửa code, tái cấu trúc nhưng không thêm feature và cũng không fix bug.
+   - docs     : thêm mới hoặc thay thế/cập nhật tài liệu kỹ thuật (documentation).
+   - chore    : những sửa đổi nhỏ nhặt về cấu hình, dọn dẹp không liên quan đến logic code.
+   - style    : những thay đổi về định dạng, căn lề, giao diện CSS không làm đổi logic code.
+   - perf     : cải thiện performance, tối ưu hóa tốc độ xử lý hoặc thuật toán.
+   - vendor   : cập nhật phiên bản cho các gói tài nguyên, file nén, dependencies.
+
+2. PHẠM VI (OPTIONAL - TÙY CHỌN NHƯNG KHUYÊN DÙNG):
+   Cũng dùng để phân loại commit, nhưng chi tiết hơn về ý nghĩa một chút, trả lời
+   cho câu hỏi: "Commit này thêm mới chức năng gì, fix chức năng gì?".
+   Ví dụ định dạng:
+     VD : feature( login_sso ) : bugfix( user_profile )
+
+3. VÍ DỤ ÁP DỤNG THỰC TẾ CHO DỰ ÁN SUDOKU:
+   - feature(scoring) : hiện thực hóa toàn diện cơ chế tính điểm và trừ phạt
+   - feature(ui)      : bổ sung cảnh báo nguy hiểm thị giác và bảng điểm chi tiết
+   - feature(profile) : đại tu cụm tổng quan trận đấu và tích hợp điểm cao nhất
+   - bugfix(timer)    : sửa lỗi bộ đếm giờ vẫn chạy khi mở modal tạm dừng
+   - bugfix(board)    : sửa lỗi không nhận diện ô trùng lặp khi điền số nhanh
+   - refactor(engine) : tái cấu trúc thuật toán giải Sudoku quay lui cho gọn gàng
+   - docs(scoring)    : ghi chép thông số hồ sơ người chơi và bố cục cụm tổng quan
+   - docs(css)        : bổ sung tài liệu phân tích chuyên sâu 6 file CSS
+   - style(theme)     : tinh chỉnh độ tương phản màu viền đỏ của cảnh báo nguy hiểm
+   - perf(generator)  : tối ưu hóa tốc độ đào lỗ tạo đề bài mức Khó
+   - chore(git)       : cấu hình bỏ qua các file nén zip trong gitignore
+   - vendor(release)  : đóng gói bản phát hành thử nghiệm Sudoku-Game-testing.zip
+
+--------------------------------------------------------------------------------
+II. NGUYÊN TẮC BẤT DI BẤT DỊCH VỀ GIT (CRITICAL GIT RULES)
+--------------------------------------------------------------------------------
+1. TUYỆT ĐỐI KHÔNG TỰ TIỆN CHẠY LỆNH "git push":
+   - Tất cả các thao tác mã hóa chỉ được lưu trữ và tạo commit ở máy tính Local
+     (thông qua `git add` và `git commit -m "..."`).
+   - Quyền đẩy mã lên GitHub (`git push`) hoàn toàn thuộc về người dùng (USER).
+   - Chỉ được hướng dẫn người dùng lệnh push hoặc chỉ chạy khi người dùng ra lệnh rõ ràng.
+
+2. GOM COMMIT TRƯỚC KHI PUSH (TRÁNH DẤU X ĐỎ GITHUB ACTIONS):
+   - Dự án được cấu hình GitHub Pages tự động build & deploy mỗi khi có push mới.
+   - Nếu commit xong mà push ngay lập tức liên tục từng commit, tiến trình GitHub Actions
+     đang chạy sẽ tự động bị HỦY BỎ (Cancelled) và hiện dấu chéo đỏ:
+     `❌ pages build and deployment / deploy (dynamic) Cancelled after 12s`
+   - BÍ QUYẾT: Hãy commit đầy đủ các đợt ở local trước, sau đó chỉ chạy đúng 1 lần:
+     `git push origin main`
+     => Giúp GitHub Actions chỉ kích hoạt 1 luồng duy nhất và hiện tích xanh `✓ 3/3` tuyệt đẹp!
+
+--------------------------------------------------------------------------------
+III. NGUYÊN TẮC VỀ FILE NÉN & KHỞI CHẠY OFFLINE (ZIP & LAUNCHER RULES)
+--------------------------------------------------------------------------------
+1. QUY TẮC VỀ FILE "ChoiGame.bat":
+   - File `ChoiGame.bat` được thiết kế để hỗ trợ người chơi Windows nhấp đúp 1-click là chơi ngay.
+   - File này CHỈ ĐƯỢC PHÉP NẰM BÊN TRONG CÁC FILE NÉN .ZIP.
+   - TUYỆT ĐỐI KHÔNG ĐƯỢC để file `ChoiGame.bat` thừa thãi ra ngoài thư mục gốc của repository.
+
+2. QUẢN LÝ 2 FILE NÉN ĐẶC BIỆT:
+   - `Sudoku-Game-v1.0.zip`:
+     + Đây là bản lưu trữ nguyên bản cột mốc phát hành đầu tiên (Release v1.0).
+     + TUYỆT ĐỐI KHÔNG ĐƯỢC chỉnh sửa, ghi đè hay thay đổi nội dung file này.
+   - `Sudoku-Game-testing.zip`:
+     + Đây là bản nén cập nhật liên tục toàn bộ tính năng và mã nguồn mới nhất.
+     + Mỗi khi hoàn thành một đợt nâng cấp, hãy rebuild file này để người dùng có thể
+       giải nén và thử nghiệm offline ngay lập tức.
+     + Khi người dùng sẵn sàng ra mắt bản chính thức tiếp theo (ví dụ v1.1 hay v2.0),
+       file này mới được đổi tên thành bản phát hành chính thức mới.
+
+3. QUY ƯỚC ĐÁNH SỐ PHIÊN BẢN (SEMANTIC 2-DIGIT VERSIONING):
+   - Thay vì dùng 3 chữ số rườm rà (v1.0.0, v1.0.1...), dự án thống nhất dùng chuẩn
+     2 chữ số tinh gọn: `v1.0`, `v1.1`, `v1.2`, `v2.0`...
+   - Tất cả các link trên README, tag git và tên file zip đều tuân theo chuẩn này.
+
+--------------------------------------------------------------------------------
+IV. NGUYÊN TẮC CÔNG NGHỆ & MÃ NGUỒN (CODE CONSTRAINTS)
+--------------------------------------------------------------------------------
+1. TUYỆT ĐỐI ZERO-DEPENDENCY:
+   - Không thêm bất kỳ package npm, node_modules hay thư viện CDN nào từ bên ngoài.
+   - Toàn bộ game chạy thuần 100% bằng HTML5, CSS3 và ES6+ nguyên bản.
+
+2. KHÔNG DÙNG HỘP THOẠI TRÌNH DUYỆT NGUYÊN THỦY:
+   - Cấm dùng `window.alert()` hoặc `window.confirm()`.
+   - Bắt buộc dùng `App.alert(title, msg)` hoặc `App.confirm(title, msg)` để đảm bảo
+     trải nghiệm mượt mà và đồng bộ thiết kế thẩm mỹ.
+
+3. XỬ LÝ LỖI CACHE TRÌNH DUYỆT (BROWSER CACHE BUSTING):
+   - Khi chỉnh sửa các file CSS hoặc JS, trình duyệt của người dùng có thể giữ lại
+     bản cache cũ.
+   - Luôn nhắc người dùng nhấn tổ hợp phím `Ctrl + F5` (hoặc mở thẻ ẩn danh) để
+     trình duyệt tải lại toàn bộ tài nguyên mới nhất.
+
+--------------------------------------------------------------------------------
+V. BẢN ĐỒ TỌA ĐỘ NHANH CHO AI ASSISTANT (QUICK REFERENCE MAP)
+--------------------------------------------------------------------------------
+Khi cần chỉnh sửa hay mở rộng hệ thống, hãy tìm đến đúng file:
+- Muốn sửa thuật toán Sudoku / đào lỗ / kiểm tra nghiệm   => `js/sudoku-engine.js`
+- Muốn sửa điểm số, combo, gợi ý, chuỗi sai, Game Over    => `js/game.js`
+- Muốn sửa LocalStorage, lưu ván dở, reset dữ liệu        => `js/storage.js`
+- Muốn sửa màu sắc ô cờ, hiệu ứng chọn, highlight         => `js/ui-board.js` & `css/gameplay.css`
+- Muốn sửa bàn phím số, các lớp cảnh báo đỏ nhấp nháy     => `js/ui-controls.js` & `css/gameplay.css`
+- Muốn sửa tab Hồ sơ, biểu đồ tròn, 6 thẻ thành tích      => `js/profile.js` & `css/profile.css`
+- Muốn sửa hướng dẫn chơi 4 bước                         => `js/tutorial.js` & `css/modals.css`
+- Muốn sửa thông tin 4 biến thể                          => `js/variants.js` & `css/lobby.css`
+- Muốn sửa điều hướng tab, modal kết thúc ván, confetti   => `js/app.js` & `css/modals.css`
+- Muốn tra cứu kiến trúc 6 file CSS                      => `docs/06_css_styling_and_architecture.txt`
+- Muốn tra cứu bảng điểm & luật chơi                     => `docs/03_game_logic_and_rules.txt`
+================================================================================

@@ -1,0 +1,198 @@
+================================================================================
+               SUDOKU WEB APP - GAME LOGIC & SCORING RULES
+       TÀI LIỆU TOÀN DIỆN VỀ QUY TẮC TÍNH ĐIỂM, PHẠT, STREAK & LUẬT CHƠI
+================================================================================
+
+Tài liệu này ghi chép toàn diện và chi tiết nhất về cơ chế tính điểm, các khoản
+thưởng, cơ chế trừ phạt và điều kiện Game Over của trò chơi Sudoku Web App.
+
+--------------------------------------------------------------------------------
+I. TỔNG QUAN BẢNG THÔNG SỐ CƠ BẢN (3 CẤP ĐỘ KHÓ)
+--------------------------------------------------------------------------------
+
++-------------+----------------+----------------+------------+--------------------+
+| Độ Khó      | Ô Cho Trước    | Ô Cần Giải     | Điểm / Ô   | Thưởng Hoàn Hảo    |
++-------------+----------------+----------------+------------+--------------------+
+| Dễ (Easy)   | 38 - 45 ô      | 36 - 43 ô      | +10 điểm   | +100đ (0/3 lỗi)    |
+| TB (Medium) | 30 - 35 ô      | 46 - 51 ô      | +20 điểm   | +150đ (0/3 lỗi)    |
+| Khó (Hard)  | 24 - 28 ô      | 53 - 57 ô      | +30 điểm   | +200đ (0/3 lỗi)    |
++-------------+----------------+----------------+------------+--------------------+
+
+* Triết lý cốt lõi:
+  - BÃI BỎ PHẦN THƯỞNG THẮNG CHUNG CHUNG (+100, +200, +300): Người chơi phải giải trọn vẹn
+    từng ô để tích lũy điểm số, phản ánh chân thực độ sâu và sự cẩn trọng trong từng nước đi.
+  - THƯỞNG THẮNG HOÀN HẢO (Perfect Win Bonus): Chỉ khi người chơi giải xong cả bàn cờ mà
+    KHÔNG MẮC BẤT KỲ LỖI NÀO (0/3 lỗi) thì mới nhận được điểm thưởng đặc biệt:
+    + Dễ: +100 điểm
+    + Trung bình: +150 điểm
+    + Khó: +200 điểm
+    (Nếu mắc từ 1 lỗi trở lên: Khoản thưởng này bằng 0).
+  - TÔN VINH ĐỈNH CAO: Không lưu trữ "Điểm trung bình" hoặc "Tổng điểm tích lũy" để tránh
+    việc cày ải số lượng ván Dễ tạo số ảo. Hồ sơ tập trung vào "Điểm cao nhất" (kỷ lục)
+    và "Thắng hoàn hảo" (độ chuẩn xác tuyệt đối).
+
+--------------------------------------------------------------------------------
+II. ĐIỂM CƠ BẢN TỪNG Ô (BASE CELL SCORE)
+--------------------------------------------------------------------------------
+Khi người chơi điền đúng một ô trống, điểm số nhận được bằng:
+   Điểm nhận được = [Điểm cơ bản theo độ khó] × [Hệ số chuỗi Combo hiện tại]
+
+- Mức Dễ (Easy)       : +10 điểm / ô
+- Mức Trung bình (Med): +20 điểm / ô
+- Mức Khó (Hard)      : +30 điểm / ô
+
+--------------------------------------------------------------------------------
+III. THƯỞNG CHUỖI ĐIỀN ĐÚNG LIÊN TIẾP (COMBO STREAK MULTIPLIER)
+--------------------------------------------------------------------------------
+Áp dụng đồng bộ cho cả 3 mức Dễ, Trung bình và Khó khi điền đúng liên tục:
+
++--------------------+----------------+---------------+---------------+---------------+
+| Chuỗi đúng liên tiếp| Hệ số nhân    | Điểm Dễ (+10) | Điểm TB (+20) | Điểm Khó (+30)|
++--------------------+----------------+---------------+---------------+---------------+
+| Số thứ 1  -> 10    | × 1.0 (Chuẩn)  | 10 điểm       | 20 điểm       | 30 điểm       |
+| Số thứ 11 -> 20    | × 1.2 (Combo)  | 12 điểm       | 24 điểm       | 36 điểm       |
+| Số thứ 21 -> 30    | × 1.5 (Super)  | 15 điểm       | 30 điểm       | 45 điểm       |
+| Số thứ 31 -> 40    | × 1.7 (Ultra)  | 17 điểm       | 34 điểm       | 51 điểm       |
+| Số thứ 41 trở lên  | × 2.0 (Master) | 20 điểm       | 40 điểm       | 60 điểm       |
++--------------------+----------------+---------------+---------------+---------------+
+
+* Ví dụ minh họa:
+  Ở mức Easy, khi chọn đúng 10 số đầu tiên người chơi nhận 10 × 10 = 100 điểm.
+  Đến số thứ 11, hệ số × 1.2 được kích hoạt, số thứ 11 sẽ mang về 12 điểm.
+
+* Quy tắc ngắt chuỗi:
+  - Nếu người chơi điền sai dù chỉ 1 ô, correctStreak lập tức bị reset về 0.
+  - Sử dụng Gợi ý (Hint): Điền số hộ nhưng KHÔNG tính vào chuỗi streak và KHÔNG cộng điểm.
+
+--------------------------------------------------------------------------------
+IV. HỆ SỐ THỜI GIAN HOÀN THÀNH (TIME MULTIPLIER)
+--------------------------------------------------------------------------------
+Thời gian chơi quyết định hệ số nhân lên toàn bộ tổng điểm tích lũy của ván cờ:
+
+1. Mức Dễ (Easy):
+   - Thời gian dưới 1 phút 30 giây (< 90s) : Điểm số × 2.0 (Siêu tốc)
+   - Thời gian dưới 5 phút (< 300s)         : Điểm số × 1.5 (Tốc độ)
+   - Thời gian từ 5 phút trở lên (>= 300s)  : Điểm số × 1.0 (Chuẩn)
+
+2. Mức Trung bình (Medium):
+   - Thời gian dưới 3 phút (< 180s)         : Điểm số × 2.0 (Siêu tốc)
+   - Thời gian dưới 10 phút (< 600s)        : Điểm số × 1.5 (Tốc độ)
+   - Thời gian từ 10 phút trở lên (>= 600s) : Điểm số × 1.0 (Chuẩn)
+
+3. Mức Khó (Hard):
+   - Thời gian dưới 6 phút (< 360s)         : Điểm số × 2.0 (Siêu tốc)
+   - Thời gian dưới 20 phút (< 1200s)       : Điểm số × 1.5 (Tốc độ)
+   - Thời gian từ 20 phút trở lên (>= 1200s): Điểm số × 1.0 (Chuẩn)
+
+--------------------------------------------------------------------------------
+V. CƠ CHẾ PHẠT KHI DÙNG GỢI Ý (HINT PENALTIES)
+--------------------------------------------------------------------------------
+Mỗi lần nhấn nút "Gợi ý", hệ thống sẽ tự động điền 1 ô đáp án chính xác và trừ điểm
+lũy tiến theo số lần dùng trong ván cờ:
+
++-------------+----------------+----------------+----------------+
+| Độ khó      | Dùng lần 1     | Dùng lần 2     | Dùng lần 3     |
++-------------+----------------+----------------+----------------+
+| Dễ (Easy)   | -30 điểm       | -50 điểm       | -70 điểm       |
+| TB (Medium) | -50 điểm       | -70 điểm       | -90 điểm       |
+| Khó (Hard)  | -50 điểm       | -100 điểm      | -150 điểm      |
++-------------+----------------+----------------+----------------+
+
+* Quy tắc bảo toàn: Điểm số không bao giờ bị âm (luôn giữ mức sàn tối thiểu là 0).
+
+--------------------------------------------------------------------------------
+VI. CƠ CHẾ PHẠT CHUỖI CHỌN SAI & GIỚI HẠN GAME OVER (WRONG STREAK PENALTIES)
+--------------------------------------------------------------------------------
+Khi người chơi điền sai liên tục mà không chịu sửa đúng:
+
+1. Mức Dễ (Easy):
+   - 5 lần sai đầu tiên (1 -> 5)    : -5 điểm / lượt
+   - 5 lần sai tiếp theo (6 -> 10)  : -50 điểm / lượt
+   - 5 lần sai tiếp theo (11 -> 15) : -100 điểm / lượt
+   - Lần thứ 16 liên tiếp           : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+
+2. Mức Trung bình (Medium):
+   - 5 lần sai đầu tiên (1 -> 5)    : -7 điểm / lượt
+   - 5 lần sai tiếp theo (6 -> 10)  : -70 điểm / lượt
+   - 5 lần sai tiếp theo (11 -> 15) : -140 điểm / lượt
+   - Lần thứ 16 liên tiếp           : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+
+3. Mức Khó (Hard):
+   - 5 lần sai đầu tiên (1 -> 5)    : -10 điểm / lượt
+   - 5 lần sai tiếp theo (6 -> 10)  : -100 điểm / lượt
+   - Lần thứ 11 liên tiếp           : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+   *(Lý do: Đã chọn mức Khó thì việc sai liên tiếp 10 lần là không thể chấp nhận được).*
+
+4. QUY TẮC RESET CHUỖI SAI TỨC THÌ:
+   - Ngay khi người chơi chọn ĐÚNG bất kỳ một ô nào, chuỗi sai liên tiếp (wrongStreak)
+     sẽ lập tức reset về 0. Lần chọn sai kế tiếp sau đó sẽ được tính lại từ bậc 1
+     (-5đ / -7đ / -10đ).
+
+--------------------------------------------------------------------------------
+VII. CÁC CẤP ĐỘ CẢNH BÁO THỊ GIÁC CHUỖI SAI (DANGER WARNING STAGES)
+--------------------------------------------------------------------------------
+- CẤP 1 (Khi sai đúng 5 lần): Màn hình ửng đỏ nhẹ dạng flash (.flash-mild) kèm
+  băng rôn nhắc nhở tiếp tục sai sẽ bị phạt nặng hơn.
+- CẤP 2 (Từ lần thứ 6 ở mức Easy & Medium): Màn hình chuyển sang ửng đỏ nhẹ liên tục
+  (.stage-mild, không mất đi cho đến khi chọn đúng) kèm cảnh báo mức trừ điểm nặng hơn.
+- CẤP 3 (Từ lần thứ 6 ở Hard, và từ lần thứ 11 ở Easy & Medium): Màn hình nhấp nháy
+  đỏ đậm liên tục (.stage-critical) kèm cảnh báo nguy cấp kề cận Game Over!
+- KHI CHỌN ĐÚNG: Toàn bộ hiệu ứng đỏ, băng rôn và huy hiệu cảnh báo nguy hiểm biến mất ngay lập tức.
+
+--------------------------------------------------------------------------------
+VIII. QUY TẮC HOÀN TÁC (UNDO RULES)
+--------------------------------------------------------------------------------
+Khi người chơi nhấn nút "Hoàn tác" (#btn-undo):
+- Trạng thái ô sẽ quay trở lại trạng thái trước đó (trở về ô trống).
+- Nếu nước đi trước đó là nước đi SAI: Người chơi được hoàn lại số điểm phạt của lượt
+  đó, chuỗi sai wrongStreak được giảm đi 1, và số lỗi mistakes được giảm đi 1.
+- Tuy nhiên: Chuỗi điền đúng (correctStreak) KHÔNG được hoàn lại (streak luôn giữ mức 0).
+
+--------------------------------------------------------------------------------
+IX. CÔNG THỨC TỔNG ĐIỂM CUỐI VÁN (FINAL SCORE FORMULA)
+--------------------------------------------------------------------------------
+   Điểm tích lũy bàn cờ = (Tổng điểm các ô đúng) 
+                        + (Thưởng thắng hoàn hảo nếu 0 lỗi) 
+                        - (Tổng phạt dùng gợi ý) 
+                        - (Tổng phạt chuỗi chọn sai)
+   
+   Điểm sàn tích lũy = Math.max(0, Điểm tích lũy bàn cờ)
+
+   TỔNG ĐIỂM CUỐI CÙNG = Math.round(Điểm sàn tích lũy × Hệ số thời gian)
+
+--------------------------------------------------------------------------------
+X. BẢNG ĐIỂM CHI TIẾT SAU KHI CHƠI XONG (SCORE BREAKDOWN MODAL)
+--------------------------------------------------------------------------------
+Hiển thị tự động ngay khi ván cờ kết thúc trong cả 3 tình huống:
+1. Chiến Thắng (Hoàn thành cả bàn cờ).
+2. Thất Bại (Sai vượt giới hạn cho phép: 11 lần ở Hard, 16 lần ở Easy/Medium, hoặc quá 3 mạng).
+3. Bỏ Cuộc (Bấm nút Bỏ cuộc trong màn hình thi đấu).
+
+Bảng kê chi tiết gồm các dòng thông số minh bạch:
+- Số ô điền đúng: [Số lượng ô] × [Điểm cơ bản] = +[Điểm cơ bản]
+- Thưởng chuỗi Combo: +[Điểm dôi dư từ combo] (Chuỗi dài nhất đạt [Max] ô)
+- 💎 Thưởng thắng hoàn hảo: +100 / +150 / +200 điểm (Chỉ xuất hiện khi thắng với 0/3 lỗi)
+- 💡 Trừ dùng gợi ý: -[Số điểm] (nếu có dùng gợi ý)
+- ⚠️ Trừ chuỗi chọn sai: -[Số điểm] (nếu có chọn sai)
+- Điểm tích lũy bàn cờ: [Tổng điểm ô + Thưởng combo + Thưởng hoàn hảo - Các điểm phạt]
+- Thời gian chơi & Hệ số tốc độ: [Thời gian] (× [1.0 / 1.5 / 2.0])
+- Số lỗi mắc phải: [X] lỗi
+- TỔNG ĐIỂM CUỐI CÙNG: [Điểm tích lũy] × [Hệ số thời gian] = [TỔNG ĐIỂM]
+
+--------------------------------------------------------------------------------
+XI. THỐNG KÊ ĐIỂM SỐ TRÊN HỒ SƠ NGƯỜI CHƠI (PROFILE STATS)
+--------------------------------------------------------------------------------
+Tab Hồ Sơ (Profile) lưu trữ và thống kê toàn diện dữ liệu thi đấu:
+1. Cụm Tổng Quan Trận Đấu (Overview Rectangle):
+   - Bên trái: Biểu đồ tròn Donut Chart SVG hiển thị Tỉ lệ thắng (Win Rate %).
+   - Bên phải: 2 dòng thông số cụ thể:
+     + 🏆 Số trận đã thắng
+     + 🎮 Số trận đã chơi
+2. Lưới Thông Số Chi Tiết (6 Thẻ Thông Số Theo 3 Cặp Chuẩn Mực):
+   - 👑 Điểm cao nhất: Kỷ lục điểm số tối đa từng đạt được ở độ khó này.
+   - 💎 Thắng hoàn hảo: Số ván cờ hoàn thành tuyệt đối không mắc lỗi (0/3 lỗi).
+   - 🔥 Chuỗi thắng hiện tại: Số trận thắng liên tiếp hiện tại.
+   - ⚡ Chuỗi thắng tốt nhất: Kỷ lục chuỗi thắng liên tiếp dài nhất.
+   - ⏱️ Thời gian nhanh nhất: Kỷ lục hoàn thành ván cờ ngắn nhất.
+   - 📈 Thời gian trung bình: Thời gian hoàn thành trung bình trên các trận thắng.
+================================================================================

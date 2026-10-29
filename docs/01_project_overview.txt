@@ -1,0 +1,93 @@
+================================================================================
+                    SUDOKU WEB APP - PROJECT OVERVIEW
+       TÀI LIỆU TỔNG QUAN DỰ ÁN & HỆ THỐNG KIẾN TRÚC TOÀN DIỆN
+================================================================================
+
+I. GIỚI THIỆU CHUNG
+- Tên dự án: Sudoku Web App
+- Tác giả: Jhanh (Nguyễn Quốc Khánh)
+- Bản quyền: Giấy phép MIT (Open Source)
+- Nền tảng: Web thuần túy (Vanilla HTML5, CSS3, JavaScript ES6+)
+- Triết lý phát triển cốt lõi:
+  1. ZERO DEPENDENCIES: Tuyệt đối không phụ thuộc vào bất kỳ thư viện hoặc framework
+     nào (không dùng React, Vue, jQuery, Tailwind, Bootstrap, npm, node_modules...).
+  2. PLUG & PLAY (CHẠY NGAY KHÔNG CẦN CÀI ĐẶT): Người dùng chỉ cần nhấp đúp file
+     index.html hoặc chạy ChoiGame.bat (trong file zip) là chơi được ngay lập tức.
+  3. RESPONSIVE FIRST: Tối ưu hoàn hảo cho cả thiết bị di động (Mobile dọc), máy
+     tính bảng (Tablet) và máy tính để bàn (Desktop).
+  4. NATIVE STORAGE: Lưu trữ toàn bộ trạng thái ván cờ, thống kê thành tích và hồ
+     sơ cá nhân trực tiếp trên LocalStorage của trình duyệt với cơ chế dự phòng
+     in-memory store.
+  5. QUY CHUẨN PHIÊN BẢN: Đặt tên theo chuẩn 2 số tinh gọn (v1.0, v1.1, v2.0...)
+     thay vì 3 số (v1.0.0) để đảm bảo ngắn gọn, trực quan.
+
+--------------------------------------------------------------------------------
+II. CÂY THƯ MỤC DỰ ÁN HOÀN CHỈNH (PROJECT DIRECTORY TREE)
+--------------------------------------------------------------------------------
+
+Sudoku_game/
+├── .gitignore                  # Cấu hình bỏ qua các tệp rác hệ điều hành, IDE và *.zip
+├── LICENSE                     # Giấy phép bản quyền mã nguồn mở MIT
+├── README.md                   # Trang giới thiệu sản phẩm GitHub (badges, tính năng, hướng dẫn)
+├── index.html                  # Khung giao diện HTML duy nhất (Single Page App - SPA)
+├── server.py                   # Máy chủ Python nội bộ phục vụ thử nghiệm dev không cache
+│
+├── css/                        # Thư mục mã định dạng giao diện CSS module hóa
+│   ├── main.css                # Biến màu sắc toàn cục (:root), CSS reset, kiểu chữ, navbar
+│   ├── splash.css              # Giao diện màn hình mở đầu (Splash Screen) với hiệu ứng số nảy
+│   ├── lobby.css               # Giao diện sảnh chính, thẻ biến thể và thẻ tiếp tục ván dở
+│   ├── gameplay.css            # Giao diện bàn cờ 9x9, bàn phím số, overlay cảnh báo đỏ
+│   ├── modals.css              # Giao diện các hộp thoại thông báo, hướng dẫn, bảng tổng kết điểm
+│   └── profile.css             # Giao diện tab Hồ sơ: thẻ tổng quan hình chữ nhật & 6 thẻ thông số
+│
+├── js/                         # Thư mục mã logic JavaScript (chia theo Module IIFE độc lập)
+│   ├── sudoku-engine.js        # Thuật toán sinh bàn cờ ngẫu nhiên, giải cờ và đào lỗ câu đố
+│   ├── game.js                 # Bộ máy quản lý ván cờ (timer, tính điểm, combo, phạt, game over)
+│   ├── storage.js              # Tầng lưu trữ Persistent Data (LocalStorage + Memory Fallback)
+│   ├── ui-board.js             # Xử lý render và tương tác trên bàn cờ 9x9 (highlight, animations)
+│   ├── ui-controls.js          # Xử lý bàn phím số, công cụ phụ trợ (Gợi ý, Tẩy, Ghi chú, Cảnh báo đỏ)
+│   ├── profile.js              # Xử lý hiển thị tab Hồ sơ, biểu đồ tròn tỉ lệ thắng, 6 thẻ thành tích
+│   ├── tutorial.js             # Hướng dẫn chơi tương tác từng bước (4 bước cơ bản)
+│   ├── variants.js             # Dữ liệu 4 biến thể Sudoku nổi tiếng thế giới kèm thông báo Toast
+│   └── app.js                  # Bộ điều phối trung tâm (Router SPA, sự kiện, modals, dialogs)
+│
+├── docs/                       # Thư mục tài liệu kỹ thuật toàn diện cho AI & Developer
+│   ├── 01_project_overview.txt         # Tài liệu này: tổng quan, cây thư mục, quy trình
+│   ├── 02_architecture_and_modules.txt # Kiến trúc hệ thống, chi tiết từng module JavaScript
+│   ├── 03_game_logic_and_rules.txt     # Chi tiết quy tắc tính điểm, combo, phạt & Game Over
+│   ├── 04_ui_ux_design_system.txt      # Bảng màu, typography, responsive, hiệu ứng cảnh báo thị giác
+│   ├── 05_dev_guidelines_and_notes.txt # Những lưu ý sống còn khi code, quy chuẩn commit, quy tắc Git
+│   └── 06_css_styling_and_architecture.txt # Phân tích chuyên sâu toàn diện 6 file CSS độc lập
+│
+│
+├── screenshots/                # Ảnh chụp màn hình giao diện phục vụ hiển thị trên README
+│   └── preview.png             # Ảnh giao diện thực tế của trò chơi
+│
+├── Sudoku-Game-v1.0.zip        # Bản nén phát hành chuẩn cột mốc đầu tiên v1.0 (Giữ nguyên vẹn)
+└── Sudoku-Game-testing.zip     # Bản nén tích hợp toàn bộ tính năng mới nhất để thử nghiệm offline
+
+--------------------------------------------------------------------------------
+III. CÁC PHƯƠNG THỨC KHỞI CHẠY TRÒ CHƠI
+--------------------------------------------------------------------------------
+
+1. CHƠI TRỰC TIẾP TRÊN TRÌNH DUYỆT (ONLINE):
+   - Truy cập trang GitHub Pages: https://jhanh.github.io/Sudoku_game/
+   - Hoạt động ngay lập tức, tự động lưu dữ liệu vào LocalStorage của thiết bị.
+
+2. CHƠI OFFLINE QUA BẢN PHÁT HÀNH (OFFLINE 1-CLICK LAUNCHER):
+   - Tải file Sudoku-Game-v1.0.zip hoặc Sudoku-Game-testing.zip.
+   - Giải nén thư mục ra máy tính.
+   - Nhấp đúp chuột vào file "ChoiGame.bat" bên trong để tự động mở trình duyệt.
+   - Lưu ý quan trọng: File ChoiGame.bat chỉ tồn tại bên trong file zip, TUYỆT ĐỐI
+     không để file .bat thừa ra ngoài thư mục gốc của repository.
+
+3. KHỞI CHẠY BẰNG MÁY CHỦ PYTHON NỘI BỘ (LOCAL DEV SERVER):
+   - Chạy lệnh: python server.py
+   - Máy chủ SimpleHTTP sẽ tự động khởi động tại cổng 3000 (hoặc tự động đổi cổng nếu
+     bị trùng), kích hoạt cờ No-Cache và tự động bật trình duyệt web tới localhost.
+   - Nhấn phím Ctrl + C trong cửa sổ terminal để tắt máy chủ.
+
+4. NHẤP ĐÚP TRỰC TIẾP FILE index.html:
+   - Vì ứng dụng không có file ngoài bị chặn bởi CORS policy, việc nhấp đúp file
+     index.html trên Windows/macOS/Linux sẽ mở game hoàn toàn bình thường.
+================================================================================

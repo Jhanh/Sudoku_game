@@ -1,0 +1,192 @@
+================================================================================
+               SUDOKU WEB APP - CSS ARCHITECTURE & STYLING
+       TÀI LIỆU PHÂN TÍCH CHUYÊN SÂU TOÀN DIỆN 6 FILE CSS TRONG THƯ MỤC css/
+================================================================================
+
+I. TỔNG QUAN HỆ THỐNG CSS
+Dự án được xây dựng theo kiến trúc CSS Module hóa rõ ràng, chia tách giao diện
+theo từng màn hình và thành phần độc lập (Component-driven CSS), không dùng bất
+kỳ preprocessor (Sass, Less) hay framework (Tailwind, Bootstrap) nào nhằm đảm bảo
+tính thuần khiết 100% Vanilla CSS, nạp trang tức thì và dễ dàng tùy biến.
+
+Cấu trúc gồm 6 file CSS chuyên biệt:
+├── css/main.css       # Nền tảng cốt lõi, biến màu toàn cục, reset & utility
+├── css/splash.css     # Màn hình Splash mở đầu, hoạt ảnh nảy số & số bay
+├── css/lobby.css      # Sảnh chính, chuyển tab, thanh điều hướng đáy & biến thể
+├── css/gameplay.css   # Bàn cờ 9x9, bàn phím số, công cụ & cảnh báo nguy hiểm đỏ
+├── css/modals.css     # Hộp thoại hướng dẫn, Game Over, bảng điểm & custom toast
+└── css/profile.css    # Tab Hồ sơ: biểu đồ tròn Donut SVG & lưới 6 thẻ thành tích
+
+--------------------------------------------------------------------------------
+II. CHI TIẾT TỪNG FILE CSS
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+1. css/main.css - NỀN TẢNG CỐT LÕI & DESIGN TOKENS (CORE FOUNDATION)
+--------------------------------------------------------------------------------
+- Vai trò: File CSS nền tảng được tải đầu tiên, thiết lập quy chuẩn hiển thị cho
+  toàn bộ ứng dụng web.
+- Các khối chức năng chính:
+  a. CSS Reset & Box Sizing:
+     * Cấu hình `box-sizing: border-box` trên mọi phần tử (*, *::before, *::after)
+       giúp việc tính toán kích thước padding và border không làm tràn khung.
+     * Xóa sạch margin/padding mặc định của trình duyệt.
+  b. Hệ thống biến toàn cục (:root Custom Properties):
+     * Bảng màu chủ đạo:
+       --primary: #3B82F6 (Blue 500)
+       --primary-dark: #2563EB (Blue 600)
+       --primary-light: #93C5FD (Blue 300)
+       --primary-bg: #EFF6FF (Blue 50 - dùng cho nền highlight hàng/cột)
+       --accent: #8B5CF6 (Purple 500 - gradient thương hiệu)
+       --success: #22C55E (Green 500 - ô điền đúng)
+       --error: #EF4444 (Red 500 - lỗi điền sai)
+       --warning: #F59E0B (Amber 500 - cảnh báo)
+     * Bảng màu giao diện:
+       --bg: #F8FAFC (Slate 50 - nền ứng dụng mát mắt)
+       --surface: #FFFFFF (White - nền thẻ card)
+       --text: #1E293B (Slate 800 - màu chữ chính)
+       --text-secondary: #64748B (Slate 500 - màu chữ phụ)
+       --border: #E2E8F0 (Slate 200 - đường kẻ viền thanh lịch)
+     * Trạng thái ô bàn cờ:
+       --highlight-row: #EFF6FF (vùng chữ thập)
+       --highlight-num: #DBEAFE (các ô trùng số)
+       --selected: #BFDBFE (ô đang bấm chọn)
+     * Bo góc & Đổ bóng:
+       --radius: 12px | --radius-sm: 8px
+       --shadow: 0 4px 24px rgba(0, 0, 0, 0.08)
+  c. Base Styles & Typography:
+     * Sử dụng System Fonts hiện đại (-apple-system, Segoe UI, Roboto...) nạp tức thì.
+     * Cấu hình `-webkit-tap-highlight-color: transparent` chống viền xanh khi chạm trên mobile.
+  d. Screen Switching Architecture:
+     * Lớp `.screen` quản lý ẩn/hiện màn hình SPA thông qua `.screen.active` và `.hidden`.
+  e. Hệ thống nút bấm (Buttons) & Hiệu ứng tương tác:
+     * `.btn-primary`, `.btn-secondary`, `.btn-small`, `.btn-icon-sm`.
+     * Hiệu ứng chuyển động `:hover` nâng nhẹ `translateY(-1px)` và `:active` lún xuống `translateY(0)`.
+     * Chữ gradient `.gradient-text` sử dụng background-clip: text.
+  f. Tùy biến thanh cuộn (Custom Scrollbar):
+     * Cấu hình `::-webkit-scrollbar` mỏng nhẹ 6px, bo tròn, đồng màu với giao diện.
+
+--------------------------------------------------------------------------------
+2. css/splash.css - MÀN HÌNH KHỞI ĐẦU SINH ĐỘNG (SPLASH SCREEN ANIMATIONS)
+--------------------------------------------------------------------------------
+- Vai trò: Tạo ấn tượng thị giác đầu tiên chuyên nghiệp khi mở web, che giấu thời
+  gian khởi tạo logic ngầm.
+- Các khối chức năng chính:
+  a. Khung bao phủ toàn màn hình (`#screen-splash`):
+     * Vị trí `position: fixed; inset: 0; z-index: 1000;`, nền chuyển sắc dịu nhẹ.
+  b. Hiệu ứng các con số Sudoku bay lơ lửng (Floating Numbers):
+     * 9 chữ số Sudoku (`.float-num`) được phân bổ ngẫu nhiên trên màn hình.
+     * Sử dụng animation `@keyframes floatNum`: Chuyển động tịnh tiến zíc zắc
+       kết hợp xoay nhẹ (-10deg đến 10deg) và mờ ảo dần trong chu kỳ 6s - 12s lặp vô tận.
+  c. Icon lưới Sudoku 3x3 nảy số (Center SVG Grid):
+     * Lưới ô cờ SVG trung tâm với các ô vuông nảy nhịp `@keyframes cellPulse`.
+     * Từng chữ số hiện lên so le thời gian thông qua biến `--d` và `@keyframes numFadeIn`.
+  d. Nút khám phá đập nhịp (`.splash-btn`):
+     * Animation `@keyframes btnPulse`: Tỏa ra các vòng sóng năng lượng mờ dần
+       thôi thúc người chơi chạm vào màn hình.
+
+--------------------------------------------------------------------------------
+3. css/lobby.css - SẢNH CHÍNH & ĐIỀU HƯỚNG ĐÁY (LOBBY & NAVIGATION)
+--------------------------------------------------------------------------------
+- Vai trò: Giao diện trung tâm chứa menu chọn chế độ chơi, ván dở và điều hướng tab.
+- Các khối chức năng chính:
+  a. Chuyển đổi nội dung tab (`.tab-content`):
+     * Animation `@keyframes fadeIn` 0.25s mượt mà khi chuyển qua lại giữa 3 tab.
+  b. Thanh điều hướng cố định chân trang (Bottom Navbar - `.navbar`):
+     * `position: fixed; bottom: 0; width: 100%; max-width: 500px; z-index: 100;`
+     * Nền mờ phủ kính (Backdrop-filter blur), đổ bóng ngược lên trên.
+     * Các nút `.nav-item` có icon SVG căn chỉnh pixel-perfect; khi active sẽ chuyển
+       sang màu xanh chủ đạo `--primary` kèm thanh chỉ báo nhỏ bên dưới.
+  c. Khối tiếp tục ván chơi dở (`.continue-section` & `.continue-card`):
+     * Thiết kế viền xanh nổi bật, hiển thị thời gian đã chơi và độ khó.
+     * Cung cấp nút bấm to rõ để tiếp tục hoặc nút hủy ván có xác nhận.
+  d. Thẻ chọn độ khó (`.diff-card`):
+     * 3 mức Dễ, Trung bình, Khó được thiết kế dạng card độc lập, có icon lớn,
+       mô tả số ô gợi ý và hiệu ứng hover bóng đổ sang trọng.
+  e. Tab Biến thể Sudoku (`#tab-variants`):
+     * Lưới 4 thẻ biến thể (Killer, Đường chéo, Samurai, Jigsaw) với viền bo tròn,
+       badge giới thiệu và hiệu ứng bấm để mở Custom Toast.
+
+--------------------------------------------------------------------------------
+4. css/gameplay.css - BÀN CỜ 9x9 & CẢNH BÁO NGUY HIỂM (CORE GAMEPLAY & DANGER UI)
+--------------------------------------------------------------------------------
+- Vai trò: File CSS quan trọng và phức tạp nhất, điều khiển toàn bộ trải nghiệm
+  chơi cờ và các hiệu ứng kịch tính.
+- Các khối chức năng chính:
+  a. Bàn cờ Sudoku 9x9 (`.board`):
+     * Bố cục CSS Grid: 9 khối lớn (`.board-box`), mỗi khối là 1 grid 3x3 chứa 9 ô (`.cell`).
+     * Đường kẻ phân tách: Khối 3x3 có viền 2px chắc chắn, các ô con bên trong có viền mỏng 1px.
+     * Tỷ lệ khung hình vuông hoàn hảo `aspect-ratio: 1 / 1`.
+  b. Trạng thái hiển thị từng ô cờ (`.cell`):
+     * `.cell.given`: Chữ màu đen/xám đậm, font đậm, không cho sửa.
+     * `.cell.user`: Chữ màu xanh lam chủ đạo, thể hiện số người chơi tự điền.
+     * `.cell.selected`: Nền xanh dương nổi bật, viền bo tròn tinh tế.
+     * `.cell.highlight-row`, `.cell.highlight-col`: Nền xanh nhạt tạo chữ thập chỉ hướng.
+     * `.cell.same-number`: Nền đậm hơn, làm sáng mọi ô có cùng chữ số trên bàn.
+     * `.cell.error`: Nền đỏ, chữ đỏ kèm animation rung lắc `@keyframes shake` 0.4s.
+     * `.notes-grid`: Lưới 3x3 chữ số nháp font nhỏ 0.55rem màu xám bên trong ô trống.
+  c. Hệ thống cảnh báo thị giác đỏ nguy hiểm (Visual Danger Overlay & Banner):
+     * `.danger-overlay`: Lớp phủ viền màn hình dạng Vignette, `pointer-events: none`.
+     * Cấp 1 (Chạm 5 sai): `.danger-overlay.flash-mild` chớp đỏ nhẹ 0.8s (`@keyframes flashFade`).
+     * Cấp 2 (Từ lần 6 Dễ/TB): `.danger-overlay.stage-mild` viền đỏ nhẹ cố định không tắt.
+     * Cấp 3 (Từ lần 6 Khó, từ lần 11 Dễ/TB): `.danger-overlay.stage-critical` nhấp nháy
+       viền đỏ đậm liên tục theo chu kỳ 1.2s `@keyframes criticalDangerPulse`.
+     * `.danger-banner`: Băng rôn trượt xuống từ đỉnh (`@keyframes slideDownBanner`),
+       nhấp nháy đỏ rực rỡ ở cấp 3 (`@keyframes criticalBannerPulse`) đếm ngược Game Over.
+     * `.wrong-streak-badge`: Huy hiệu đỏ nhấp nháy cảnh báo trên thanh trạng thái.
+  d. Bàn phím số 1-9 (`.numpad`):
+     * Grid 9 nút số, hiển thị chỉ số đếm số lần còn lại của từng số (`.num-remain`).
+     * Khi đã điền đủ 9 số trên bàn cờ: Thêm lớp `.completed` làm mờ và khóa tương tác.
+  e. Hàng nút công cụ phụ trợ (`.tools-row`):
+     * 4 nút: Hoàn tác, Xóa, Ghi chú (đổi màu khi bật), Gợi ý (kèm badge mức phạt).
+
+--------------------------------------------------------------------------------
+5. css/modals.css - HỘP THOẠI, BẢNG TỔNG KẾT ĐIỂM & TOAST (MODALS & FEEDBACK)
+--------------------------------------------------------------------------------
+- Vai trò: Quản lý các lớp phủ hộp thoại, bảng điểm ván đấu và thông báo nổi.
+- Các khối chức năng chính:
+  a. Khung Modal cơ sở (`.modal-overlay` & `.modal-container`):
+     * Lớp nền làm mờ nội dung phía sau: `backdrop-filter: blur(4px); background: rgba(0,0,0,0.4);`.
+     * Animation `@keyframes modalSlideUp`: Hộp thoại trượt từ dưới lên kèm phóng to nhẹ.
+  b. Modal Hướng dẫn tương tác (`#modal-tutorial`):
+     * Bàn cờ minh họa thu nhỏ với animation highlight ô `@keyframes highlightPulse`
+       và animation tự động điền số `@keyframes fillIn`.
+  c. Modal Bảng tổng kết điểm chi tiết (`#modal-breakdown`):
+     * Banner kết quả lớn: Phân biệt rõ Chiến Thắng (xanh), Thất Bại (đỏ cam), Bỏ Cuộc (xám).
+     * Bảng kê khai chi tiết `.breakdown-card`:
+       - Dòng cộng điểm: Chữ xanh, icon sao vàng.
+       - Dòng trừ điểm: Lớp `.highlight-penalty` với chữ đỏ `#DC2626`.
+       - Dòng hệ số thời gian: Lớp `.highlight-time` chữ xanh đậm nổi bật.
+       - Dòng tổng điểm cuối cùng `.final-score-row`: Font cực đại, viền phát sáng.
+  d. Thông báo nổi Toast (`.toast`):
+     * Cố định góc dưới màn hình, tự động trượt lên `@keyframes toastIn` và
+       biến mất `@keyframes toastOut`.
+
+--------------------------------------------------------------------------------
+6. css/profile.css - HỒ SƠ NGƯỜI CHƠI & BIỂU ĐỒ TRÒN (PROFILE & STATS CARDS)
+--------------------------------------------------------------------------------
+- Vai trò: Trình bày dữ liệu thống kê, biểu đồ và hồ sơ cá nhân của người chơi.
+- Các khối chức năng chính:
+  a. Header Hồ sơ & Sửa tên (`.profile-header` & `.name-edit`):
+     * Avatar SVG tròn gradient, nút bút chì mở ô nhập tên inline mượt mà.
+  b. Bộ tab chọn độ khó (`.difficulty-tabs`):
+     * 3 nút Dễ / TB / Khó dạng pill bo tròn, đổi màu nền trắng khi active.
+  c. Cụm hình chữ nhật tổng quan trận đấu (`.overview-card`):
+     * Bố cục Flexbox hai bên cân đối:
+       - Bên trái: Biểu đồ Donut Chart SVG (bán kính r=54, chu vi C=339.29).
+         Vòng tiến độ xanh lam `#donut-win` chuyển động mượt mà bằng transition
+         `stroke-dashoffset 0.8s ease`, hiển thị con số % Tỉ lệ thắng to rõ ở giữa.
+       - Bên phải (`.overview-details`): 2 dòng thông số đóng hộp bo tròn mềm mại
+         với icon và số lượng to đậm: 🏆 Số trận đã thắng & 🎮 Số trận đã chơi.
+       - Responsive: Tự động xếp dọc khi màn hình hẹp dưới 440px (`@media (max-width: 440px)`).
+  d. Lưới 6 thẻ thành tích đối xứng (`.stats-grid`):
+     * Grid 2 cột đều nhau (`repeat(2, 1fr)`).
+     * 6 thẻ `.stat-card` chia thành 3 cặp hoàn hảo:
+       - Cặp 1: 👑 Điểm cao nhất | 💎 Thắng hoàn hảo (0 lỗi)
+       - Cặp 2: 🔥 Chuỗi thắng hiện tại | ⚡ Chuỗi thắng tốt nhất
+       - Cặp 3: ⏱️ Thời gian nhanh nhất | 📈 Thời gian trung bình
+     * Thẻ có lớp `.highlight` được tô viền xanh và nền xanh nhạt sang trọng.
+  e. Khu vực cảnh báo đặt lại dữ liệu (`.profile-danger-zone`):
+     * Nút bấm viền nét đứt thanh lịch, khi hover chuyển sang đỏ cảnh báo.
+================================================================================
+

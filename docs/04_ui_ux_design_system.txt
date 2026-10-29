@@ -1,0 +1,95 @@
+================================================================================
+               SUDOKU WEB APP - UI/UX & DESIGN SYSTEM
+       TÀI LIỆU HỆ THỐNG GIAO DIỆN, BẢNG MÀU, RESPONSIVE & HIỆU ỨNG
+================================================================================
+
+I. HỆ THỐNG BẢNG MÀU (COLOR PALETTE & CSS VARIABLES)
+Toàn bộ màu sắc được định nghĩa tại :root trong css/main.css:
+
+- Màu chủ đạo (Primary)     : #3B82F6 (Blue 500) - Tươi sáng, hiện đại
+- Màu chủ đạo đậm           : #2563EB (Blue 600) - Trạng thái Hover / Active
+- Màu chủ đạo nhạt          : #93C5FD (Blue 300) - Viền sáng, điểm nhấn
+- Nền xanh lam nhạt         : #EFF6FF (Blue 50)  - Nền hàng/cột được highlight
+- Màu điểm xuyết (Accent)   : #8B5CF6 (Purple 500)- Gradient trên logo & avatar
+- Màu thành công (Success)  : #22C55E (Green 500) - Ô điền đúng, vòng tròn hoàn hảo
+- Màu cảnh báo (Warning)    : #F59E0B (Amber 500) - Lỗi nhẹ, lưu ý
+- Màu báo động / lỗi (Error): #EF4444 (Red 500) / #DC2626 (Red 600) - Số sai, viền nguy hiểm
+- Nền ứng dụng (Background) : #F8FAFC (Slate 50) - Nền xám lạnh bảo vệ mắt
+- Nền bề mặt (Surface)      : #FFFFFF (White)    - Nền thẻ, bảng cờ, popup
+- Màu chữ chính (Text)      : #1E293B (Slate 800)- Tương phản cao, dễ đọc
+- Màu chữ phụ (Text Sec)    : #64748B (Slate 500)- Mô tả, nhãn thẻ, ghi chú
+- Màu đường viền (Border)   : #E2E8F0 (Slate 200)- Tách bạch tinh tế, mượt mà
+
+--------------------------------------------------------------------------------
+II. BỐ CỤC ĐÁP ỨNG (RESPONSIVE DESIGN BREAKPOINTS)
+--------------------------------------------------------------------------------
+- Khung hiển thị tối đa (Max Width): 500px, luôn được căn giữa màn hình (margin: 0 auto)
+  đảm bảo trên màn hình máy tính lớn (Desktop) hay iPad không bị vỡ bố cục,
+  mang lại cảm giác như đang sử dụng một ứng dụng di động nguyên bản (Native Mobile App).
+- Thiết bị di động màn hình nhỏ (Width < 380px):
+  + Kích thước ô cờ (Cell Size) co giãn tự động xuống ~34px.
+  + Thẻ tổng quan trận đấu tự động chuyển từ xếp ngang sang xếp dọc gọn gàng.
+  + Lưới 6 thẻ thông số tự động căn lề để không bao giờ bị tràn chiều ngang (overflow-x: hidden).
+- Font chữ hệ thống (System Fonts):
+  system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif
+  => Tải trang siêu tốc, hiển thị sắc nét tự nhiên trên cả iOS, Android, Windows và macOS.
+
+--------------------------------------------------------------------------------
+III. HỆ THỐNG CẢNH BÁO THỊ GIÁC NGUY HIỂM (VISUAL DANGER WARNING UI)
+--------------------------------------------------------------------------------
+Nhằm tạo cảm giác kịch tính và cảnh báo người chơi khi liên tục chọn sai số:
+
+1. LỚP PHỦ VIỀN ĐỎ (#danger-overlay):
+   - Mặc định: Trong suốt, pointer-events: none (không cản trở thao tác bấm cờ).
+   - Cấp 1 (Chạm đúng 5 lần sai liên tiếp):
+     + Kích hoạt lớp .flash-mild: Toàn màn hình chớp đỏ nhẹ viền ngoài trong 0.8s
+       kèm thông báo nhắc nhở tiếp tục sai sẽ bị phạt nặng.
+   - Cấp 2 (Từ lần 6 ở Dễ & Trung bình):
+     + Kích hoạt lớp .stage-mild: Viền màn hình ửng đỏ nhẹ cố định KHÔNG MẤT ĐI
+       đến khi người chơi điền đúng 1 ô, tạo áp lực tâm lý rõ ràng.
+   - Cấp 3 (Từ lần 6 ở Khó, và từ lần 11 ở Dễ / Trung bình) - BÁO ĐỘNG KHẨN CẤP:
+     + Kích hoạt lớp .stage-critical: Toàn bộ 4 cạnh màn hình liên tục nhấp nháy đỏ đậm
+       theo hiệu ứng @keyframes criticalDangerPulse với chu kỳ 1.2s lặp vô tận.
+
+2. BĂNG RÔN NGUY CẤP (#danger-banner):
+   - Vị trí: Treo nổi bật ngay phía trên bàn cờ.
+   - Khi ở Cấp 1 & 2: Nền vàng cam/đỏ nhẹ, báo rõ mức trừ điểm mỗi lượt sai tiếp theo.
+   - Khi ở Cấp 3: Nền đỏ rực nhấp nháy (@keyframes criticalBannerPulse), hiển thị
+     bộ đếm ngược từng lượt còn lại trước khi GAME OVER!
+
+3. HUY HIỆU CHUỖI SAI (#info-wrong-streak):
+   - Hiển thị trên thanh trạng thái: "⚠️ Sai [X] (-[Y]đ)" để người chơi nhận diện tức thì.
+
+4. CƠ CHẾ DẬP TẮT CẢNH BÁO:
+   - Ngay khoảnh khắc người chơi điền ĐÚNG bất kỳ 1 ô nào, toàn bộ lớp phủ đỏ, nhấp nháy,
+     băng rôn báo động và huy hiệu chuỗi sai đều tự động biến mất lập tức!
+
+--------------------------------------------------------------------------------
+IV. THIẾT KẾ TAB HỒ SƠ NGƯỜI CHƠI (PROFILE UI)
+--------------------------------------------------------------------------------
+1. CỤM HÌNH CHỮ NHẬT TỔNG QUAN (OVERVIEW CARD):
+   - Bên trái: Biểu đồ Donut Chart hình tròn SVG (bán kính r=54, chu vi C=339.29).
+     Vòng tiến độ xanh lam #3B82F6 thể hiện chuẩn xác Tỉ lệ thắng (Win Rate %)
+     với con số % to đậm ở giữa.
+   - Bên phải: 2 dòng thông số đóng hộp bo tròn mềm mại:
+     + 🏆 Số trận đã thắng
+     + 🎮 Số trận đã chơi
+
+2. LƯỚI 6 THẺ THÀNH TÍCH (2 CỘT × 3 HÀNG ĐỐI XỨNG HOÀN HẢO):
+   - Hàng 1 (Đỉnh cao): 👑 Điểm cao nhất  |  💎 Thắng hoàn hảo (0 lỗi)
+   - Hàng 2 (Phong độ): 🔥 Chuỗi thắng HT |  ⚡ Chuỗi thắng tốt nhất
+   - Hàng 3 (Tốc độ)  : ⏱️ TG nhanh nhất   |  📈 TG trung bình
+   - Không chứa các thông số dễ cày ảo (như Điểm trung bình hay Tổng điểm tích lũy).
+
+--------------------------------------------------------------------------------
+V. CÁC HỘP THOẠI & MODAL TÙY BIẾN (CUSTOM DIALOGS & MODALS)
+--------------------------------------------------------------------------------
+- Tuyệt đối không dùng window.alert() hay window.confirm() nguyên thủy của trình duyệt
+  vì chúng làm dừng luồng JavaScript và có giao diện thô cứng.
+- Sử dụng Custom Modal phủ mờ (backdrop-filter: blur(4px)):
+  + Modal Chiến Thắng: Hiệu ứng pháo hoa giấy Canvas Confetti bung tỏa rực rỡ.
+  + Modal Game Over: Thể hiện nguyên nhân (hết 3 mạng hoặc do chạm trần chuỗi sai).
+  + Modal Bảng Điểm (Score Breakdown): Kê khai minh bạch từng dòng: Điểm ô đúng,
+    thưởng Combo, thưởng Thắng hoàn hảo, trừ Gợi ý, trừ Chuỗi sai, hệ số thời gian.
+================================================================================
+

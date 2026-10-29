@@ -1,0 +1,171 @@
+================================================================================
+               SUDOKU WEB APP - ARCHITECTURE & MODULES
+       TÀI LIỆU KIẾN TRÚC HỆ THỐNG & CHI TIẾT TỪNG MODULE JAVASCRIPT
+================================================================================
+
+I. TỔNG QUAN KIẾN TRÚC MÃ NGUỒN
+- Kiến trúc tổng thể: Single Page Application (SPA) điều hướng tức thì trên DOM.
+- Mẫu hình thiết kế: Module Pattern (IIFE - Immediately Invoked Function Expression).
+  Mỗi module đóng gói dữ liệu và phương thức nội bộ trong closure, chỉ công khai
+  những hàm API thực sự cần thiết thông qua đối tượng trả về.
+- Giao tiếp giữa các module:
+  App (Controller chính)
+    ├── Quản lý màn hình & Router (Lobby, Gameplay, Profile, Variants)
+    ├── Kết nối UI (ui-board.js, ui-controls.js) với Game Engine (game.js)
+    └── Quản lý dữ liệu với Storage (storage.js)
+
+--------------------------------------------------------------------------------
+II. CHI TIẾT 9 MODULE JAVASCRIPT TRONG js/
+--------------------------------------------------------------------------------
+
+1. js/sudoku-engine.js (Module: SudokuEngine)
+   - Nhiệm vụ: Xử lý toàn bộ thuật toán toán học của trò chơi Sudoku.
+   - Cấu trúc biểu diễn bàn cờ: Mảng phẳng 81 phần tử (index từ 0 đến 80).
+     + Hàng (row) = Math.floor(index / 9)
+     + Cột (col) = index % 9
+     + Khối 3x3 (box) = Math.floor(row / 3) * 3 + Math.floor(col / 3)
+     + Giá trị 0 đại diện cho ô trống, 1-9 đại diện cho số đã điền.
+   - Các thuật toán cốt lõi:
+     + isValid(board, index, val): Kiểm tra tính hợp lệ của số val tại vị trí index
+       theo 3 quy tắc Sudoku (không trùng hàng, cột và khối 3x3).
+     + solve(board): Thuật toán quay lui (Backtracking) để giải toàn bộ bàn cờ.
+     + generateFullBoard(): Tạo bàn cờ 9x9 hợp lệ ngẫu nhiên bằng cách xáo trộn
+       dãy số [1..9] và đệ quy lấp đầy 81 ô.
+     + countSolutions(board, limit=2): Đếm số nghiệm của câu đố để đảm bảo tính duy nhất.
+     + generatePuzzle(difficulty): Tạo câu đố dựa trên độ khó bằng thuật toán đào lỗ
+       (digging holes) ngẫu nhiên, chỉ giữ lại những ô thỏa mãn nghiệm duy nhất.
+       * Dễ (Easy): Cho trước 38 - 45 ô (còn 36 - 43 ô cần giải).
+       * Trung bình (Medium): Cho trước 30 - 35 ô (còn 46 - 51 ô cần giải).
+       * Khó (Hard): Cho trước 24 - 28 ô (còn 53 - 57 ô cần giải).
+
+2. js/game.js (Module: Game)
+   - Nhiệm vụ: Quản lý trạng thái ván cờ đang chơi và thực thi các quy tắc luật chơi.
+   - Đối tượng Game State (state):
+     + initial: Mảng 81 số ban đầu của đề bài (ô cố định, không được sửa).
+     + current: Mảng 81 số người chơi đang điền.
+     + solution: Mảng 81 số đáp án chuẩn của ván cờ.
+     + difficulty: Độ khó hiện tại ('easy', 'medium', 'hard').
+     + notes: Mảng 81 tập hợp (Set) lưu trữ các số ghi chú nháp trong từng ô.
+     + timer: Thời gian chơi tính bằng giây (chạy tăng dần).
+     + mistakes: Số lần chọn sai đã mắc phải.
+     + correctStreak: Chuỗi chọn số đúng liên tiếp hiện tại.
+     + maxStreak: Kỷ lục chuỗi đúng dài nhất đạt được trong ván cờ này.
+     + wrongStreak: Chuỗi chọn sai liên tiếp hiện tại (dùng để phạt lũy tiến).
+     + hintPenalties: Tổng điểm bị trừ do dùng gợi ý.
+     + wrongPenalties: Tổng điểm bị trừ do chuỗi chọn sai.
+     + undoStack: Mảng lịch sử các bước đi để thực hiện hoàn tác (Undo).
+     + isFinished: Cờ đánh dấu ván cờ đã kết thúc (thắng, thua, hoặc bỏ cuộc).
+     + isPaused: Cờ tạm dừng bộ đếm giờ (khi mở modal, hướng dẫn...).
+   - Các hàm API quan trọng:
+     + startNewGame(difficulty): Khởi tạo ván mới.
+     + resumeGame(savedState): Phục hồi ván chơi từ LocalStorage.
+     + selectCell(index): Chọn ô cờ hiện tại trên bàn.
+     + inputNumber(num): Điền số vào ô được chọn (tự động phân biệt chế độ điền thật / ghi chú).
+     + eraseCell(): Xóa số người chơi đã điền hoặc xóa ghi chú ô hiện tại.
+     + toggleNotesMode(): Bật/tắt chế độ ghi chú nháp (pencil marks).
+     + useHint(): Tự động điền đáp án chuẩn vào 1 ô trống ngẫu nhiên kèm trừ điểm phạt.
+     + undo(): Hoàn tác nước đi gần nhất. Quy tắc: Trả ô về trạng thái trước đó,
+       hoàn lại điểm phạt nếu nước đi trước đó là sai, nhưng KHÔNG hoàn lại streak đúng.
+     + surrender(): Bỏ cuộc giữa chừng và lưu kết quả thất bại.
+     + autoSolve(): Tự động giải toàn bộ bàn cờ phục vụ kiểm thử / demo.
+     + calculateScore(): Tính toán điểm số thời gian thực và tổng kết ván đấu.
+     + getScoreBreakdown(): Trả về chi tiết các khoản cộng/trừ phục vụ bảng điểm.
+     + getWarningStage(diff, wrongStreak): Xác định cấp độ cảnh báo đỏ (0, 1, 2, 3).
+
+3. js/storage.js (Module: Storage)
+   - Nhiệm vụ: Tầng lưu trữ dữ liệu bền vững (Persistent Data Storage).
+   - Cơ chế hoạt động:
+     + Ưu tiên sử dụng window.localStorage.
+     + Có cơ chế tự động kiểm tra bảo mật (Try/Catch) và fallback sang đối tượng
+       bộ nhớ in-memory (memoryStore) nếu trình duyệt chặn quyền LocalStorage
+       (ví dụ ở chế độ iframe sandbox hoặc duyệt web ẩn danh cực hạn).
+   - 3 Khóa lưu trữ (Storage Keys):
+     + 'sudoku_current_game': Lưu toàn bộ Game State ván đang chơi dở.
+     + 'sudoku_profile': Lưu tên người chơi (mặc định "Kỳ thủ Sudoku") và tổng thời gian chơi.
+     + 'sudoku_stats': Lưu đối tượng thống kê thành tích chia theo từng độ khó:
+       { played, won, perfectWins, currentStreak, bestStreak, bestTime, totalWinTime, bestScore }.
+   - Các hàm API:
+     + saveGame(state), loadGame(), clearGame(), hasActiveGame(): Quản lý ván dở.
+     + getProfile(), saveProfile(p): Quản lý thông tin cá nhân.
+     + getStats(), saveStats(s), recordGameResult(diff, won, time, mistakes, score): Ghi nhận trận đấu.
+     + resetAllData(): Xóa toàn bộ dữ liệu, khôi phục game về trạng thái nguyên bản xuất xưởng.
+
+4. js/ui-board.js (Module: UIBoard)
+   - Nhiệm vụ: Vẽ và xử lý hiệu ứng trực quan trên bàn cờ 9x9.
+   - Cấu trúc DOM: 81 ô tử (div.cell) được gom thành 9 khối 3x3 (div.board-box)
+     nhằm tạo đường viền phân tách các khối Sudoku chuẩn xác và sắc nét.
+   - Các lớp trạng thái (CSS Classes):
+     + .cell.given: Ô đề bài cho trước (màu đậm, không cho sửa, không thể xóa).
+     + .cell.user: Ô do người chơi tự điền.
+     + .cell.error: Ô điền sai (chữ đỏ rực, hiệu ứng rung lắc lắc).
+     + .cell.selected: Ô đang được người dùng bấm chọn (nền xanh lam sáng).
+     + .cell.highlight-row, .cell.highlight-col, .cell.highlight-box: Làm sáng hàng,
+       cột và khối 3x3 chứa ô đang chọn để người chơi dễ quan sát.
+     + .cell.same-number: Làm nổi bật tất cả các ô trên bàn cờ có cùng chữ số với ô chọn.
+     + .notes-grid: Lưới 3x3 hiển thị các chữ số nháp nhỏ (1 đến 9) bên trong ô trống.
+   - Hiệu ứng hình ảnh:
+     + popCell(index): Hiệu ứng nảy số mượt mà khi người chơi điền đúng.
+     + triggerWinWave(): Hiệu ứng sóng lan tỏa (wave animation) khắp 81 ô khi thắng cuộc.
+
+5. js/ui-controls.js (Module: UIControls)
+   - Nhiệm vụ: Xử lý thanh điều khiển, bàn phím số và hệ thống cảnh báo nguy hiểm.
+   - Thành phần quản lý:
+     + Thanh thông số trên đỉnh bàn cờ: Bộ đếm thời gian (#game-timer), số lỗi (#game-mistakes),
+       điểm số thời gian thực (#game-score), và huy hiệu chuỗi sai (#info-wrong-streak).
+     + Bàn phím số 1-9 (#numpad): Tự động đếm số lần còn lại của từng chữ số trên bàn cờ;
+       khi một chữ số đã được điền đủ 9 lần trên bàn cờ thì phím đó sẽ mờ đi và bị vô hiệu hóa.
+     + 4 nút hành động phụ trợ:
+       * Hoàn tác (#btn-undo): Có badge hiển thị số nước có thể hoàn tác.
+       * Xóa (#btn-erase): Xóa giá trị ô hiện tại.
+       * Ghi chú (#btn-notes): Nút chuyển đổi trạng thái ON/OFF (đổi màu nổi bật khi bật).
+       * Gợi ý (#btn-hint): Có badge hiển thị mức trừ điểm của lần dùng tiếp theo.
+     + Cảnh báo nguy hiểm thị giác:
+       * Lớp phủ viền đỏ (#danger-overlay): Điều khiển các lớp CSS .flash-mild, .stage-mild, .stage-critical.
+       * Băng rôn cảnh báo khẩn (#danger-banner): Hiển thị thông điệp cảnh báo nguy cơ Game Over.
+
+6. js/profile.js (Module: Profile)
+   - Nhiệm vụ: Xử lý dữ liệu và giao diện của Tab Hồ sơ cá nhân.
+   - Cấu trúc giao diện:
+     + Avatar SVG tùy biến và hiển thị Tổng thời gian chơi tích lũy của người dùng.
+     + Tính năng chỉnh sửa tên người chơi (nút bút chì, ô nhập inline kèm nút Lưu / Hủy).
+     + Bộ tab chọn 3 độ khó: Dễ, Trung bình, Khó.
+     + Thẻ Tổng Quan Trận Đấu (Overview Card - Hình chữ nhật):
+       * Bên trái: Biểu đồ tròn Donut Chart SVG tính toán chính xác Tỉ lệ thắng (Win Rate %)
+         thông qua thuộc tính stroke-dashoffset động trên chu vi hình tròn r=54 (C = 339.29).
+       * Bên phải: 2 dòng thông số to rõ: 🏆 Số trận đã thắng & 🎮 Số trận đã chơi.
+     + Lưới 6 thẻ thông số chi tiết (chia thành 3 cặp chuẩn mực):
+       * Cặp 1: 👑 Điểm cao nhất | 💎 Thắng hoàn hảo (0/3 lỗi)
+       * Cặp 2: 🔥 Chuỗi thắng hiện tại | ⚡ Chuỗi thắng tốt nhất
+       * Cặp 3: ⏱️ Thời gian nhanh nhất | 📈 Thời gian trung bình
+     + Nút Đặt lại dữ liệu (#btn-reset-data) ở khu vực cảnh báo cuối trang.
+
+7. js/tutorial.js (Module: Tutorial)
+   - Nhiệm vụ: Cung cấp hướng dẫn chơi tương tác từng bước cho người mới bắt đầu.
+   - 4 Bước hướng dẫn tương tác:
+     + Bước 1: Quy tắc Hàng ngang (Row Rule) - Tìm chữ số còn thiếu duy nhất trong hàng.
+     + Bước 2: Quy tắc Cột dọc (Column Rule) - Xác định số hợp lệ duy nhất trong cột.
+     + Bước 3: Quy tắc Khối 3x3 (Box Rule) - Lấp đầy ô trống còn lại trong khối.
+     + Bước 4: Kỹ thuật Ghi chú (Notes & Pencil Marks) - Sử dụng ghi chú để loại trừ.
+
+8. js/variants.js (Module: Variants)
+   - Nhiệm vụ: Trưng bày thông tin và đặc trưng của 4 biến thể Sudoku nổi tiếng toàn cầu:
+     + Killer Sudoku (Quy tắc tổng số trong các lồng nét đứt).
+     + Sudoku Đường Chéo / Sudoku X (Thêm ràng buộc 2 đường chéo chính 1-9).
+     + Samurai Sudoku (Cụm 5 bảng cờ 9x9 lồng ghép vào nhau).
+     + Jigsaw Sudoku (Các khối 9 ô có hình dạng zíc zắc bất đối xứng).
+   - Tương tác: Bấm vào thẻ biến thể sẽ hiển thị Custom Toast giải thích luật chơi chi tiết.
+
+9. js/app.js (Module: App)
+   - Nhiệm vụ: Nhạc trưởng điều phối toàn bộ vòng đời ứng dụng.
+   - Các chức năng quản lý:
+     + Tự động ẩn Splash Screen sau 2.5 giây và nạp sảnh chính.
+     + Router chuyển đổi thanh điều hướng đáy: Trang chủ <-> Biến thể <-> Hồ sơ.
+     + Phát hiện ván chơi dở: Hiển thị hộp thoại tiếp tục hoặc hủy ván an toàn.
+     + Hộp thoại Custom Dialog (thay thế hoàn toàn alert() và confirm() mặc định của trình duyệt):
+       App.alert(title, msg) và App.confirm(title, msg) trả về Promise.
+     + Xử lý kết thúc ván: Modal Chiến Thắng (kèm pháo hoa giấy confetti Canvas),
+       Modal Game Over (phân loại lý do: quá 3 lỗi thông thường hoặc do chạm giới hạn chuỗi sai).
+     + Modal Bảng tổng kết điểm chi tiết (Score Breakdown Modal).
+     + Lắng nghe phím tắt bàn phím vật lý (Phím 1-9, Delete, Backspace, N, H, U, Arrow keys).
+================================================================================
+
