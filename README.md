@@ -117,8 +117,16 @@ Sudoku_game/
 ├── devtools/                  # Bộ công cụ Developer Tools & Cheat kiểm thử (Tách biệt độc lập)
 │   ├── devtools.css           # Giao diện Dark Console HUD & Ghost Answers
 │   └── devtools.js            # Module xác thực & logic can thiệp game engine
-├── screenshots/               # Thư viện hình ảnh giao diện thực tế
-│   └── preview.png            # Ảnh chụp giao diện thực tế
+├── screenshots/               # Thư viện ảnh chụp giao diện thực tế (9 màn hình)
+│   ├── 1-splash.png           # Màn hình mở đầu (Splash Screen) với hiệu ứng số nảy
+│   ├── 2-lobby-home.png       # Sảnh chính (Lobby Home) chọn cấp độ chơi
+│   ├── 3-tutorial.png         # Hướng dẫn tương tác từng bước trực quan
+│   ├── 4-variants.png         # Tab thông tin 4 biến thể Sudoku nổi tiếng
+│   ├── 5-profile.png          # Hồ sơ thành tích: cụm Donut Chart & 6 thẻ thông số
+│   ├── 6-gameplay.png         # Bàn cờ 9x9 với tính điểm, combo, đồng hồ, phím số
+│   ├── 7-danger-warning.png   # Hiệu ứng cảnh báo nguy hiểm khi chọn sai nhiều lần
+│   ├── 8-victory-modal.png    # Hộp thoại chiến thắng với bảng tổng kết điểm chi tiết
+│   └── 9-devtools-qa.png      # Bảng điều khiển QA Dev Console & chế độ Ghost Answers
 ├── css/
 │   ├── main.css               # Reset CSS, hệ thống màu, chuyển màn hình
 │   ├── splash.css             # Giao diện & hoạt ảnh Màn hình Khởi đầu
