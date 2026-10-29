@@ -379,7 +379,7 @@
 
 .cell.user .cell-value {
   color: var(--primary);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .cell.error .cell-value {
@@ -387,7 +387,7 @@
 }
 
 .cell.error {
-  background: #FEE2E2;
+  background: #FEE2E2 !important;
 }
 
 .cell.hint-flash {
