@@ -3,11 +3,15 @@
    ========================================================= */
 const UIControls = (() => {
   let lastWarningStage = 0;
+  let toolsBound = false;
 
   function init() {
     lastWarningStage = 0;
     _buildNumpad();
-    _bindTools();
+    if (!toolsBound) {
+      _bindTools();
+      toolsBound = true;
+    }
   }
 
   /* ---- build numpad ---- */

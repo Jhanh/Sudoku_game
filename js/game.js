@@ -518,8 +518,13 @@ const Game = (() => {
     if (onUpdate) onUpdate(state);
   }
 
+  let lastHintTime = 0;
+
   function useHint() {
     if (!state || state.isFinished || state.isPaused || state.hints <= 0) return;
+    const now = Date.now();
+    if (now - lastHintTime < 350) return;
+    lastHintTime = now;
 
     let row, col;
     if (state.selectedCell) {
