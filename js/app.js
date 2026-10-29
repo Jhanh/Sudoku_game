@@ -121,7 +121,7 @@ const App = (() => {
 
       <div class="score-breakdown-card">
         <div class="breakdown-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
           <span>Chi Tiết Bảng Điểm (${breakdown.diffLabel})</span>
         </div>
         <div class="breakdown-row">
@@ -249,6 +249,25 @@ const App = (() => {
     );
 
     Game.resume();
+  }
+
+  /* ---- mobile device detection & polite notice ---- */
+  function initMobileNotice() {
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobileUA) {
+      document.body.classList.add('mobile-device');
+    }
+    const overlay = document.getElementById('mobile-notice-overlay');
+    const dismissBtn = document.getElementById('btn-dismiss-mobile-notice');
+    if (overlay && dismissBtn) {
+      if (sessionStorage.getItem('sudoku_mobile_notice_dismissed') === '1') {
+        overlay.classList.add('dismissed');
+      }
+      dismissBtn.addEventListener('click', () => {
+        overlay.classList.add('dismissed');
+        sessionStorage.setItem('sudoku_mobile_notice_dismissed', '1');
+      });
+    }
   }
 
   /* ---- wire everything ---- */
@@ -417,6 +436,7 @@ const App = (() => {
     Tutorial.bindEvents();
     Profile.bindEvents();
     Variants.init();
+    initMobileNotice();
 
     // Reset via URL query param ?reset=1
     if (typeof window !== 'undefined' && window.location && window.location.search && window.location.search.includes('reset=1')) {

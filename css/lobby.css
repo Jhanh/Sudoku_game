@@ -9,12 +9,11 @@
   flex: 1;
   overflow-y: auto;
   padding: 0;
-  -webkit-overflow-scrolling: touch;
 }
 
 .tab-content {
   display: none;
-  padding: 24px 20px 100px;
+  padding: 24px 32px 76px;
   animation: fadeIn 0.3s ease;
 }
 
@@ -33,60 +32,60 @@
   }
 }
 
-/* ===== Bottom Navbar ===== */
+/* ===== Desktop Bottom Navigation Dock ===== */
 .navbar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   background: var(--surface);
-  border-top: 1px solid var(--border);
-  padding: 8px 0 env(safe-area-inset-bottom, 8px);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 12px;
   z-index: 100;
-  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  min-width: 380px;
+  max-width: 460px;
+  gap: 6px;
 }
 
 .nav-item {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
+  flex-direction: row;
   align-items: center;
-  gap: 4px;
-  padding: 8px 0;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
   background: none;
   border: none;
+  border-radius: 50px;
   color: var(--text-secondary);
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 0.88rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
 }
 
 .nav-item:hover {
-  color: var(--primary);
+  color: var(--text);
+  background: var(--highlight-row);
 }
 
 .nav-item.active {
   color: var(--primary);
+  background: var(--primary-bg);
 }
 
 .nav-item.active::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24px;
-  height: 3px;
-  background: var(--primary);
-  border-radius: 0 0 3px 3px;
+  display: none;
 }
 
 .nav-item svg {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   transition: all 0.2s ease;
 }
 
@@ -95,26 +94,26 @@
 }
 
 /* ========================================
-   HOME TAB
+   HOME TAB — PC DESKTOP LAYOUT
    ======================================== */
 .home-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding-top: 40px;
-  max-width: 400px;
+  padding-top: 32px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
 .home-icon {
-  width: 80px;
-  height: 80px;
+  width: 84px;
+  height: 84px;
   margin-bottom: 16px;
 }
 
 .home-title {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 8px;
@@ -122,10 +121,10 @@
 
 .home-desc {
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.5;
   margin-bottom: 24px;
-  max-width: 320px;
+  max-width: 380px;
 }
 
 .home-container .btn-pill {
@@ -134,7 +133,7 @@
 
 .home-actions {
   width: 100%;
-  max-width: 340px;
+  max-width: 380px;
 }
 
 /* ===== Continue Section ===== */
@@ -168,14 +167,14 @@
    VARIANTS TAB
    ======================================== */
 .variants-container {
-  max-width: 600px;
+  max-width: 760px;
   margin: 0 auto;
 }
 
 .section-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: var(--text);
 }
 
@@ -189,19 +188,13 @@
 .variants-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-@media (max-width: 480px) {
-  .variants-grid {
-    grid-template-columns: 1fr;
-  }
+  gap: 18px;
 }
 
 .variant-card {
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 22px;
   border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.25s ease;
@@ -227,7 +220,7 @@
 }
 
 .variant-card h3 {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   margin-bottom: 4px;
   color: var(--text);
