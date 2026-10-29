@@ -112,7 +112,11 @@ Sudoku_game/
 │   ├── 03_game_logic_and_rules.txt     # Chi tiết quy tắc tính điểm, combo, phạt & Game Over
 │   ├── 04_ui_ux_design_system.txt      # Bảng màu, typography, responsive, hiệu ứng cảnh báo
 │   ├── 05_dev_guidelines_and_notes.txt # Những lưu ý sống còn, quy chuẩn commit, quy tắc Git
-│   └── 06_css_styling_and_architecture.txt # Phân tích chuyên sâu toàn diện 6 file CSS độc lập
+│   ├── 06_css_styling_and_architecture.txt # Phân tích chuyên sâu toàn diện 6 file CSS độc lập
+│   └── 07_developer_tools_and_testing.txt  # Hướng dẫn bộ công cụ DevTools & QA Cheat HUD
+├── devtools/                  # Bộ công cụ Developer Tools & Cheat kiểm thử (Tách biệt độc lập)
+│   ├── devtools.css           # Giao diện Dark Console HUD & Ghost Answers
+│   └── devtools.js            # Module xác thực & logic can thiệp game engine
 ├── screenshots/               # Thư viện hình ảnh giao diện thực tế
 │   └── preview.png            # Ảnh chụp giao diện thực tế
 ├── css/

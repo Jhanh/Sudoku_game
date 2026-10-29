@@ -1,0 +1,95 @@
+================================================================================
+               SUDOKU WEB APP - DEVELOPER TOOLS & QA INSPECTOR
+       TÀI LIỆU HỆ THỐNG CÔNG CỤ DÀNH CHO NHÀ PHÁT TRIỂN & KIỂM THỬ (CHEAT HUD)
+================================================================================
+
+I. TỔNG QUAN & TRIẾT LÝ THIẾT KẾ ĐỘC LẬP (DECOUPLED ARCHITECTURE)
+1. Mục đích:
+   - Trong quá trình phát triển và kiểm định game, việc chơi một ván Sudoku từ mức Dễ
+     đến Khó có thể tốn từ 2 phút đến gần 1 tiếng đồng hồ.
+   - Bộ công cụ Developer Tools (QA Console) được tạo ra nhằm giúp nhà phát triển có
+     thể kiểm định tức thì mọi cơ chế: tính điểm, combo streak, hệ số thời gian,
+     các cấp độ cảnh báo đỏ, ngưỡng Game Over, và hiệu ứng chiến thắng mà không cần
+     phải tốn thời gian giải cờ thủ công.
+2. Tách biệt hoàn toàn (Zero Coupling):
+   - Toàn bộ mã nguồn của bộ công cụ được lưu trữ độc lập trong thư mục `devtools/`:
+     + `devtools/devtools.js`: Logic xác thực mật khẩu, HUD console, cheat engine.
+     + `devtools/devtools.css`: Giao diện modal mật khẩu, bảng điều khiển HUD dark mode.
+   - Trò chơi khi khởi chạy bình thường vẫn hoạt động nguyên bản 100%. Người chơi phổ
+     thông hoàn toàn không nhìn thấy bất kỳ nút bấm hay dấu vết nào của bộ công cụ này.
+   - Khi cần phát hành bản thương mại không kèm công cụ cheat: Chỉ cần xóa thư mục
+     `devtools/` và bỏ 2 dòng nhúng trong `index.html`, toàn bộ game vẫn chạy hoàn hảo!
+
+--------------------------------------------------------------------------------
+II. CƠ CHẾ KÍCH HOẠT & BẢO MẬT (ACTIVATION & AUTHENTICATION)
+--------------------------------------------------------------------------------
+1. Tổ hợp phím kích hoạt (Secret Shortcut):
+   - Trên máy tính (Bàn phím):
+     + Cách 1: Nhấn tổ hợp phím `Ctrl + Shift + D` (D = Developer).
+     + Cách 2: Nhấn phím ` (dấu Tilde / Backquote - phím bật Console kinh điển trong game).
+   - Trên thiết bị di động (Cảm ứng):
+     + Chạm nhanh liên tiếp 5 lần vào tiêu đề game ("Kỳ thủ Sudoku" hoặc bộ đếm giờ).
+
+2. Mật khẩu xác thực (Passcode):
+   - Mật khẩu mặc định: 123456
+   - Sau khi nhập đúng mật khẩu, trạng thái mở khóa sẽ được lưu trong `sessionStorage`
+     của phiên duyệt web hiện tại.
+   - Nút hình ổ khóa 🔒 trên thanh HUD cho phép khóa lại bất kỳ lúc nào để yêu cầu nhập
+     mật khẩu lại.
+
+--------------------------------------------------------------------------------
+III. CHI TIẾT CÁC TÍNH NĂNG KIỂM THỬ (CORE CHEATS & QA TOOLS)
+--------------------------------------------------------------------------------
+
+1. VÔ HẠN LƯỢT GỢI Ý (INFINITE HINTS):
+   - Công tắc BẬT / TẮT.
+   - Khi bật: Tự động cấp 9999 gợi ý (huy hiệu hiển thị ký hiệu vô cực ∞).
+   - VẪN ÁP DỤNG CƠ CHẾ TRỪ ĐIỂM BÌNH THƯỜNG: Mỗi lần bấm "Gợi ý", hệ thống vẫn trừ
+     điểm phạt lũy tiến theo đúng quy tắc độ khó (Dễ: -30, -50, -70; TB: -50, -70, -90;
+     Khó: -50, -100, -150). Điểm số không bao giờ bị âm.
+
+2. HIỆN ĐÁP ÁN MỜ TRÊN Ô TRỐNG (GHOST ANSWERS):
+   - Công tắc BẬT / TẮT.
+   - Khi bật: Toàn bộ các ô chưa giải trên bàn cờ sẽ hiện chữ số đáp án chuẩn màu tím nhạt,
+     nghiêng mờ (opacity: 0.38).
+   - ĐẶC BIỆT: Đây là dạng hiển thị mờ để nhà phát triển nhìn thấy và TỰ TAY BẤM CHỌN ĐÚNG
+     từng số nhằm kiểm thử chuỗi Combo Streak, hiệu ứng âm thanh và điểm cộng — chứ KHÔNG
+     phải bấm vào là tự giải hết để thắng luôn!
+   - CHUYỂN SANG MÀU ĐEN KHI CHỌN: Khi bạn bấm chọn đúng số vào ô đó, con số sẽ ngay lập
+     tức chuyển từ màu tím nhạt mờ sang MÀU ĐEN ĐẬM (solid black #1E293B, font-weight 700)
+     như các con số đề bài chuẩn, giúp phân biệt rõ ràng ô nào đã được giải và ô nào còn trống.
+   - Khi tắt công tắc: Mọi chữ số mờ lập tức biến mất, bàn cờ quay lại trạng thái ô trống ban đầu.
+
+3. THẮNG NGAY VÁN NÀY (INSTANT WIN):
+   - Nút bấm 1-click [🏆 Thắng Ngay Ván Này].
+   - Tự động điền đáp án chuẩn vào toàn bộ các ô còn lại trên bàn cờ thông qua chính
+     Game Engine thực tế.
+   - ÁP DỤNG CƠ CHẾ TÍNH ĐIỂM CHUẨN XÁC: Tự động cộng dồn chuỗi combo, tính hệ số thời gian,
+     tính thưởng thắng hoàn hảo (nếu trước đó 0 lỗi), lưu dữ liệu vào Storage và kích hoạt
+     Modal Chiến Thắng cùng hiệu ứng pháo hoa giấy Confetti!
+
+4. ĐIỀN SẴN 80/81 Ô (CHỪA 1 Ô CUỐI ĐỂ TEST CHIẾN THẮNG THỰC TẾ):
+   - Nút bấm [🎯 Điền Sẵn 80/81 Ô].
+   - Tự động điền đúng 80 ô, chừa lại duy nhất 1 ô cuối cùng và tự động chọn ô đó.
+   - Giúp nhà phát triển chỉ cần gõ 1 số cuối cùng là được trải nghiệm trực tiếp cảm giác
+     chiến thắng của người chơi thực tế.
+
+5. THỬ NGHIỆM CÁC CẤP ĐỘ CẢNH BÁO NGUY HIỂM (DANGER STAGES TESTING):
+   - [⚠️ Cấp 1 (Sai 5 lần)]: Chớp đỏ nhẹ màn hình kèm banner cảnh báo phạt nặng.
+   - [🔶 Cấp 2 (Sai 6 lần)]: Kích hoạt viền đỏ nhẹ cố định trên Dễ / Trung bình.
+   - [🚨 Cấp 3 (Nhấp nháy đỏ)]: Kích hoạt nhấp nháy viền đỏ đậm liên tục kèm đếm ngược Game Over.
+   - [💀 Test Game Over]: Đẩy số lần sai vượt ngưỡng (16 lần ở Dễ/TB, 11 lần ở Khó) để kiểm thử
+     ngay lập tức màn hình Game Over do chạm ngưỡng chuỗi sai.
+   - [🔄 Reset Chuỗi Sai Về 0]: Xóa sạch mọi cảnh báo đỏ và khôi phục giao diện bình thường.
+
+6. THỬ NGHIỆM HỆ SỐ THỜI GIAN (TIME MULTIPLIER TESTING):
+   - [🚀 Đặt 01:10]: Đặt timer = 70s để kiểm thử Hệ số Siêu Tốc × 2.0.
+   - [⚡ Đặt 04:00]: Đặt timer = 240s để kiểm thử Hệ số Tốc Độ × 1.5.
+   - [🐢 Đặt 15:00]: Đặt timer = 900s để kiểm thử Hệ số Chuẩn × 1.0.
+   - [➕ Cộng 1 Phút]: Tăng nhanh thời gian chơi để kiểm tra chuyển bậc hệ số.
+
+7. THEO DÕI THÔNG SỐ THỜI GIAN THỰC (LIVE STATS WATCHER):
+   - Trên đỉnh bảng điều khiển hiển thị liên tục: Thời gian ván đấu, Điểm số hiện tại,
+     và Tỷ số Chuỗi Đúng / Chuỗi Sai (Correct / Wrong Streak).
+================================================================================
+
