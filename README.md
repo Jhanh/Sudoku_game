@@ -104,27 +104,30 @@ Sudoku_game/
 ├── index.html                 # Giao diện chính và cấu trúc DOM ứng dụng
 ├── server.py                  # Máy chủ tĩnh nội bộ Python (Auto port + No-cache)
 ├── README.md                  # Tài liệu giới thiệu sản phẩm & hướng dẫn
+├── LICENSE                    # Giấy phép bản quyền mã nguồn mở MIT
 ├── .gitignore                 # Danh sách tệp loại trừ không lưu trên Git
+├── docs/                      # Hệ thống tài liệu kỹ thuật toàn diện cho Dev & AI
+│   ├── 01_project_overview.txt         # Tổng quan, triết lý, cây thư mục & cách chạy
+│   ├── 02_architecture_and_modules.txt # Kiến trúc SPA & chi tiết 9 module JavaScript
+│   ├── 03_game_logic_and_rules.txt     # Chi tiết quy tắc tính điểm, combo, phạt & Game Over
+│   ├── 04_ui_ux_design_system.txt      # Bảng màu, typography, responsive, hiệu ứng cảnh báo
+│   ├── 05_dev_guidelines_and_notes.txt # Những lưu ý sống còn, quy chuẩn commit, quy tắc Git
+│   └── 06_css_styling_and_architecture.txt # Phân tích chuyên sâu toàn diện 6 file CSS độc lập
 ├── screenshots/               # Thư viện hình ảnh giao diện thực tế
-│   ├── 1-splash.png           # Màn hình khởi đầu ứng dụng
-│   ├── 2-lobby-home.png       # Sảnh chính & chọn chế độ
-│   ├── 3-tutorial.png         # Hoạt ảnh hướng dẫn tương tác
-│   ├── 4-variants.png         # Các biến thể mở rộng
-│   ├── 5-profile.png          # Hồ sơ người chơi & biểu đồ thống kê
-│   └── 6-gameplay.png         # Bàn cờ thi đấu 9x9 & bộ phím điều khiển
+│   └── preview.png            # Ảnh chụp giao diện thực tế
 ├── css/
 │   ├── main.css               # Reset CSS, hệ thống màu, chuyển màn hình
 │   ├── splash.css             # Giao diện & hoạt ảnh Màn hình Khởi đầu
 │   ├── lobby.css              # Giao diện Sảnh chính, Menu, thẻ ván dở
-│   ├── gameplay.css           # Bảng 9x9, bàn phím 3x3, thanh công cụ
-│   ├── modals.css             # Hộp thoại Hướng dẫn, Cảnh báo, Game Over
-│   └── profile.css            # Hồ sơ, biểu đồ Donut Chart, chỉ số
+│   ├── gameplay.css           # Bảng 9x9, bàn phím số, cảnh báo nguy hiểm
+│   ├── modals.css             # Hộp thoại Hướng dẫn, Bảng điểm chi tiết, Game Over
+│   └── profile.css            # Hồ sơ, biểu đồ Donut Chart, 6 thẻ thành tích
 └── js/
     ├── storage.js             # Lớp lưu trữ LocalStorage & Memory Fallback
     ├── sudoku-engine.js       # Thuật toán sinh đề & giải Sudoku độc bản
     ├── game.js                # Quản lý ván chơi, bộ đếm giờ, lỗi, hoàn tác
     ├── ui-board.js            # Render bàn cờ, highlight hàng/cột/khối
-    ├── ui-controls.js         # Bàn phím số 3x3, bộ đếm số lượng còn lại
+    ├── ui-controls.js         # Bàn phím số, công cụ phụ trợ, cảnh báo đỏ
     ├── tutorial.js            # Quản lý các bước hướng dẫn động
     ├── variants.js            # Danh sách thông tin 4 biến thể Sudoku
     ├── profile.js             # Xử lý thống kê và vẽ biểu đồ tỉ lệ thắng
