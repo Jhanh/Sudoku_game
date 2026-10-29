@@ -21,18 +21,27 @@ Toàn bộ màu sắc được định nghĩa tại :root trong css/main.css:
 - Màu đường viền (Border)   : #E2E8F0 (Slate 200)- Tách bạch tinh tế, mượt mà
 
 --------------------------------------------------------------------------------
-II. BỐ CỤC ĐÁP ỨNG (RESPONSIVE DESIGN BREAKPOINTS)
+II. BỐ CỤC CHUYÊN BIỆT 100% CHO MÀN HÌNH PC (PC DESKTOP-FIRST SYSTEM)
 --------------------------------------------------------------------------------
-- Khung hiển thị tối đa (Max Width): 500px, luôn được căn giữa màn hình (margin: 0 auto)
-  đảm bảo trên màn hình máy tính lớn (Desktop) hay iPad không bị vỡ bố cục,
-  mang lại cảm giác như đang sử dụng một ứng dụng di động nguyên bản (Native Mobile App).
-- Thiết bị di động màn hình nhỏ (Width < 380px):
-  + Kích thước ô cờ (Cell Size) co giãn tự động xuống ~34px.
-  + Thẻ tổng quan trận đấu tự động chuyển từ xếp ngang sang xếp dọc gọn gàng.
-  + Lưới 6 thẻ thông số tự động căn lề để không bao giờ bị tràn chiều ngang (overflow-x: hidden).
-- Font chữ hệ thống (System Fonts):
-  system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif
-  => Tải trang siêu tốc, hiển thị sắc nét tự nhiên trên cả iOS, Android, Windows và macOS.
+1. TRIẾT LÝ THIẾT KẾ PC 100% (ZERO MOBILE COMPROMISE):
+   - Loại bỏ hoàn toàn các gò bó của giao diện di động hẹp dọc (mobile column stack).
+   - Tối ưu hóa tối đa cho chuột, bàn phím và không gian màn hình ngang của máy tính
+     (chuẩn 1080p, 1440p, laptop 1366x768 trở lên).
+   - Bố cục Sảnh chính (Home): Căn giữa trang nhã, rộng rãi (max-width: 480px).
+   - Bố cục Biến thể (Variants): Lưới 2x2 hiện đại, thoáng đãng (max-width: 760px).
+   - Thanh điều hướng (Navbar): Thiết kế dạng Desktop Pill Dock nổi bo tròn 50px
+     căn giữa đáy màn hình, biểu tượng kèm chữ nằm ngang sang trọng.
+
+2. MÀN HÌNH THÔNG BÁO LỊCH SỰ KHI VÀO BẰNG ĐIỆN THOẠI (MOBILE DEVICE NOTICE):
+   - Khi phát hiện thiết bị di động (Mobile User-Agent) hoặc màn hình có chiều rộng
+     nhỏ hơn 820px (@media max-width: 820px), hệ thống tự động hiển thị lớp phủ mờ:
+     + Biểu tượng màn hình máy tính PC phát sáng trang nhã.
+     + Nhãn: "🖥️ TỐI ƯU HÓA 100% CHO PC".
+     + Lời giải thích lịch sự: Game được phát triển chuyên biệt cho PC/Laptop để mang
+       lại không gian tư duy thoải mái và thao tác phím số, chuột chuẩn xác nhất.
+     + Lời đề nghị mong người chơi thông cảm và mở game trên máy tính.
+     + Ghi chú độ phân giải khuyến nghị: 1280 x 720 trở lên.
+     + Nút dự phòng: "Tôi hiểu rồi, vẫn tiếp tục xem" (ghi nhớ vào SessionStorage).
 
 --------------------------------------------------------------------------------
 III. HỆ THỐNG CẢNH BÁO THỊ GIÁC NGUY HIỂM (VISUAL DANGER WARNING UI)
@@ -65,21 +74,27 @@ Nhằm tạo cảm giác kịch tính và cảnh báo người chơi khi liên t
      băng rôn báo động và huy hiệu chuỗi sai đều tự động biến mất lập tức!
 
 --------------------------------------------------------------------------------
-IV. THIẾT KẾ TAB HỒ SƠ NGƯỜI CHƠI (PROFILE UI)
+IV. THIẾT KẾ TAB HỒ SƠ CHUẨN DASHBOARD PC 1 MÀN HÌNH (SINGLE-SCREEN PROFILE UI)
 --------------------------------------------------------------------------------
-1. CỤM HÌNH CHỮ NHẬT TỔNG QUAN (OVERVIEW CARD):
-   - Bên trái: Biểu đồ Donut Chart hình tròn SVG (bán kính r=54, chu vi C=339.29).
-     Vòng tiến độ xanh lam #3B82F6 thể hiện chuẩn xác Tỉ lệ thắng (Win Rate %)
-     với con số % to đậm ở giữa.
-   - Bên phải: 2 dòng thông số đóng hộp bo tròn mềm mại:
-     + 🏆 Số trận đã thắng
-     + 🎮 Số trận đã chơi
+Được tái thiết kế hoàn toàn để vừa vặn trọn vẹn trong 1 màn hình máy tính (Zero vertical
+scroll trên màn hình 1080p, 1440p và laptop 1366x768):
 
-2. LƯỚI 6 THẺ THÀNH TÍCH (2 CỘT × 3 HÀNG ĐỐI XỨNG HOÀN HẢO):
-   - Hàng 1 (Đỉnh cao): 👑 Điểm cao nhất  |  💎 Thắng hoàn hảo (0 lỗi)
-   - Hàng 2 (Phong độ): 🔥 Chuỗi thắng HT |  ⚡ Chuỗi thắng tốt nhất
-   - Hàng 3 (Tốc độ)  : ⏱️ TG nhanh nhất   |  📈 TG trung bình
-   - Không chứa các thông số dễ cày ảo (như Điểm trung bình hay Tổng điểm tích lũy).
+1. CỘT TRÁI (SIDEBAR - 310px):
+   - Thẻ người chơi (Profile Card): Avatar tròn gradient, tên kỳ thủ kèm nút sửa tên
+     nhanh tại chỗ, tổng thời gian chơi lũy kế.
+   - Thẻ cài đặt âm thanh (Profile Settings Card): Nút bật/tắt tiếng hiệu ứng và mô tả.
+   - Khu vực quản lý dữ liệu (Danger Zone): Nút viền nét đứt "Đặt Lại / Xóa Toàn Bộ Dữ Liệu"
+     có hộp thoại xác nhận an toàn 2 lớp.
+
+2. CỘT PHẢI (MAIN DASHBOARD - 1fr):
+   - Hàng chọn cấp độ (Difficulty Tabs): Dễ, Trung bình, Khó thiết kế dạng pill hiện đại.
+   - Thẻ tổng quan trận đấu (Overview Card):
+     + Biểu đồ Donut Chart tròn SVG tỉ lệ thắng (Win Rate %) nổi bật bên trái.
+     + Hai thẻ số liệu nằm ngang: 🏆 Số trận đã thắng  |  🎮 Số trận đã chơi.
+   - Lưới 6 thẻ thành tích (3 CỘT × 2 HÀNG ĐỐI XỨNG CÂN ĐỐI):
+     + Hàng 1: 👑 Điểm cao nhất  |  💎 Thắng hoàn hảo (0 lỗi) |  🔥 Chuỗi thắng hiện tại
+     + Hàng 2: ⚡ Chuỗi thắng kỉ lục |  ⏱️ TG nhanh nhất   |  📈 TG trung bình
+     + Toàn bộ chiều cao Profile chỉ ~377px, kết hợp padding vừa vặn 100% trong khung nhìn PC!
 
 --------------------------------------------------------------------------------
 V. CÁC HỘP THOẠI & MODAL TÙY BIẾN (CUSTOM DIALOGS & MODALS)

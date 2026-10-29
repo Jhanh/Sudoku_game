@@ -111,12 +111,21 @@ IV. NGUYÊN TẮC CÔNG NGHỆ & MÃ NGUỒN (CODE CONSTRAINTS)
    - Luôn nhắc người dùng nhấn tổ hợp phím `Ctrl + F5` (hoặc mở thẻ ẩn danh) để
      trình duyệt tải lại toàn bộ tài nguyên mới nhất.
 
+4. NGUYÊN TẮC THIẾT KẾ 100% CHO PC (PC EXCLUSIVE DESIGN):
+   - Toàn bộ giao diện được tối ưu hóa chuyên biệt cho màn hình máy tính (PC / Laptop).
+   - Tab Hồ sơ (Profile) phải luôn nằm trọn vẹn trong đúng 1 màn hình duy nhất
+     (tuyệt đối không để phát sinh thanh cuộn dọc trên màn hình desktop/laptop).
+   - Tự động hiển thị màn hình thông báo lịch sự khi người dùng truy cập từ thiết bị
+     di động hoặc màn hình hẹp (< 820px).
+
 --------------------------------------------------------------------------------
 V. BẢN ĐỒ TỌA ĐỘ NHANH CHO AI ASSISTANT (QUICK REFERENCE MAP)
 --------------------------------------------------------------------------------
 Khi cần chỉnh sửa hay mở rộng hệ thống, hãy tìm đến đúng file:
 - Muốn sửa thuật toán Sudoku / đào lỗ / kiểm tra nghiệm   => `js/sudoku-engine.js`
 - Muốn sửa điểm số, combo, gợi ý, chuỗi sai, Game Over    => `js/game.js`
+- Muốn sửa âm thanh Procedural Web Audio SFX (10 SFX)     => `js/sound.js`
+- Muốn sửa màn hình cảnh báo chỉ dành cho PC trên mobile  => `index.html`, `css/main.css` & `js/app.js`
 - Muốn sửa LocalStorage, lưu ván dở, reset dữ liệu        => `js/storage.js`
 - Muốn sửa màu sắc ô cờ, hiệu ứng chọn, highlight         => `js/ui-board.js` & `css/gameplay.css`
 - Muốn sửa bàn phím số, các lớp cảnh báo đỏ nhấp nháy     => `js/ui-controls.js` & `css/gameplay.css`

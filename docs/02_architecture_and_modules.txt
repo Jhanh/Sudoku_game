@@ -167,6 +167,8 @@ II. CHI TIẾT 10 MODULE JAVASCRIPT TRONG js/
        Modal Game Over (phân loại lý do: quá 3 lỗi thông thường hoặc do chạm giới hạn chuỗi sai).
      + Modal Bảng tổng kết điểm chi tiết (Score Breakdown Modal).
      + Lắng nghe phím tắt bàn phím vật lý (Phím 1-9, Delete, Backspace, N, H, U, Arrow keys).
+     + Phát hiện thiết bị di động (Mobile Device Notice): Tự động phát hiện màn hình nhỏ hoặc
+       User-Agent di động để hiển thị màn hình thông báo lịch sự game chỉ tối ưu cho PC.
 
 10. js/sound.js (Module: Sound)
     - Nhiệm vụ: Hệ thống âm thanh hiệu ứng tương tác (Sound Effects - SFX) thời gian thực.

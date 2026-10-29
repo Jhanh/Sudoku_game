@@ -13,8 +13,11 @@ I. GIỚI THIỆU CHUNG
      nào (không dùng React, Vue, jQuery, Tailwind, Bootstrap, npm, node_modules...).
   2. PLUG & PLAY (CHẠY NGAY KHÔNG CẦN CÀI ĐẶT): Người dùng chỉ cần nhấp đúp file
      index.html hoặc chạy ChoiGame.bat (trong file zip) là chơi được ngay lập tức.
-  3. RESPONSIVE FIRST: Tối ưu hoàn hảo cho cả thiết bị di động (Mobile dọc), máy
-     tính bảng (Tablet) và máy tính để bàn (Desktop).
+  3. PC-FIRST & DESKTOP EXCLUSIVE (100% PC FOCUS): Tối ưu hóa chuyên biệt 100%
+     cho màn hình máy tính (PC / Laptop) với bố cục rộng mở, chuẩn xác cùng bàn phím
+     và chuột; Sảnh Hồ sơ thiết kế chuẩn Dashboard vừa vặn 1 màn hình duy nhất
+     (tuyệt đối không cần cuộn trang); kèm màn hình thông báo lịch sự khi truy cập từ
+     thiết bị di động.
   4. NATIVE STORAGE: Lưu trữ toàn bộ trạng thái ván cờ, thống kê thành tích và hồ
      sơ cá nhân trực tiếp trên LocalStorage của trình duyệt với cơ chế dự phòng
      in-memory store.
@@ -66,16 +69,17 @@ Sudoku_game/
 │   └── 07_developer_tools_and_testing.txt  # Hướng dẫn sử dụng bộ công cụ Developer & QA Cheat HUD
 │
 │
-├── screenshots/                # Thư viện ảnh chụp giao diện thực tế (9 màn hình)
+├── screenshots/                # Thư viện ảnh chụp giao diện thực tế (10 màn hình PC)
 │   ├── 1-splash.png            # Màn hình mở đầu (Splash Screen) với hiệu ứng số nảy
-│   ├── 2-lobby-home.png        # Sảnh chính (Lobby Home) chọn cấp độ chơi
+│   ├── 2-lobby-home.png        # Sảnh chính (Lobby Home) kèm thanh Dock Desktop
 │   ├── 3-tutorial.png          # Hướng dẫn tương tác từng bước trực quan
 │   ├── 4-variants.png          # Tab thông tin 4 biến thể Sudoku nổi tiếng
-│   ├── 5-profile.png           # Hồ sơ thành tích: cụm Donut Chart & 6 thẻ thông số
+│   ├── 5-profile.png           # Hồ sơ thành tích: Dashboard 2 cột không cuộn trang
 │   ├── 6-gameplay.png          # Bàn cờ 9x9 với tính điểm, combo, đồng hồ, phím số
 │   ├── 7-danger-warning.png    # Hiệu ứng cảnh báo nguy hiểm khi chọn sai nhiều lần
 │   ├── 8-victory-modal.png     # Hộp thoại chiến thắng với bảng tổng kết điểm chi tiết
-│   └── 9-devtools-qa.png       # Bảng điều khiển QA Dev Console & chế độ Ghost Answers
+│   ├── 9-devtools-qa.png       # Bảng điều khiển QA Dev Console & chế độ Ghost Answers
+│   └── 10-mobile-notice.png    # Màn hình thông báo thân thiện chỉ dành cho màn hình PC
 │
 ├── Sudoku-Game-v1.0.zip        # Bản nén phát hành chuẩn cột mốc đầu tiên v1.0 (Giữ nguyên vẹn)
 └── Sudoku-Game-testing.zip     # Bản nén tích hợp toàn bộ tính năng mới nhất để thử nghiệm offline

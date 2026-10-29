@@ -1,9 +1,9 @@
-# 🧩 Sudoku Web App
+# 🧩 Sudoku Web App — Phiên Bản Tối Ưu Hóa 100% Cho PC
 
 <p align="center">
-  <b>Trải nghiệm giải đố trí tuệ kinh điển với giao diện hiện đại, mượt mà và tối giản.</b>
+  <b>Trải nghiệm giải đố trí tuệ kinh điển với giao diện chuyên biệt cho máy tính (PC / Laptop), mượt mà và tối giản.</b>
   <br>
-  <i>Xây dựng 100% bằng HTML5, CSS3 và Vanilla JavaScript - Tinh gọn, thuần khiết, không phụ thuộc thư viện.</i>
+  <i>Xây dựng 100% bằng HTML5, CSS3 và Vanilla JavaScript — Tinh gọn, thuần khiết, Web Audio procedural SFX, không phụ thuộc bất kỳ thư viện ngoài nào.</i>
 </p>
 
 <p align="center">
@@ -24,6 +24,7 @@
   <img src="https://img.shields.io/badge/Pure%20JS-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
   <img src="https://img.shields.io/badge/HTML5-Semantic-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
   <img src="https://img.shields.io/badge/CSS3-Modern%20Design-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/PC%20Optimized-100%25-0284C7?style=flat-square" alt="PC Optimized">
   <img src="https://img.shields.io/badge/Dependencies-0-brightgreen?style=flat-square" alt="Zero Dependencies">
   <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License">
 </p>
@@ -33,20 +34,29 @@
 ## 🌟 Trải Nghiệm Hình Ảnh (Showcase)
 
 <p align="center">
-  <img src="screenshots/6-gameplay.png" alt="Màn hình bàn đấu Sudoku 9x9" width="48%">
+  <img src="screenshots/6-gameplay.png" alt="Màn hình bàn đấu Sudoku 9x9 PC" width="48%">
   &nbsp;
-  <img src="screenshots/2-lobby-home.png" alt="Sảnh chính" width="48%">
+  <img src="screenshots/5-profile.png" alt="Sảnh Hồ sơ chuẩn Dashboard không cần cuộn trang" width="48%">
 </p>
 <p align="center">
-  <img src="screenshots/3-tutorial.png" alt="Hướng dẫn tương tác 3 bước" width="48%">
+  <img src="screenshots/2-lobby-home.png" alt="Sảnh chính với thanh điều hướng Dock Desktop" width="48%">
   &nbsp;
-  <img src="screenshots/5-profile.png" alt="Hồ sơ thành tích & Biểu đồ thống kê" width="48%">
+  <img src="screenshots/10-mobile-notice.png" alt="Màn hình thông báo thân thiện chỉ dành cho kích thước màn hình PC" width="48%">
 </p>
 
 ---
 
 ## ✨ Điểm Nổi Bật Của Sản Phẩm
 
+* 🖥️ **Thiết Kế Chuyên Biệt 100% Cho PC & Laptop:**
+  * Toàn bộ bố cục được tinh chỉnh hoàn hảo cho màn hình máy tính (1080p, 1440p, laptop 768p+).
+  * **Sảnh Hồ sơ (Profile Tab):** Bố cục Dashboard 2 cột cực kỳ ngăn nắp, hiển thị toàn bộ chỉ số, biểu đồ tròn và cài đặt trong đúng **1 màn hình duy nhất — Tuyệt đối không cần cuộn lên hay lướt xuống**.
+  * **Thanh điều hướng Dock:** Thiết kế dạng viên thuốc nổi (floating dock pill) hiện đại, sang trọng như các ứng dụng desktop cao cấp.
+  * **Thông báo thân thiện khi mở trên điện thoại (Mobile Device Notice):** Tự động phát hiện thiết bị di động / màn hình nhỏ và hiển thị màn hình thông báo lịch sự, giải thích game được tối ưu 100% cho PC và đề xuất trải nghiệm trên máy tính.
+* 🔊 **Hệ Thống Âm Thanh Procedural Web Audio SFX:**
+  * Tích hợp bộ tạo âm thanh tổng hợp đa hài âm (sine/triangle synthesizer) độc lập 100%, không cần tải file mp3 bên ngoài.
+  * Phản hồi âm thanh sống động cho 10 trạng thái: điền đúng, combo thăng hoa (arpeggio), điền sai, bật/tắt ghi chú, hoàn tác, gợi ý, nút bấm, tạm dừng, game over và giai điệu chiến thắng.
+  * Hỗ trợ bật/tắt nhanh âm thanh ngay trên Header trận đấu hoặc trong Sảnh Hồ sơ.
 * 🧠 **Đề Bài Chuẩn Quốc Tế:** Thuật toán tạo đề thông minh với **duy nhất 1 lời giải** cho mỗi ván chơi. Hỗ trợ 3 cấp độ phù hợp cho mọi đối tượng từ người mới đến cao thủ:
   * **Dễ (Easy):** 38 – 45 ô cho trước — Thư giãn, giải trí nhẹ nhàng.
   * **Trung bình (Medium):** 30 – 35 ô cho trước — Rèn luyện khả năng suy đoán.
@@ -55,11 +65,11 @@
 * 🛠️ **Bộ Công Cụ Hỗ Trợ Đắc Lực:**
   * **Ghi Chú Nháp (Pencil Notes):** Điền số nháp linh hoạt, tự động làm sạch số nháp trùng khi chốt đáp án.
   * **Hoàn Tác & Xóa (Undo / Erase):** Sửa sai tức thì mà không lo gián đoạn mạch tư duy.
-  * **Gợi Ý Thông Minh (Hint):** Trợ giúp giải ô hóc búa kèm hiệu ứng tỏa sáng.
+  * **Gợi Ý Thông Minh (Hint):** Trợ giúp giải ô hóc búa kèm hiệu ứng tỏa sáng, dùng lần lượt từng ô tiện lợi.
   * **Bàn Phím Số Kèm Bộ Đếm:** Lưới phím 3x3 hiển thị số lượng con số còn thiếu, tự động làm mờ khi đã điền đủ 9 số.
 * 🎓 **Hướng Dẫn Tương Tác Trực Quan:** Chế độ Hướng dẫn 3 bước với hình ảnh động chuyển động ngay trên lưới cờ, giúp người chơi nắm vững quy tắc cơ bản chỉ sau 1 phút.
 * 📈 **Hồ Sơ & Thống Kê Toàn Diện:** Lưu trữ thành tích cá nhân, tính toán tỉ lệ thắng, chuỗi trận bất bại và thời gian giải nhanh nhất qua biểu đồ trực quan.
-* ⚡ **Thuần Khiết & Tiện Lợi (Zero Dependencies):** Không cần cài đặt thư viện nặng nề, không cần môi trường lập trình phức tạp. Nhấp đúp chuột là chơi ngay trên mọi thiết bị và trình duyệt.
+* ⚡ **Thuần Khiết & Tiện Lợi (Zero Dependencies):** Không cần cài đặt thư viện nặng nề, không cần môi trường lập trình phức tạp. Nhấp đúp chuột là chơi ngay trên mọi trình duyệt hiện đại.
 * 💾 **Tự Động Lưu Trạng Thái (Zero-Loss):** Tự động ghi nhớ ván chơi dở dang. Bạn có thể yên tâm đóng trình duyệt và quay lại tiếp tục bất kỳ lúc nào.
 
 ---
@@ -84,7 +94,7 @@ python server.py
 
 ---
 
-## ⌨️ Phím Tắt Thao Tác Nhanh
+## ⌨️ Phím Tắt Thao Tác Nhanh (Bàn Phím PC)
 
 | Phím Tắt | Chức Năng |
 | :--- | :--- |
@@ -93,6 +103,7 @@ python server.py
 | `Ctrl + Z` | Hoàn tác nước đi trước đó |
 | `N` | Bật / Tắt chế độ Ghi chú nháp (Notes) |
 | `H` | Nhận gợi ý (Hint) cho ô hiện tại |
+| `Space` / `P` | Tạm dừng ván đấu |
 | `↑` `↓` `←` `→` | Di chuyển ô chọn trên bàn cờ 9x9 |
 
 ---
@@ -108,42 +119,44 @@ Sudoku_game/
 ├── .gitignore                 # Danh sách tệp loại trừ không lưu trên Git
 ├── docs/                      # Hệ thống tài liệu kỹ thuật toàn diện cho Dev & AI
 │   ├── 01_project_overview.txt         # Tổng quan, triết lý, cây thư mục & cách chạy
-│   ├── 02_architecture_and_modules.txt # Kiến trúc SPA & chi tiết 9 module JavaScript
+│   ├── 02_architecture_and_modules.txt # Kiến trúc SPA & chi tiết các module JavaScript
 │   ├── 03_game_logic_and_rules.txt     # Chi tiết quy tắc tính điểm, combo, phạt & Game Over
-│   ├── 04_ui_ux_design_system.txt      # Bảng màu, typography, responsive, hiệu ứng cảnh báo
+│   ├── 04_ui_ux_design_system.txt      # Bảng màu, typography, bố cục PC Desktop, cảnh báo
 │   ├── 05_dev_guidelines_and_notes.txt # Những lưu ý sống còn, quy chuẩn commit, quy tắc Git
-│   ├── 06_css_styling_and_architecture.txt # Phân tích chuyên sâu toàn diện 6 file CSS độc lập
+│   ├── 06_css_styling_and_architecture.txt # Phân tích chuyên sâu 6 file CSS desktop
 │   └── 07_developer_tools_and_testing.txt  # Hướng dẫn bộ công cụ DevTools & QA Cheat HUD
 ├── devtools/                  # Bộ công cụ Developer Tools & Cheat kiểm thử (Tách biệt độc lập)
 │   ├── devtools.css           # Giao diện Dark Console HUD & Ghost Answers
 │   └── devtools.js            # Module xác thực & logic can thiệp game engine
-├── screenshots/               # Thư viện ảnh chụp giao diện thực tế (9 màn hình)
+├── screenshots/               # Thư viện ảnh chụp giao diện thực tế (10 màn hình PC)
 │   ├── 1-splash.png           # Màn hình mở đầu (Splash Screen) với hiệu ứng số nảy
-│   ├── 2-lobby-home.png       # Sảnh chính (Lobby Home) chọn cấp độ chơi
+│   ├── 2-lobby-home.png       # Sảnh chính (Lobby Home) kèm thanh Dock Desktop
 │   ├── 3-tutorial.png         # Hướng dẫn tương tác từng bước trực quan
 │   ├── 4-variants.png         # Tab thông tin 4 biến thể Sudoku nổi tiếng
-│   ├── 5-profile.png          # Hồ sơ thành tích: cụm Donut Chart & 6 thẻ thông số
+│   ├── 5-profile.png          # Hồ sơ thành tích: Dashboard 2 cột không cuộn trang
 │   ├── 6-gameplay.png         # Bàn cờ 9x9 với tính điểm, combo, đồng hồ, phím số
-│   ├── 7-danger-warning.png   # Hiệu ứng cảnh báo nguy hiểm khi chọn sai nhiều lần
+│   ├── 7-danger-warning.png   # Hiệu ứng cảnh báo nguy hiểm khi chọn sai liên tiếp
 │   ├── 8-victory-modal.png    # Hộp thoại chiến thắng với bảng tổng kết điểm chi tiết
-│   └── 9-devtools-qa.png      # Bảng điều khiển QA Dev Console & chế độ Ghost Answers
+│   ├── 9-devtools-qa.png      # Bảng điều khiển QA Dev Console & chế độ Ghost Answers
+│   └── 10-mobile-notice.png   # Màn hình thông báo thân thiện chỉ dành cho màn hình PC
 ├── css/
-│   ├── main.css               # Reset CSS, hệ thống màu, chuyển màn hình
+│   ├── main.css               # Reset CSS, hệ thống màu, chuyển màn hình, mobile notice
 │   ├── splash.css             # Giao diện & hoạt ảnh Màn hình Khởi đầu
-│   ├── lobby.css              # Giao diện Sảnh chính, Menu, thẻ ván dở
+│   ├── lobby.css              # Giao diện Sảnh chính, Menu Dock, thẻ ván dở
 │   ├── gameplay.css           # Bảng 9x9, bàn phím số, cảnh báo nguy hiểm
 │   ├── modals.css             # Hộp thoại Hướng dẫn, Bảng điểm chi tiết, Game Over
-│   └── profile.css            # Hồ sơ, biểu đồ Donut Chart, 6 thẻ thành tích
+│   └── profile.css            # Hồ sơ Dashboard PC: Biểu đồ Donut & 6 thẻ thông số
 └── js/
     ├── storage.js             # Lớp lưu trữ LocalStorage & Memory Fallback
+    ├── sound.js               # Động cơ âm thanh Web Audio procedural SFX (10 SFX)
     ├── sudoku-engine.js       # Thuật toán sinh đề & giải Sudoku độc bản
-    ├── game.js                # Quản lý ván chơi, bộ đếm giờ, lỗi, hoàn tác
+    ├── game.js                # Quản lý ván chơi, bộ đếm giờ, lỗi, hoàn tác, điểm
     ├── ui-board.js            # Render bàn cờ, highlight hàng/cột/khối
     ├── ui-controls.js         # Bàn phím số, công cụ phụ trợ, cảnh báo đỏ
     ├── tutorial.js            # Quản lý các bước hướng dẫn động
     ├── variants.js            # Danh sách thông tin 4 biến thể Sudoku
     ├── profile.js             # Xử lý thống kê và vẽ biểu đồ tỉ lệ thắng
-    └── app.js                 # Điều hướng và khởi động ứng dụng
+    └── app.js                 # Điều hướng ứng dụng, router & mobile detection
 ```
 
 ---
