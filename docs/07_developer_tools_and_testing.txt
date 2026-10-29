@@ -1,5 +1,5 @@
 ================================================================================
-               SUDOKU WEB APP - DEVELOPER TOOLS & QA INSPECTOR
+               SUDOKU WEB - DEVELOPER TOOLS & QA INSPECTOR
        TÀI LIỆU HỆ THỐNG CÔNG CỤ DÀNH CHO NHÀ PHÁT TRIỂN & KIỂM THỬ (CHEAT HUD)
 ================================================================================
 

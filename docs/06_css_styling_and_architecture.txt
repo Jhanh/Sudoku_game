@@ -1,5 +1,5 @@
 ================================================================================
-               SUDOKU WEB APP - CSS ARCHITECTURE & STYLING
+               SUDOKU WEB - CSS ARCHITECTURE & STYLING
        TÀI LIỆU PHÂN TÍCH CHUYÊN SÂU TOÀN DIỆN 6 FILE CSS TRONG THƯ MỤC css/
 ================================================================================
 

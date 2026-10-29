@@ -1,5 +1,5 @@
 ================================================================================
-               SUDOKU WEB APP - ARCHITECTURE & MODULES
+               SUDOKU WEB - ARCHITECTURE & MODULES
        TÀI LIỆU KIẾN TRÚC HỆ THỐNG & CHI TIẾT TỪNG MODULE JAVASCRIPT
 ================================================================================
 

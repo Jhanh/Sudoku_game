@@ -1,10 +1,10 @@
 ================================================================================
-                    SUDOKU WEB APP - PROJECT OVERVIEW
+                    SUDOKU WEB - PROJECT OVERVIEW
        TÀI LIỆU TỔNG QUAN DỰ ÁN & HỆ THỐNG KIẾN TRÚC TOÀN DIỆN
 ================================================================================
 
 I. GIỚI THIỆU CHUNG
-- Tên dự án: Sudoku Web App
+- Tên dự án: Sudoku Web
 - Tác giả: Jhanh (Nguyễn Quốc Khánh)
 - Bản quyền: Giấy phép MIT (Open Source)
 - Nền tảng: Web thuần túy (Vanilla HTML5, CSS3, JavaScript ES6+)

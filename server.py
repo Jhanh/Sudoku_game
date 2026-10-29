@@ -30,7 +30,7 @@ httpd, port = find_available_port(DEFAULT_PORT)
 url = f"http://localhost:{port}"
 
 print("=" * 60)
-print(f"  [Sudoku Web App]")
+print(f"  [Sudoku Web]")
 print(f"  May chu noi bo dang chay tai: {url}")
 print(f"  (Tip: Neu cong {DEFAULT_PORT} bi trung, he thong tu chon cong {port})")
 print(f"  (Ban cung co the nhap dup truc tiep file index.html de choi)")

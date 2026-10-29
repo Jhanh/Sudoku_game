@@ -1,10 +1,10 @@
 ================================================================================
-               SUDOKU WEB APP - GAME LOGIC & SCORING RULES
+               SUDOKU WEB - GAME LOGIC & SCORING RULES
        TÀI LIỆU TOÀN DIỆN VỀ QUY TẮC TÍNH ĐIỂM, PHẠT, STREAK & LUẬT CHƠI
 ================================================================================
 
 Tài liệu này ghi chép toàn diện và chi tiết nhất về cơ chế tính điểm, các khoản
-thưởng, cơ chế trừ phạt và điều kiện Game Over của trò chơi Sudoku Web App.
+thưởng, cơ chế trừ phạt và điều kiện Game Over của trò chơi Sudoku Web.
 
 --------------------------------------------------------------------------------
 I. TỔNG QUAN BẢNG THÔNG SỐ CƠ BẢN (3 CẤP ĐỘ KHÓ)

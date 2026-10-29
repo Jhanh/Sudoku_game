@@ -1,5 +1,5 @@
 ================================================================================
-               SUDOKU WEB APP - UI/UX & DESIGN SYSTEM
+               SUDOKU WEB - UI/UX & DESIGN SYSTEM
        TÀI LIỆU HỆ THỐNG GIAO DIỆN, BẢNG MÀU, RESPONSIVE & HIỆU ỨNG
 ================================================================================
 

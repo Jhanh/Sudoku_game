@@ -1,4 +1,4 @@
-# 🧩 Sudoku Web App — Phiên Bản Tối Ưu Hóa 100% Cho PC
+# 🧩 Sudoku Web — Phiên Bản Tối Ưu Hóa 100% Cho PC
 
 <p align="center">
   <b>Trải nghiệm giải đố trí tuệ kinh điển với giao diện chuyên biệt cho máy tính (PC / Laptop), mượt mà và tối giản.</b>
@@ -34,14 +34,14 @@
 ## 🌟 Trải Nghiệm Hình Ảnh (Showcase)
 
 <p align="center">
-  <img src="screenshots/6-gameplay.png" alt="Màn hình bàn đấu Sudoku 9x9 PC" width="48%">
+  <img src="screenshots/1-splash.png" alt="Màn hình mở đầu (Splash Screen)" width="48%">
   &nbsp;
-  <img src="screenshots/5-profile.png" alt="Sảnh Hồ sơ chuẩn Dashboard không cần cuộn trang" width="48%">
+  <img src="screenshots/2-lobby-home.png" alt="Sảnh chính với thanh điều hướng Dock Desktop" width="48%">
 </p>
 <p align="center">
-  <img src="screenshots/2-lobby-home.png" alt="Sảnh chính với thanh điều hướng Dock Desktop" width="48%">
+  <img src="screenshots/4-variants.png" alt="Khám phá 4 biến thể Sudoku nổi tiếng" width="48%">
   &nbsp;
-  <img src="screenshots/10-mobile-notice.png" alt="Màn hình thông báo thân thiện chỉ dành cho kích thước màn hình PC" width="48%">
+  <img src="screenshots/6-gameplay.png" alt="Màn hình bàn đấu Sudoku 9x9 PC" width="48%">
 </p>
 
 ---

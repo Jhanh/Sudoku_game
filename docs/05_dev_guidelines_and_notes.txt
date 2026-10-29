@@ -1,5 +1,5 @@
 ================================================================================
-               SUDOKU WEB APP - DEV GUIDELINES & CRITICAL NOTES
+               SUDOKU WEB - DEV GUIDELINES & CRITICAL NOTES
        NHỮNG LƯU Ý KỸ THUẬT SỐNG CÒN DÀNH CHO DEVELOPER & AI (ANTIGRAVITY)
 ================================================================================
 
