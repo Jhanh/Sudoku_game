@@ -101,7 +101,7 @@ const Game = (() => {
 
     return {
       difficulty: st.difficulty,
-      diffLabel: DIFF_LABELS[st.difficulty] || st.difficulty,
+      diffLabel: (typeof I18n !== 'undefined' ? I18n.t('diff_' + st.difficulty) : (DIFF_LABELS[st.difficulty] || st.difficulty)),
       cellPts,
       correctCount: st.correctCount || 0,
       baseScore,
@@ -390,7 +390,10 @@ const Game = (() => {
     state.baseScore = (state.baseScore || 0) + basePts;
     state.score = (state.score || 0) + pointsEarned;
 
-    removeRelatedNotes(row, col, num);
+    const gs = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
+    if (gs.autoClearNotes !== false) {
+      removeRelatedNotes(row, col, num);
+    }
     state.undoStack.push({
       type: 'value',
       row, col,
@@ -566,7 +569,10 @@ const Game = (() => {
     state.notes[key] = [];
     state.given[i] = true; // Mark as given so it can't be erased
 
-    removeRelatedNotes(row, col, state.solution[i]);
+    const gsHint = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
+    if (gsHint.autoClearNotes !== false) {
+      removeRelatedNotes(row, col, state.solution[i]);
+    }
 
     // Don't add to undo stack (hints are permanent)
     state.selectedCell = { row, col };

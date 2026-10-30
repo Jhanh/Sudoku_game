@@ -91,7 +91,8 @@ const UIBoard = (() => {
           }
 
           // Same number highlight
-          if (selNum !== 0 && val === selNum && !(r === selRow && c === selCol)) {
+          const settings = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
+          if (settings.highlightSame !== false && selNum !== 0 && val === selNum && !(r === selRow && c === selCol)) {
             cell.classList.add('same-number');
           }
         }
@@ -101,7 +102,8 @@ const UIBoard = (() => {
           cell.classList.add('given');
         } else if (val !== 0) {
           cell.classList.add('user');
-          if (!isCorrect) cell.classList.add('error');
+          const s = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
+          if (!isCorrect && s.highlightMistakes !== false) cell.classList.add('error');
         }
 
         // Hint flash

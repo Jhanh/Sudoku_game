@@ -56,7 +56,7 @@ const UIControls = (() => {
     if (!state) return;
 
     // Info bar
-    document.getElementById('info-difficulty').textContent = Game.DIFF_LABELS[state.difficulty] || state.difficulty;
+    document.getElementById('info-difficulty').textContent = (typeof I18n !== 'undefined' ? I18n.t('diff_' + state.difficulty) : (Game.DIFF_LABELS[state.difficulty] || state.difficulty));
     document.getElementById('info-score').textContent = state.score;
 
     const streakEl = document.getElementById('info-streak');
@@ -93,7 +93,8 @@ const UIControls = (() => {
       if (wStreak >= 1) {
         const penalty = Game.getWrongPenalty(state.difficulty, wStreak);
         const stage = Game.getWarningStage(state.difficulty, wStreak);
-        wrongStreakEl.textContent = `⚠️ Sai ${wStreak} (-${penalty}đ)`;
+        const isEn = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en';
+        wrongStreakEl.textContent = isEn ? `⚠️ ${wStreak} errors (-${penalty}pts)` : `⚠️ Sai ${wStreak} (-${penalty}đ)`;
         wrongStreakEl.className = 'wrong-streak-badge' + (stage === 3 ? ' stage-critical' : '');
       } else {
         wrongStreakEl.className = 'wrong-streak-badge hidden';
@@ -150,10 +151,10 @@ const UIControls = (() => {
     if (pauseBtn) {
       if (state.isPaused) {
         pauseBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-        pauseBtn.title = 'Tiếp tục';
+        pauseBtn.title = (typeof I18n !== 'undefined' ? I18n.t('btn_resume') : 'Tiếp tục');
       } else {
         pauseBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
-        pauseBtn.title = 'Tạm dừng';
+        pauseBtn.title = (typeof I18n !== 'undefined' && I18n.getLanguage() === 'en' ? 'Pause' : 'Tạm dừng');
       }
     }
 

@@ -6,23 +6,25 @@ const Tutorial = (() => {
   const totalSteps = 3;
   let animTimers = [];
 
-  const steps = [
-    {
-      title: 'Quy tắc Hàng & Cột',
-      desc: 'Mỗi <strong>hàng ngang</strong> và mỗi <strong>cột dọc</strong> phải chứa đầy đủ các số từ 1 đến 9 — không có số nào được lặp lại.',
-      buildDemo: buildStep1
-    },
-    {
-      title: 'Quy tắc Khối 3×3',
-      desc: 'Bảng Sudoku được chia thành 9 <strong>khối 3×3</strong>. Mỗi khối cũng phải chứa đúng các số từ 1 đến 9, không trùng lặp.',
-      buildDemo: buildStep2
-    },
-    {
-      title: 'Suy luận & Ghi chú',
-      desc: 'Dùng <strong>giao điểm</strong> giữa hàng, cột và khối để loại trừ. Bật chế độ <strong>Ghi chú</strong> (✏️) để đánh dấu các số có thể điền vào ô trống.',
-      buildDemo: buildStep3
-    }
-  ];
+  function getSteps() {
+    return [
+      {
+        title: typeof I18n !== 'undefined' ? I18n.t('tut_step1_title') : 'Quy tắc Hàng & Cột',
+        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step1_desc') : 'Mỗi <strong>hàng ngang</strong> và mỗi <strong>cột dọc</strong> phải chứa đầy đủ các số từ 1 đến 9 — không có số nào được lặp lại.',
+        buildDemo: buildStep1
+      },
+      {
+        title: typeof I18n !== 'undefined' ? I18n.t('tut_step2_title') : 'Quy tắc Khối 3×3',
+        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step2_desc') : 'Bảng Sudoku được chia thành 9 <strong>khối 3×3</strong>. Mỗi khối cũng phải chứa đúng các số từ 1 đến 9, không trùng lặp.',
+        buildDemo: buildStep2
+      },
+      {
+        title: typeof I18n !== 'undefined' ? I18n.t('tut_step3_title') : 'Suy luận & Ghi chú',
+        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step3_desc') : 'Dùng <strong>giao điểm</strong> giữa hàng, cột và khối để loại trừ. Bật chế độ <strong>Ghi chú</strong> (✏️) để đánh dấu các số có thể điền vào ô trống.',
+        buildDemo: buildStep3
+      }
+    ];
+  }
 
   function show() {
     currentStep = 0;
@@ -40,7 +42,7 @@ const Tutorial = (() => {
     const carousel = document.getElementById('tutorial-carousel');
     carousel.innerHTML = '';
 
-    const step = steps[currentStep];
+    const step = getSteps()[currentStep];
     const container = document.createElement('div');
     container.className = 'tutorial-step active';
 
@@ -71,7 +73,9 @@ const Tutorial = (() => {
     // Buttons
     document.getElementById('btn-tut-prev').disabled = currentStep === 0;
     const nextBtn = document.getElementById('btn-tut-next');
-    nextBtn.textContent = currentStep === totalSteps - 1 ? 'Hoàn tất' : 'Tiếp theo';
+    const finishText = typeof I18n !== 'undefined' ? I18n.t('tut_btn_start_play') : 'Hoàn tất';
+    const nextText = typeof I18n !== 'undefined' ? I18n.t('btn_next') : 'Tiếp theo';
+    nextBtn.textContent = currentStep === totalSteps - 1 ? finishText : nextText;
   }
 
   function next() {
@@ -320,6 +324,6 @@ const Tutorial = (() => {
     document.getElementById('btn-tut-prev').addEventListener('click', prev);
   }
 
-  return { show, hide, bindEvents };
+  return { show, hide, bindEvents, updateLanguage: () => { if (!document.getElementById('modal-tutorial').classList.contains('hidden')) _render(); } };
 })();
 
