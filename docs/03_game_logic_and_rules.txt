@@ -218,14 +218,14 @@ tốc độ giải đố và độ chuẩn xác của kỳ thủ (thay vì chỉ
 | Bậc | Danh Hiệu Tiếng Việt  | English Title     | Icon | Điểm Ngưỡng  | SỐ GIỜ CẦN CHƠI   | Ước Tính Số Ván      | Cảnh Giới Chinh Phục & Trải Nghiệm            |
 +-----+-----------------------+-------------------+------+--------------+-------------------+----------------------+-----------------------------------------------+
 |  1  | Nhập Môn              | Novice            |  🥋  | 0 điểm       | 0 giờ             | 0 ván                | Bắt đầu hành trình, làm quen ma trận số 9x9.  |
-|  2  | Tập Sự                | Apprentice        |  🥉  | 10,000 điểm  | ~25 phút (~0.4h)  | 4 - 10 ván           | Nắm vững luật loại trừ cơ bản hàng/cột/khối.  |
-|  3  | Sơ Cấp                | Adept             |  🥈  | 35,000 điểm  | ~1.5 giờ          | 10 - 35 ván          | Biết dùng nháp, tìm ô độc nhất (Naked Single).|
-|  4  | Thấu Suốt             | Skilled           |  🥇  | 100,000 điểm | ~4.0 giờ          | 25 - 100 ván         | Tự tin giải Trung Bình, duy trì combo streak. |
-|  5  | Tinh Anh              | Tactician         |  🎖️  | 300,000 điểm | ~12.0 giờ         | 70 - 300 ván         | 1-2 tuần chơi, làm quen và chinh phục mức Khó.|
-|  6  | Chuyên Gia            | Expert            |  💠  | 800,000 điểm | ~32.0 giờ         | 200 - 800 ván        | ~1 tháng chơi, nhuần nhuyễn kỹ thuật loại trừ.|
-|  7  | Bậc Thầy              | Master            |  🔮  | 2,000,000 đ  | ~80.0 giờ         | 500 - 2,000 ván      | 2-3 tháng rèn luyện, tốc độ giải cờ siêu tốc. |
-|  8  | Kiện Tướng            | Grandmaster       |  👑  | 5,000,000 đ  | ~200.0 giờ        | 1,200 - 5,000 ván    | 6-8 tháng kiên trì, đẳng cấp thi đấu đỉnh cao.|
-|  9  | Huyền Thoại Sudoku    | Sudoku Legend     |  🌟  | 10,000,000 đ | ~400.0 giờ        | ~3,500 - 5,000+ ván  | Đỉnh cao danh vọng tối thượng ngàn trận đấu!  |
+|  2  | Tập Sự                | Apprentice        |  🥉  | 5,000 điểm   | ~12 phút (~0.2h)  | 3 - 5 ván            | Hưng phấn ban đầu, nắm vững luật cơ bản.      |
+|  3  | Sơ Cấp                | Adept             |  🥈  | 15,000 điểm  | ~35 phút (~0.6h)  | 8 - 15 ván           | Biết dùng nháp, tìm ô độc nhất (Naked Single).|
+|  4  | Thấu Suốt             | Skilled           |  🥇  | 40,000 điểm  | ~1.5 giờ          | 20 - 35 ván          | Tự tin giải Trung Bình, duy trì combo streak. |
+|  5  | Tinh Anh              | Tactician         |  🎖️  | 100,000 điểm | ~4.0 giờ          | 50 - 80 ván          | 1 tuần chơi, làm quen và chinh phục mức Khó.  |
+|  6  | Chuyên Gia            | Expert            |  💠  | 250,000 điểm | ~10.0 giờ         | 120 - 180 ván        | ~2 tuần chơi, nhuần nhuyễn kỹ thuật loại trừ. |
+|  7  | Bậc Thầy              | Master            |  🔮  | 650,000 đ    | ~25.0 giờ         | 250 - 350 ván        | 1 tháng rèn luyện, tốc độ giải cờ siêu tốc.   |
+|  8  | Kiện Tướng            | Grandmaster       |  👑  | 1,500,000 đ  | ~60.0 giờ         | 500 - 650 ván        | 2-3 tháng kiên trì, đẳng cấp thi đấu đỉnh cao.|
+|  9  | Huyền Thoại Sudoku    | Sudoku Legend     |  🌟  | 3,000,000 đ  | ~120.0 giờ        | ~1,000 ván           | Đỉnh cao danh vọng tối thượng ngàn trận đấu!  |
 +-----+-----------------------+-------------------+------+--------------+-------------------+----------------------+-----------------------------------------------+
 
 3. CƠ CHẾ HIỂN THỊ TIẾN TRÌNH TRÊN HỒ SƠ:

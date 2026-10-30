@@ -113,7 +113,7 @@ scroll trên màn hình 1080p, 1440p và laptop 1366x768):
          đồng bộ phong cách với nút đổi tên, bấm để mở Modal Cài đặt hệ thống.
     - Thẻ Cấp Bậc Danh Hiệu Kỳ Thủ (Profile Rank Card):
       * Hệ thống 9 bậc danh xưng gắn liền ma trận 9×9: 🥋 Nhập Môn -> 🥉 Tập Sự -> 🥈 Sơ Cấp -> 🥇 Thấu Suốt -> 🎖️ Tinh Anh -> 💠 Chuyên Gia -> 🔮 Bậc Thầy -> 👑 Kiện Tướng -> 🌟 Huyền Thoại Sudoku.
-      * Thanh tiến trình phần trăm (Mastery Progress Bar) gradient chuyển màu, hiệu ứng hoàng kim rực rỡ khi chạm mốc tối đa 10,000,000+ điểm.
+      * Thanh tiến trình phần trăm (Mastery Progress Bar) gradient chuyển màu, hiệu ứng hoàng kim rực rỡ khi chạm mốc tối đa 3,000,000+ điểm (~1,000 ván).
       * Dòng số liệu trực quan: [X] / [Y] điểm | [Z]%, tự động chuyển sang "Đỉnh Cao Danh Vọng" ở cấp 9.
    - Không gian sạch sẽ: Ô âm thanh và nút xóa dữ liệu đã được đưa trọn vẹn vào trong Modal Cài Đặt.
 

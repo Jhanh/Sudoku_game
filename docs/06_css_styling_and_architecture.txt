@@ -205,7 +205,7 @@ II. CHI TIẾT TỪNG FILE CSS
        - Huy hiệu cấp bậc lớn nổi bật (9 cấp: 🥋 Nhập Môn, 🥉 Tập Sự, 🥈 Sơ Cấp, 🥇 Thấu Suốt, 🎖️ Tinh Anh, 💠 Chuyên Gia, 🔮 Bậc Thầy, 👑 Kiện Tướng, 🌟 Huyền Thoại Sudoku).
        - Tên danh hiệu cùng chỉ số điểm ngưỡng yêu cầu và số giờ chơi ước tính.
        - Thanh đo tiến trình (`.rank-progress-bar` & `.rank-progress-fill`) chuyển sắc xanh tím mượt mà,
-         và tự động chuyển sang hiệu ứng hoàng kim lấp lánh (`.rank-max`) khi đạt 10,000,000+ điểm.
+         và tự động chuyển sang hiệu ứng hoàng kim lấp lánh (`.rank-max`) khi đạt 3,000,000+ điểm (~1,000 ván).
   
   b. Cột phải (Main Dashboard - 1fr):
      * Hàng chọn cấp độ (`.difficulty-tabs`): 3 tab Dễ, Trung bình, Khó.

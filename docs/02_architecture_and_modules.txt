@@ -143,14 +143,14 @@ II. CHI TIẾT 11 MODULE JAVASCRIPT TRONG js/
       + Thẻ Cấp Bậc Danh Hiệu (Profile Rank Card):
         * Tự động tính toán 9 bậc danh hiệu dựa trên Tổng Điểm Tích Lũy (Mastery Points):
           - 🥋 Nhập Môn (Novice): 0 đ (~0h)
-          - 🥉 Tập Sự (Apprentice): 10,000 đ (~0.4h)
-          - 🥈 Sơ Cấp (Adept): 35,000 đ (~1.5h)
-          - 🥇 Thấu Suốt (Skilled): 100,000 đ (~4h)
-          - 🎖️ Tinh Anh (Tactician): 300,000 đ (~12h)
-          - 💠 Chuyên Gia (Expert): 800,000 đ (~32h)
-          - 🔮 Bậc Thầy (Master): 2,000,000 đ (~80h)
-          - 👑 Kiện Tướng (Grandmaster): 5,000,000 đ (~200h)
-          - 🌟 Huyền Thoại Sudoku (Sudoku Legend): 10,000,000+ đ (~400h)
+          - 🥉 Tập Sự (Apprentice): 5,000 đ (~0.2h)
+          - 🥈 Sơ Cấp (Adept): 15,000 đ (~0.6h)
+          - 🥇 Thấu Suốt (Skilled): 40,000 đ (~1.5h)
+          - 🎖️ Tinh Anh (Tactician): 100,000 đ (~4h)
+          - 💠 Chuyên Gia (Expert): 250,000 đ (~10h)
+          - 🔮 Bậc Thầy (Master): 650,000 đ (~25h)
+          - 👑 Kiện Tướng (Grandmaster): 1,500,000 đ (~60h)
+          - 🌟 Huyền Thoại Sudoku (Sudoku Legend): 3,000,000+ đ (~120h, ~1,000 ván)
         * Thanh tiến trình phần trăm (Mastery Progress Bar) tính điểm chi tiết, hiệu ứng hoàng kim .rank-max ở bậc 9.
      + Bộ tab chọn 3 độ khó: Dễ, Trung bình, Khó (kết nối đa ngôn ngữ).
      + Thẻ Tổng Quan Trận Đấu (Overview Card - Hình chữ nhật):
