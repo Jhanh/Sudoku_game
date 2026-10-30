@@ -24,15 +24,15 @@ const Profile = (() => {
   }
 
   const RANKS = [
-    { level: 1, key: 'profile_rank_1', icon: '🥋', minScore: 0, nextScore: 10000 },
-    { level: 2, key: 'profile_rank_2', icon: '🥉', minScore: 10000, nextScore: 35000 },
-    { level: 3, key: 'profile_rank_3', icon: '🥈', minScore: 35000, nextScore: 100000 },
-    { level: 4, key: 'profile_rank_4', icon: '🥇', minScore: 100000, nextScore: 300000 },
-    { level: 5, key: 'profile_rank_5', icon: '🎖️', minScore: 300000, nextScore: 800000 },
-    { level: 6, key: 'profile_rank_6', icon: '💠', minScore: 800000, nextScore: 2000000 },
-    { level: 7, key: 'profile_rank_7', icon: '🔮', minScore: 2000000, nextScore: 5000000 },
-    { level: 8, key: 'profile_rank_8', icon: '👑', minScore: 5000000, nextScore: 10000000 },
-    { level: 9, key: 'profile_rank_9', icon: '🌟', minScore: 10000000, nextScore: null }
+    { level: 1, key: 'profile_rank_1', icon: '🥋', minScore: 0, nextScore: 5000 },
+    { level: 2, key: 'profile_rank_2', icon: '🥉', minScore: 5000, nextScore: 15000 },
+    { level: 3, key: 'profile_rank_3', icon: '🥈', minScore: 15000, nextScore: 40000 },
+    { level: 4, key: 'profile_rank_4', icon: '🥇', minScore: 40000, nextScore: 100000 },
+    { level: 5, key: 'profile_rank_5', icon: '🎖️', minScore: 100000, nextScore: 250000 },
+    { level: 6, key: 'profile_rank_6', icon: '💠', minScore: 250000, nextScore: 650000 },
+    { level: 7, key: 'profile_rank_7', icon: '🔮', minScore: 650000, nextScore: 1500000 },
+    { level: 8, key: 'profile_rank_8', icon: '👑', minScore: 1500000, nextScore: 3000000 },
+    { level: 9, key: 'profile_rank_9', icon: '🌟', minScore: 3000000, nextScore: null }
   ];
 
   function _renderRank() {
