@@ -371,11 +371,6 @@ const App = (() => {
 
     if (exploreBtn) {
       exploreBtn.addEventListener('click', navigateToLobby);
-      exploreBtn.addEventListener('pointerup', navigateToLobby);
-    }
-    if (splashEl) {
-      splashEl.addEventListener('click', navigateToLobby);
-      splashEl.addEventListener('pointerup', navigateToLobby);
     }
 
     // Auto-save on page unload / hide
@@ -486,8 +481,16 @@ const App = (() => {
       });
     });
 
-    // Keyboard support for gameplay
+    // Keyboard support for splash & gameplay
     document.addEventListener('keydown', (e) => {
+      const splashScreen = document.getElementById('screen-splash');
+      if (splashScreen && splashScreen.classList.contains('active')) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          navigateToLobby(e);
+          return;
+        }
+      }
+
       if (!Game.isActive()) return;
       const state = Game.getState();
       if (!state || state.isPaused) return;
@@ -538,11 +541,8 @@ const App = (() => {
       try { window.history.replaceState({}, document.title, window.location.pathname); } catch (_) {}
     }
 
-    // Check for saved game on load
-    if (Storage.hasActiveGame()) {
-      // Skip splash, go to lobby with continue option
-      _goToLobby();
-    }
+    // Always show Splash screen on load; pre-populate lobby actions in background
+    _updateHomeActions();
   }
 
   return {
