@@ -330,6 +330,11 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
             <span class="tool-label" data-i18n="tool_erase">Xóa</span>
           </button>
+          <button id="btn-fast-fill" class="tool-btn" data-i18n-title="tool_fast_fill_title" title="Chế độ Tia chớp - Điền liên tiếp (F)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span class="tool-label" data-i18n="tool_fast_fill">Tia chớp</span>
+            <span id="fast-fill-badge" class="tool-badge badge-off">OFF</span>
+          </button>
           <button id="btn-notes" class="tool-btn" title="Ghi chú">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             <span class="tool-label" data-i18n="tool_notes">Ghi chú</span>
@@ -511,6 +516,17 @@
             </div>
             <label class="toggle-switch">
               <input type="checkbox" id="setting-toggle-mistakes" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row-info">
+              <span class="setting-row-title" data-i18n="settings_fastfill_title">Tự động bật chế độ Tia chớp</span>
+              <span class="setting-row-desc" data-i18n="settings_fastfill_desc">Tự động kích hoạt chế độ Tia chớp khi vào ván chơi mới</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="setting-toggle-fastfill">
               <span class="toggle-slider"></span>
             </label>
           </div>

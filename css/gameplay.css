@@ -526,6 +526,22 @@
   color: var(--primary);
 }
 
+.tool-btn#btn-fast-fill.active {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: #F59E0B;
+  color: #D97706;
+}
+
+.tool-btn#btn-fast-fill.active svg {
+  stroke: #D97706;
+  fill: rgba(245, 158, 11, 0.25);
+}
+
+.tool-btn#btn-fast-fill.active .badge-off {
+  background: #D97706;
+  color: #FFFFFF;
+}
+
 .tool-btn svg {
   width: 22px;
   height: 22px;
@@ -621,10 +637,57 @@
 }
 
 .num-key.completed {
-  opacity: 0.3;
-  pointer-events: none;
+  opacity: 0.22;
+  cursor: pointer;
+  background: var(--surface-subtle);
+  border-color: transparent;
+}
+
+.num-key.completed:hover {
+  opacity: 0.45;
 }
 
 .num-key.completed .num-digit {
   color: var(--text-secondary);
+}
+
+.num-key.completed .num-remaining {
+  color: var(--text-secondary);
+}
+
+/* When a completed digit is selected in Lightning / Tia chớp mode to view its 9 cells */
+.num-key.completed.locked-digit {
+  opacity: 0.9 !important;
+  background: var(--surface) !important;
+  border: 2px solid var(--primary) !important;
+  box-shadow: 0 0 0 2px var(--primary-light), 0 2px 8px rgba(37, 99, 235, 0.18) !important;
+}
+
+.num-key.completed.locked-digit .num-digit {
+  color: var(--primary) !important;
+}
+
+/* Fast-Fill (Tia chớp) locked digit & dimmed states */
+.num-key.locked-digit {
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light), 0 2px 8px rgba(37, 99, 235, 0.18);
+  opacity: 1;
+}
+
+.num-key.locked-digit .num-digit {
+  color: var(--primary);
+}
+
+.num-key.locked-digit .num-remaining {
+  color: var(--text-secondary);
+}
+
+.num-key.dimmed:not(.completed) {
+  opacity: 0.78;
+}
+
+.num-key.dimmed:not(.completed):hover {
+  opacity: 1;
+  border-color: var(--primary-light);
 }

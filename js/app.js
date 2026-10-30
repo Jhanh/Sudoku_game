@@ -129,53 +129,6 @@ const App = (() => {
         <span class="final-score-val">${breakdown.finalScore}</span>
       </div>
 
-      <div class="score-breakdown-card">
-        <div class="breakdown-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          <span>${isEn ? 'Score Breakdown' : 'Chi Tiết Bảng Điểm'} (${breakdown.diffLabel})</span>
-        </div>
-        <div class="breakdown-row">
-          <span class="row-label">${isEn ? 'Correct digits' : 'Ô điền đúng'} (${breakdown.correctCount} ${isEn ? 'cells' : 'ô'} × ${breakdown.cellPts}đ)</span>
-          <span class="row-val">+${breakdown.baseScore}</span>
-        </div>
-        <div class="breakdown-row">
-          <span class="row-label">${typeof I18n !== 'undefined' ? I18n.t('breakdown_combo_bonus') : 'Thưởng chuỗi combo'} (Max ${breakdown.maxStreak})</span>
-          <span class="row-val ${breakdown.comboBonus > 0 ? 'highlight-combo' : ''}">+${breakdown.comboBonus}</span>
-        </div>
-        ${breakdown.perfectBonus > 0 ? `
-        <div class="breakdown-row">
-          <span class="row-label">⭐ ${typeof I18n !== 'undefined' ? I18n.t('breakdown_perfect_bonus') : 'Thưởng hoàn hảo'}</span>
-          <span class="row-val highlight-perfect">+${breakdown.perfectBonus}</span>
-        </div>` : ''}
-        ${breakdown.hintPenalties > 0 ? `
-        <div class="breakdown-row">
-          <span class="row-label">💡 ${typeof I18n !== 'undefined' ? I18n.t('breakdown_hint_penalty') : 'Trừ dùng gợi ý'} (${state.hintsUsed || 0})</span>
-          <span class="row-val highlight-penalty">-${breakdown.hintPenalties}</span>
-        </div>` : ''}
-        ${breakdown.wrongPenalties > 0 ? `
-        <div class="breakdown-row">
-          <span class="row-label">⚠️ ${typeof I18n !== 'undefined' ? I18n.t('breakdown_wrong_penalty') : 'Trừ chuỗi chọn sai'}</span>
-          <span class="row-val highlight-penalty">-${breakdown.wrongPenalties}</span>
-        </div>` : ''}
-        <div class="breakdown-row">
-          <span class="row-label">${isEn ? 'Accumulated points' : 'Điểm tích lũy bàn cờ'}</span>
-          <span class="row-val">${breakdown.rawScore}</span>
-        </div>
-        <div class="breakdown-row">
-          <span class="row-label">${typeof I18n !== 'undefined' ? I18n.t('breakdown_time') : 'Thời gian'} (${breakdown.formattedTime})</span>
-          <span class="row-val ${breakdown.timeMultiplier > 1.0 ? 'highlight-time' : ''}">${speedTag}</span>
-        </div>
-        <div class="breakdown-row">
-          <span class="row-label">${typeof I18n !== 'undefined' ? I18n.t('breakdown_mistakes') : 'Số lỗi mắc phải'}</span>
-          <span class="row-val ${breakdown.mistakes === 0 ? 'highlight-perfect' : ''}">${breakdown.mistakes}/3</span>
-        </div>
-        <div class="breakdown-divider"></div>
-        <div class="breakdown-row breakdown-total">
-          <span class="row-label">${isEn ? 'Final Total' : 'Tổng kết'} (${breakdown.rawScore} × ${breakdown.timeMultiplier})</span>
-          <span class="row-val total-number">${breakdown.finalScore}</span>
-        </div>
-      </div>
-
       <div class="gameover-actions">
         <button class="btn-primary btn-large" id="btn-go-new">${typeof I18n !== 'undefined' ? I18n.t('btn_play_again') : 'Ván Chơi Mới'}</button>
         <button class="btn-secondary btn-large" id="btn-go-lobby">${typeof I18n !== 'undefined' ? I18n.t('btn_back_lobby') : 'Về Sảnh Chính'}</button>
@@ -349,6 +302,14 @@ const App = (() => {
       });
     }
 
+    const fastfillToggle = document.getElementById('setting-toggle-fastfill');
+    if (fastfillToggle) {
+      fastfillToggle.checked = settings.fastFillDefault === true;
+      fastfillToggle.addEventListener('change', () => {
+        Storage.updateSetting('fastFillDefault', fastfillToggle.checked);
+      });
+    }
+
     // 5. Gear button in profile header
     const gearBtn = document.getElementById('btn-settings-profile');
     if (gearBtn) {
@@ -356,6 +317,11 @@ const App = (() => {
         if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
         // Sync toggles state right before showing modal
         if (soundToggle) soundToggle.checked = !Sound.isMuted();
+        const curSettings = Storage.getSettings();
+        if (autoclearToggle) autoclearToggle.checked = curSettings.autoClearNotes !== false;
+        if (sameNumToggle) sameNumToggle.checked = curSettings.highlightSame !== false;
+        if (mistakesToggle) mistakesToggle.checked = curSettings.highlightMistakes !== false;
+        if (fastfillToggle) fastfillToggle.checked = curSettings.fastFillDefault === true;
         openModal('modal-settings');
       });
     }
@@ -528,7 +494,12 @@ const App = (() => {
 
       const key = e.key;
       if (key >= '1' && key <= '9') {
-        Game.placeNumber(parseInt(key));
+        const n = parseInt(key);
+        if (state.fastFillMode) {
+          Game.selectFastFillDigit(n);
+        } else {
+          Game.placeNumber(n);
+        }
       } else if (key === 'Backspace' || key === 'Delete') {
         Game.erase();
       } else if (key === 'z' && (e.ctrlKey || e.metaKey)) {
@@ -536,6 +507,8 @@ const App = (() => {
         Game.undo();
       } else if (key === 'n' || key === 'N') {
         Game.toggleNotes();
+      } else if (key === 'f' || key === 'F') {
+        Game.toggleFastFill();
       } else if (key === 'h' || key === 'H') {
         Game.useHint();
       }

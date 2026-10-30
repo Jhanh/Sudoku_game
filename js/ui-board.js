@@ -77,22 +77,25 @@ const UIBoard = (() => {
         if (r === 2 || r === 5) cell.classList.add('box-bottom');
 
         // Highlight logic (only when not paused)
-        if (!isPaused && selRow >= 0) {
-          const inRow = r === selRow;
-          const inCol = c === selCol;
-          const boxR = Math.floor(r / 3) * 3;
-          const boxC = Math.floor(c / 3) * 3;
-          const inBox = boxR === selBoxR && boxC === selBoxC;
+        if (!isPaused && (selRow >= 0 || (state.fastFillMode && state.fastFillDigit))) {
+          if (selRow >= 0) {
+            const inRow = r === selRow;
+            const inCol = c === selCol;
+            const boxR = Math.floor(r / 3) * 3;
+            const boxC = Math.floor(c / 3) * 3;
+            const inBox = boxR === selBoxR && boxC === selBoxC;
 
-          if (r === selRow && c === selCol) {
-            cell.classList.add('selected');
-          } else if (inRow || inCol || inBox) {
-            cell.classList.add('highlighted');
+            if (r === selRow && c === selCol) {
+              cell.classList.add('selected');
+            } else if (inRow || inCol || inBox) {
+              cell.classList.add('highlighted');
+            }
           }
 
-          // Same number highlight
+          // Same number highlight (uses fast-fill digit if active, else selected cell's number)
+          const targetNum = (state.fastFillMode && state.fastFillDigit) ? state.fastFillDigit : selNum;
           const settings = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
-          if (settings.highlightSame !== false && selNum !== 0 && val === selNum && !(r === selRow && c === selCol)) {
+          if (settings.highlightSame !== false && targetNum !== 0 && val === targetNum && !(r === selRow && c === selCol)) {
             cell.classList.add('same-number');
           }
         }

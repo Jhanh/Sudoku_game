@@ -181,6 +181,8 @@ const Game = (() => {
       timer: state.timer,
       undoStack: state.undoStack,
       notesMode: state.notesMode,
+      fastFillMode: state.fastFillMode,
+      fastFillDigit: state.fastFillDigit,
       isFinished: state.isFinished
     };
   }
@@ -250,6 +252,8 @@ const Game = (() => {
 
   function start(difficulty) {
     const { puzzle, solution } = SudokuEngine.generate(difficulty);
+    const settings = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
+    const defaultFastFill = !!settings.fastFillDefault;
     state = {
       puzzle: [...puzzle],
       solution: [...solution],
@@ -273,6 +277,8 @@ const Game = (() => {
       undoStack: [],
       selectedCell: null,
       notesMode: false,
+      fastFillMode: defaultFastFill,
+      fastFillDigit: null,
       isFinished: false,
       isPaused: false
     };
@@ -296,6 +302,8 @@ const Game = (() => {
       wrongStreak: saved.wrongStreak || 0,
       maxStreak: saved.maxStreak || 0,
       selectedCell: null,
+      fastFillMode: saved.fastFillMode || false,
+      fastFillDigit: saved.fastFillDigit || null,
       isPaused: false
     };
     startTimer();
@@ -305,6 +313,62 @@ const Game = (() => {
 
   function selectCell(row, col) {
     if (!state || state.isFinished || state.isPaused) return;
+
+    const i = idx(row, col);
+    const val = state.current[i];
+    const isGiven = state.given[i];
+    const isCorrectPlaced = (val !== 0 && val === state.solution[i]);
+
+    // In Fast-Fill (Tia chớp) mode:
+    if (state.fastFillMode) {
+      // 1. If clicking a cell that already contains a valid digit (given or correctly placed):
+      if (isGiven || isCorrectPlaced) {
+        // Toggle or switch active Tia chớp digit to this number (even if completed, to inspect its 9 cells!)
+        if (state.fastFillDigit === val) {
+          state.fastFillDigit = null;
+          state.selectedCell = { row, col };
+        } else {
+          state.fastFillDigit = val;
+          state.selectedCell = { row, col };
+        }
+        if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+        save();
+        if (onUpdate) onUpdate(state);
+        return;
+      }
+
+      // 2. If clicking an editable cell (empty or mistake):
+      if (!isGiven) {
+        if (state.fastFillDigit !== null) {
+          if (getRemaining(state.fastFillDigit) > 0) {
+            state.selectedCell = { row, col };
+            if (state.notesMode) {
+              _placeNote(row, col, state.fastFillDigit);
+            } else {
+              _placeValue(row, col, state.fastFillDigit);
+            }
+            return;
+          } else {
+            // Selected digit is already completed (viewing mode): do not place!
+            // Just select the clicked cell
+            state.selectedCell = { row, col };
+            if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+            save();
+            if (onUpdate) onUpdate(state);
+            return;
+          }
+        } else {
+          // Waiting for player to select next Tia chớp digit
+          state.selectedCell = { row, col };
+          if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+          save();
+          if (onUpdate) onUpdate(state);
+          return;
+        }
+      }
+    }
+
+    // Standard mode (Tia chớp off):
     state.selectedCell = { row, col };
     if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
     if (onUpdate) onUpdate(state);
@@ -349,10 +413,18 @@ const Game = (() => {
     const oldNotes = state.notes[key] ? [...state.notes[key]] : [];
 
     // If cell already has the correct number, don't overwrite
-    if (oldValue === state.solution[i] && oldValue !== 0) return;
+    if (oldValue === state.solution[i] && oldValue !== 0) {
+      if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+      if (onUpdate) onUpdate(state);
+      return;
+    }
 
     // If same value already placed, do nothing
-    if (oldValue === num) return;
+    if (oldValue === num) {
+      if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+      if (onUpdate) onUpdate(state);
+      return;
+    }
 
     state.current[i] = num;
     state.notes[key] = [];
@@ -452,8 +524,13 @@ const Game = (() => {
       return;
     }
 
+    const remainingForDigit = getRemaining(num);
+    if (remainingForDigit === 0 && state.fastFillDigit === num) {
+      state.fastFillDigit = null;
+      state.selectedCell = null;
+    }
+
     if (typeof Sound !== 'undefined') {
-      const remainingForDigit = getRemaining(num);
       if (remainingForDigit === 0 && Sound.playDigitComplete) {
         Sound.playDigitComplete();
       } else if (Sound.playCorrect) {
@@ -548,6 +625,39 @@ const Game = (() => {
   function toggleNotes() {
     if (!state || state.isFinished) return;
     state.notesMode = !state.notesMode;
+    save();
+    if (onUpdate) onUpdate(state);
+  }
+
+  function toggleFastFill(digit) {
+    if (!state || state.isFinished || state.isPaused) return;
+    state.fastFillMode = !state.fastFillMode;
+    if (state.fastFillMode) {
+      if (digit !== undefined && digit >= 1 && digit <= 9) {
+        state.fastFillDigit = digit;
+      } else if (state.selectedCell) {
+        const curVal = state.current[idx(state.selectedCell.row, state.selectedCell.col)];
+        state.fastFillDigit = (curVal >= 1 && curVal <= 9) ? curVal : null;
+      } else {
+        state.fastFillDigit = null;
+      }
+    } else {
+      state.fastFillDigit = null;
+    }
+    if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+    save();
+    if (onUpdate) onUpdate(state);
+  }
+
+  function selectFastFillDigit(num) {
+    if (!state || state.isFinished || state.isPaused) return;
+    if (!state.fastFillMode) {
+      placeNumber(num);
+      return;
+    }
+    state.fastFillDigit = (state.fastFillDigit === num) ? null : num;
+    state.selectedCell = null;
+    if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
     save();
     if (onUpdate) onUpdate(state);
   }
@@ -675,7 +785,7 @@ const Game = (() => {
 
   return {
     start, resume, selectCell, placeNumber,
-    undo, erase, toggleNotes, useHint,
+    undo, erase, toggleNotes, toggleFastFill, selectFastFillDigit, useHint,
     togglePause, giveUp, abandonSaved, destroy,
     getState, isActive, setCallbacks,
     getRemaining, formatTime,

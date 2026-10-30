@@ -35,7 +35,14 @@ const UIControls = (() => {
       btn.appendChild(digit);
       btn.appendChild(remaining);
 
-      btn.addEventListener('click', () => Game.placeNumber(n));
+      btn.addEventListener('click', () => {
+        const st = Game.getState();
+        if (st && st.fastFillMode) {
+          Game.selectFastFillDigit(n);
+        } else {
+          Game.placeNumber(n);
+        }
+      });
       pad.appendChild(btn);
     }
   }
@@ -44,6 +51,7 @@ const UIControls = (() => {
   function _bindTools() {
     document.getElementById('btn-undo').addEventListener('click', () => Game.undo());
     document.getElementById('btn-erase').addEventListener('click', () => Game.erase());
+    document.getElementById('btn-fast-fill').addEventListener('click', () => Game.toggleFastFill());
     document.getElementById('btn-notes').addEventListener('click', () => Game.toggleNotes());
     document.getElementById('btn-hint').addEventListener('click', () => Game.useHint());
 
@@ -192,16 +200,49 @@ const UIControls = (() => {
       document.getElementById('btn-notes').classList.remove('active');
     }
 
+    // Fast-Fill badge & button state
+    const ffBtn = document.getElementById('btn-fast-fill');
+    const ffBadge = document.getElementById('fast-fill-badge');
+    if (ffBtn && ffBadge) {
+      if (state.fastFillMode) {
+        ffBadge.textContent = 'ON';
+        ffBadge.className = 'tool-badge badge-count';
+        ffBtn.classList.add('active');
+      } else {
+        ffBadge.textContent = 'OFF';
+        ffBadge.className = 'tool-badge badge-off';
+        ffBtn.classList.remove('active');
+      }
+    }
+
     // Hint badge
     document.getElementById('hint-badge').textContent = state.hints;
 
-    // Numpad remaining counts
+    // Numpad remaining counts & Fast-Fill highlight/dimming
     for (let n = 1; n <= 9; n++) {
       const rem = Game.getRemaining(n);
       const remEl = document.getElementById(`rem-${n}`);
       const keyEl = remEl.parentElement;
       remEl.textContent = rem;
-      keyEl.classList.toggle('completed', rem === 0);
+      const isCompleted = rem === 0;
+      keyEl.classList.toggle('completed', isCompleted);
+
+      if (state.fastFillMode && state.fastFillDigit) {
+        if (n === state.fastFillDigit) {
+          keyEl.classList.add('locked-digit');
+          keyEl.classList.remove('dimmed');
+        } else {
+          keyEl.classList.remove('locked-digit');
+          if (!isCompleted) {
+            keyEl.classList.add('dimmed');
+          } else {
+            keyEl.classList.remove('dimmed');
+          }
+        }
+      } else {
+        keyEl.classList.remove('locked-digit');
+        keyEl.classList.remove('dimmed');
+      }
     }
   }
 

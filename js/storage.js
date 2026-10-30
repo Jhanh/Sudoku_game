@@ -181,7 +181,8 @@ const Storage = (() => {
   const DEFAULT_SETTINGS = {
     autoClearNotes: true,
     highlightSame: true,
-    highlightMistakes: true
+    highlightMistakes: true,
+    fastFillDefault: false
   };
 
   function getSettings() {
