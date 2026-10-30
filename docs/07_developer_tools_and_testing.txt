@@ -79,8 +79,7 @@ III. CHI TIẾT CÁC TÍNH NĂNG KIỂM THỬ (CORE CHEATS & QA TOOLS)
    - [⚠️ Cấp 1 (Sai 5 lần)]: Chớp đỏ nhẹ màn hình kèm banner cảnh báo phạt nặng.
    - [🔶 Cấp 2 (Sai 6 lần)]: Kích hoạt viền đỏ nhẹ cố định trên Dễ / Trung bình.
    - [🚨 Cấp 3 (Nhấp nháy đỏ)]: Kích hoạt nhấp nháy viền đỏ đậm liên tục kèm đếm ngược Game Over.
-   - [💀 Test Game Over]: Đẩy số lần sai vượt ngưỡng (16 lần ở Dễ/TB, 11 lần ở Khó) để kiểm thử
-     ngay lập tức màn hình Game Over do chạm ngưỡng chuỗi sai.
+   - [💀 Test Game Over]: Đẩy số lần sai vượt ngưỡng (chạm trần chuỗi sai liên tiếp: 3 lần ở Khó, 5 lần ở TB; hoặc tổng số lỗi: 11 lần ở Khó, 16 lần ở Dễ/TB) để kiểm thử ngay lập tức màn hình Game Over.
    - [🔄 Reset Chuỗi Sai Về 0]: Xóa sạch mọi cảnh báo đỏ và khôi phục giao diện bình thường.
 
 6. THỬ NGHIỆM HỆ SỐ THỜI GIAN (TIME MULTIPLIER TESTING):

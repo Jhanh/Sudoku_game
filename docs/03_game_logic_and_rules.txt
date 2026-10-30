@@ -13,19 +13,19 @@ I. TỔNG QUAN BẢNG THÔNG SỐ CƠ BẢN (3 CẤP ĐỘ KHÓ)
 +-------------+----------------+----------------+------------+--------------------+
 | Độ Khó      | Ô Cho Trước    | Ô Cần Giải     | Điểm / Ô   | Thưởng Hoàn Hảo    |
 +-------------+----------------+----------------+------------+--------------------+
-| Dễ (Easy)   | 38 - 45 ô      | 36 - 43 ô      | +10 điểm   | +100đ (0/3 lỗi)    |
-| TB (Medium) | 30 - 35 ô      | 46 - 51 ô      | +20 điểm   | +150đ (0/3 lỗi)    |
-| Khó (Hard)  | 24 - 28 ô      | 53 - 57 ô      | +30 điểm   | +200đ (0/3 lỗi)    |
+| Dễ (Easy)   | 38 - 45 ô      | 36 - 43 ô      | +10 điểm   | +100đ (0 lỗi)      |
+| TB (Medium) | 30 - 35 ô      | 46 - 51 ô      | +20 điểm   | +200đ (0 lỗi)      |
+| Khó (Hard)  | 24 - 28 ô      | 53 - 57 ô      | +40 điểm   | +300đ (0 lỗi)      |
 +-------------+----------------+----------------+------------+--------------------+
 
 * Triết lý cốt lõi:
   - BÃI BỎ PHẦN THƯỞNG THẮNG CHUNG CHUNG (+100, +200, +300): Người chơi phải giải trọn vẹn
     từng ô để tích lũy điểm số, phản ánh chân thực độ sâu và sự cẩn trọng trong từng nước đi.
   - THƯỞNG THẮNG HOÀN HẢO (Perfect Win Bonus): Chỉ khi người chơi giải xong cả bàn cờ mà
-    KHÔNG MẮC BẤT KỲ LỖI NÀO (0/3 lỗi) thì mới nhận được điểm thưởng đặc biệt:
+    KHÔNG MẮC BẤT KỲ LỖI NÀO (0 lỗi) thì mới nhận được điểm thưởng đặc biệt:
     + Dễ: +100 điểm
-    + Trung bình: +150 điểm
-    + Khó: +200 điểm
+    + Trung bình: +200 điểm
+    + Khó: +300 điểm
     (Nếu mắc từ 1 lỗi trở lên: Khoản thưởng này bằng 0).
   - TÔN VINH ĐỈNH CAO: Không lưu trữ "Điểm trung bình" hoặc "Tổng điểm tích lũy" để tránh
     việc cày ải số lượng ván Dễ tạo số ảo. Hồ sơ tập trung vào "Điểm cao nhất" (kỷ lục)
@@ -39,7 +39,7 @@ Khi người chơi điền đúng một ô trống, điểm số nhận được
 
 - Mức Dễ (Easy)       : +10 điểm / ô
 - Mức Trung bình (Med): +20 điểm / ô
-- Mức Khó (Hard)      : +30 điểm / ô
+- Mức Khó (Hard)      : +40 điểm / ô
 
 --------------------------------------------------------------------------------
 III. THƯỞNG CHUỖI ĐIỀN ĐÚNG LIÊN TIẾP (COMBO STREAK MULTIPLIER)
@@ -101,43 +101,50 @@ lũy tiến theo số lần dùng trong ván cờ:
 * Quy tắc bảo toàn: Điểm số không bao giờ bị âm (luôn giữ mức sàn tối thiểu là 0).
 
 --------------------------------------------------------------------------------
-VI. CƠ CHẾ PHẠT CHUỖI CHỌN SAI & GIỚI HẠN GAME OVER (WRONG STREAK PENALTIES)
+VI. CƠ CHẾ PHẠT SỐ LẦN SAI & GIỚI HẠN GAME OVER KÉP (MISTAKE PENALTIES & DUAL GAME OVER)
 --------------------------------------------------------------------------------
-Khi người chơi điền sai liên tục mà không chịu sửa đúng:
+Điểm trừ được tính toán theo TỔNG SỐ LẦN SAI LŨY KẾ (n) trong ván cờ (không bắt buộc
+phải liên tiếp, mỗi lần sai sẽ cộng dồn vào n) nhằm phản ánh chân thực số lỗi thực tế:
 
 1. Mức Dễ (Easy):
    - 5 lần sai đầu tiên (1 -> 5)    : -5 điểm / lượt
-   - 5 lần sai tiếp theo (6 -> 10)  : -50 điểm / lượt
-   - 5 lần sai tiếp theo (11 -> 15) : -100 điểm / lượt
-   - Lần thứ 16 liên tiếp           : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+   - 5 lần sai tiếp theo (6 -> 10)  : -15 điểm / lượt
+   - 5 lần sai tiếp theo (11 -> 15) : -30 điểm / lượt
+   - Lần sai thứ 16 (tổng số lỗi)   : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+   - Hoặc sai 16 lần liên tiếp      : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
 
 2. Mức Trung bình (Medium):
    - 5 lần sai đầu tiên (1 -> 5)    : -7 điểm / lượt
-   - 5 lần sai tiếp theo (6 -> 10)  : -70 điểm / lượt
-   - 5 lần sai tiếp theo (11 -> 15) : -140 điểm / lượt
-   - Lần thứ 16 liên tiếp           : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+   - 5 lần sai tiếp theo (6 -> 10)  : -20 điểm / lượt
+   - 5 lần sai tiếp theo (11 -> 15) : -40 điểm / lượt
+   - Lần sai thứ 16 (tổng số lỗi)   : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+   - Sai 5 lần liên tiếp            : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
 
 3. Mức Khó (Hard):
    - 5 lần sai đầu tiên (1 -> 5)    : -10 điểm / lượt
-   - 5 lần sai tiếp theo (6 -> 10)  : -100 điểm / lượt
-   - Lần thứ 11 liên tiếp           : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
-   *(Lý do: Đã chọn mức Khó thì việc sai liên tiếp 10 lần là không thể chấp nhận được).*
+   - 5 lần sai tiếp theo (6 -> 10)  : -30 điểm / lượt
+   - Lần sai thứ 11 (tổng số lỗi)   : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+   - Sai 3 lần liên tiếp            : XỬ THUA NGAY LẬP TỨC (GAME OVER)!
+   *(Lý do: Đã chọn mức Khó thì việc sai liên tiếp 3 lần là dấu hiệu spam đoán mò không thể chấp nhận).*
 
-4. QUY TẮC RESET CHUỖI SAI TỨC THÌ:
-   - Ngay khi người chơi chọn ĐÚNG bất kỳ một ô nào, chuỗi sai liên tiếp (wrongStreak)
-     sẽ lập tức reset về 0. Lần chọn sai kế tiếp sau đó sẽ được tính lại từ bậc 1
-     (-5đ / -7đ / -10đ).
+4. QUY TẮC RESET CHUỖI ĐIỀN ĐÚNG & CHUỖI SAI:
+   - Khi chọn SAI: correctStreak lập tức bị reset về 0, wrongStreak tăng lên 1, tổng lỗi mistakes tăng 1.
+   - Khi chọn ĐÚNG: wrongStreak lập tức được reset về 0 (dập tắt ngay cảnh báo đỏ chuỗi sai),
+     tuy nhiên TỔNG SỐ LỖI (mistakes) vẫn giữ nguyên để tính bậc trừ điểm lũy kế cho các lần sai sau.
 
 --------------------------------------------------------------------------------
 VII. CÁC CẤP ĐỘ CẢNH BÁO THỊ GIÁC CHUỖI SAI (DANGER WARNING STAGES)
 --------------------------------------------------------------------------------
-- CẤP 1 (Khi sai đúng 5 lần): Màn hình ửng đỏ nhẹ dạng flash (.flash-mild) kèm
-  băng rôn nhắc nhở tiếp tục sai sẽ bị phạt nặng hơn.
-- CẤP 2 (Từ lần thứ 6 ở mức Easy & Medium): Màn hình chuyển sang ửng đỏ nhẹ liên tục
-  (.stage-mild, không mất đi cho đến khi chọn đúng) kèm cảnh báo mức trừ điểm nặng hơn.
-- CẤP 3 (Từ lần thứ 6 ở Hard, và từ lần thứ 11 ở Easy & Medium): Màn hình nhấp nháy
-  đỏ đậm liên tục (.stage-critical) kèm cảnh báo nguy cấp kề cận Game Over!
-- KHI CHỌN ĐÚNG: Toàn bộ hiệu ứng đỏ, băng rôn và huy hiệu cảnh báo nguy hiểm biến mất ngay lập tức.
+- CẤP 1 (Nhắc nhở nhẹ): Màn hình ửng đỏ nhẹ dạng flash (.flash-mild) khi phạm 5 lỗi
+  (hoặc ở Medium sai 1 lần liên tiếp).
+- CẤP 2 (Cảnh báo cam/đỏ nhẹ): Màn hình chuyển sang ửng đỏ nhẹ liên tục (.stage-mild)
+  khi đạt từ 6 lỗi trở lên, hoặc khi chuỗi sai liên tiếp chạm 2 lần ở Khó / 3 lần ở Trung bình.
+- CẤP 3 (Báo động khẩn cấp kề cận Game Over): Màn hình nhấp nháy đỏ đậm liên tục
+  (.stage-critical) kèm âm thanh nhịp tim dồn dập (heartbeat sub-bass) khi:
+  + Mức Khó: Đang sai 2/3 lần liên tiếp (sai 1 lần nữa là Game Over!) hoặc đã phạm 10/10 lỗi.
+  + Mức Trung bình: Đang sai 4/5 lần liên tiếp (sai 1 lần nữa là Game Over!) hoặc đã phạm 15/15 lỗi.
+  + Mức Dễ: Đã phạm 15/15 lỗi (hoặc chuỗi sai 15/15).
+- KHI CHỌN ĐÚNG: Toàn bộ hiệu ứng chớp đỏ, băng rôn và nhịp tim dồn dập biến mất ngay lập tức!
 
 --------------------------------------------------------------------------------
 VIII. QUY TẮC HOÀN TÁC (UNDO RULES)

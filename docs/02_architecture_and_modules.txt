@@ -50,9 +50,9 @@ II. CHI TIẾT 11 MODULE JAVASCRIPT TRONG js/
      + mistakes: Số lần chọn sai đã mắc phải.
      + correctStreak: Chuỗi chọn số đúng liên tiếp hiện tại.
      + maxStreak: Kỷ lục chuỗi đúng dài nhất đạt được trong ván cờ này.
-     + wrongStreak: Chuỗi chọn sai liên tiếp hiện tại (dùng để phạt lũy tiến).
+     + wrongStreak: Chuỗi chọn sai liên tiếp hiện tại (dùng để kiểm soát giới hạn thua liên tiếp & cảnh báo đỏ).
      + hintPenalties: Tổng điểm bị trừ do dùng gợi ý.
-     + wrongPenalties: Tổng điểm bị trừ do chuỗi chọn sai.
+     + wrongPenalties: Tổng điểm bị trừ do các lần chọn sai (tính theo số lần sai lũy kế n).
      + undoStack: Mảng lịch sử các bước đi để thực hiện hoàn tác (Undo).
      + isFinished: Cờ đánh dấu ván cờ đã kết thúc (thắng, thua, hoặc bỏ cuộc).
      + isPaused: Cờ tạm dừng bộ đếm giờ (khi mở modal, hướng dẫn...).
@@ -70,7 +70,7 @@ II. CHI TIẾT 11 MODULE JAVASCRIPT TRONG js/
      + autoSolve(): Tự động giải toàn bộ bàn cờ phục vụ kiểm thử / demo.
      + calculateScore(): Tính toán điểm số thời gian thực và tổng kết ván đấu.
      + getScoreBreakdown(): Trả về chi tiết các khoản cộng/trừ phục vụ bảng điểm.
-     + getWarningStage(diff, wrongStreak): Xác định cấp độ cảnh báo đỏ (0, 1, 2, 3).
+     + getWarningStage(diff, mistakes, wrongStreak): Xác định cấp độ cảnh báo đỏ (0, 1, 2, 3) theo số lỗi lũy kế và chuỗi sai liên tiếp.
 
 3. js/storage.js (Module: Storage)
    - Nhiệm vụ: Tầng lưu trữ dữ liệu bền vững (Persistent Data Storage).
