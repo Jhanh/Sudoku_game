@@ -11,12 +11,24 @@ I. TỔNG QUAN BẢNG THÔNG SỐ CƠ BẢN (3 CẤP ĐỘ KHÓ)
 --------------------------------------------------------------------------------
 
 +-------------+----------------+----------------+------------+--------------------+
-| Độ Khó      | Ô Cho Trước    | Ô Cần Giải     | Điểm / Ô   | Thưởng Hoàn Hảo    |
+| Độ Khó      | Ô Cho Trước    | Kỹ Thuật Giải  | Điểm / Ô   | Thưởng Hoàn Hảo    |
 +-------------+----------------+----------------+------------+--------------------+
-| Dễ (Easy)   | 38 - 45 ô      | 36 - 43 ô      | +10 điểm   | +100đ (0 lỗi)      |
-| TB (Medium) | 30 - 35 ô      | 46 - 51 ô      | +20 điểm   | +200đ (0 lỗi)      |
-| Khó (Hard)  | 24 - 28 ô      | 53 - 57 ô      | +40 điểm   | +300đ (0 lỗi)      |
+| Dễ (Easy)   | 36 - 40 ô      | Singles thuần  | +10 điểm   | +100đ (0 lỗi)      |
+| TB (Medium) | 30 - 34 ô      | Pairs & Box-Ln | +20 điểm   | +200đ (0 lỗi)      |
+| Khó (Hard)  | 24 - 28 ô      | Subsets/X-Wing | +40 điểm   | +300đ (0 lỗi)      |
 +-------------+----------------+----------------+------------+--------------------+
+
+* Tiêu chuẩn phân cấp độ khó theo kỹ thuật giải đố của con người (Logical Grading):
+  - Dễ (Easy - 36 đến 40 ô cho trước): Đảm bảo giải được 100% chỉ bằng Naked Singles (ô duy nhất
+    chỉ còn 1 ứng viên khả dĩ) và Hidden Singles (chữ số chỉ có duy nhất 1 vị trí đặt được trong
+    hàng, cột hoặc khối 3x3). Người chơi không bao giờ cần dùng đến các kỹ thuật suy luận nâng cao.
+  - Trung bình (Medium - 30 đến 34 ô cho trước): Không thể giải chỉ bằng Singles đơn giản; bắt buộc
+    phải sử dụng đến kỹ thuật loại trừ trung cấp như Pointing Pairs / Box-Line Reduction (ứng viên
+    trong khối cùng hàng/cột loại trừ phần còn lại của hàng/cột đó) hoặc Naked Pairs (cặp ô đôi).
+  - Khó (Hard - 24 đến 28 ô cho trước): Cực hạn của bài toán Sudoku quốc tế, duy nhất 1 nghiệm
+    (Unique Solution). Đòi hỏi các kỹ thuật chuỗi phân tích ứng viên nâng cao (Hidden Pairs,
+    Naked Triples, X-Wing) hoặc loại trừ sâu đa bước.
+  - Tốc độ sinh đề cực nhanh: < 50ms nhờ cấu trúc bitmask tăng tốc đếm nghiệm và phân loại logic.
 
 * Triết lý cốt lõi:
   - BÃI BỎ PHẦN THƯỞNG THẮNG CHUNG CHUNG (+100, +200, +300): Người chơi phải giải trọn vẹn
@@ -168,23 +180,22 @@ IX. CÔNG THỨC TỔNG ĐIỂM CUỐI VÁN (FINAL SCORE FORMULA)
    TỔNG ĐIỂM CUỐI CÙNG = Math.round(Điểm sàn tích lũy × Hệ số thời gian)
 
 --------------------------------------------------------------------------------
-X. BẢNG ĐIỂM CHI TIẾT SAU KHI CHƠI XONG (SCORE BREAKDOWN MODAL)
+X. MÀN HÌNH KẾT THÚC TRẬN ĐẤU & TỔNG ĐIỂM (GAME OVER MODAL)
 --------------------------------------------------------------------------------
 Hiển thị tự động ngay khi ván cờ kết thúc trong cả 3 tình huống:
-1. Chiến Thắng (Hoàn thành cả bàn cờ).
-2. Thất Bại (Sai vượt giới hạn cho phép: 11 lần ở Hard, 16 lần ở Easy/Medium, hoặc quá 3 mạng).
+1. Chiến Thắng (Hoàn thành trọn vẹn 81 ô bàn cờ).
+2. Thất Bại (Sai vượt giới hạn cho phép: 11 lần ở Hard, 16 lần ở Easy/Medium, hoặc quá chuỗi sai).
 3. Bỏ Cuộc (Bấm nút Bỏ cuộc trong màn hình thi đấu).
 
-Bảng kê chi tiết gồm các dòng thông số minh bạch:
-- Số ô điền đúng: [Số lượng ô] × [Điểm cơ bản] = +[Điểm cơ bản]
-- Thưởng chuỗi Combo: +[Điểm dôi dư từ combo] (Chuỗi dài nhất đạt [Max] ô)
-- 💎 Thưởng thắng hoàn hảo: +100 / +150 / +200 điểm (Chỉ xuất hiện khi thắng với 0/3 lỗi)
-- 💡 Trừ dùng gợi ý: -[Số điểm] (nếu có dùng gợi ý)
-- ⚠️ Trừ chuỗi chọn sai: -[Số điểm] (nếu có chọn sai)
-- Điểm tích lũy bàn cờ: [Tổng điểm ô + Thưởng combo + Thưởng hoàn hảo - Các điểm phạt]
-- Thời gian chơi & Hệ số tốc độ: [Thời gian] (× [1.0 / 1.5 / 2.0])
-- Số lỗi mắc phải: [X] lỗi
-- TỔNG ĐIỂM CUỐI CÙNG: [Điểm tích lũy] × [Hệ số thời gian] = [TỔNG ĐIỂM]
+* Tinh chỉnh giao diện v2.0 (Tối giản & Tập trung vào thi đấu):
+  - Người chơi Sudoku tập trung cao độ vào kỹ thuật giải đố, tư duy logic và thời gian hoàn thành
+    thay vì bận tâm kiểm toán từng dòng số học cộng trừ chi tiết. Do đó, bảng kê chi tiết
+    (.score-breakdown-card) được bãi bỏ hoàn toàn.
+  - Màn hình kết thúc ván chỉ hiển thị trang trọng và tinh tế:
+    + Icon huy hiệu trạng thái (Chiến Thắng / Thất Bại / Bỏ Cuộc).
+    + Tiêu đề & Phụ đề thông điệp kết quả.
+    + Thẻ TỔNG ĐIỂM ĐẠT ĐƯỢC (.gameover-final-score): Kích thước lớn, viền gradient nổi bật.
+    + 2 nút hành động nhanh: [Ván Chơi Mới] và [Về Sảnh Chính].
 
 --------------------------------------------------------------------------------
 XI. THỐNG KÊ ĐIỂM SỐ TRÊN HỒ SƠ NGƯỜI CHƠI (PROFILE STATS)
@@ -265,4 +276,42 @@ Bên trong Modal Cài Đặt (Settings), người chơi có toàn quyền bật/
      sang màu đỏ viền đỏ (.cell.error) kèm hiệu ứng rung lắc nhẹ.
    - Nếu tắt: Thích hợp cho kỳ thủ hardcore muốn tự kiểm chứng tính đúng sai mà
      không dựa vào sự can thiệp tức thì của hệ thống.
+
+4. TỰ ĐỘNG BẬT CHẾ ĐỘ TIA CHỚP (AUTO-ENABLE LIGHTNING MODE) - [Mặc định: TẮT]:
+   - Tự động kích hoạt cơ chế Tia chớp (điền liên tiếp) ngay khi bắt đầu một ván chơi mới.
+   - Khi bắt đầu ván mới với cài đặt này bật, hệ thống KHÔNG chọn ngẫu nhiên chữ số nào mà để trống
+     (null) để người chơi chủ động lựa chọn con số muốn khóa.
+
+--------------------------------------------------------------------------------
+XIV. TÍNH NĂNG TIA CHỚP (LIGHTNING MODE - FAST FILL / DIGIT-FIRST)
+--------------------------------------------------------------------------------
+Song song với chế độ truyền thống "Chọn ô trước - Điền số sau" (Cell-First), hệ thống trang bị
+tính năng chuyên nghiệp "Tia chớp" (Lightning Mode - Digit-First):
+
+1. TƯƠNG TÁC BẬT / TẮT TRỰC QUAN:
+   - Nút tương tác hình tia chớp (⚡) nằm trên thanh công cụ (.tools-row, #btn-fast-fill), nhãn hiển thị "Tia chớp".
+   - Huy hiệu trạng thái ON / OFF (#fast-fill-badge) sắc nét.
+   - Phím tắt bàn phím vật lý: Nhấn phím 'F' (hoặc 'f') để bật/tắt nhanh bất kỳ lúc nào.
+
+2. CƠ CHẾ CHUYỂN ĐỔI SỐ VÀ ĐIỀN LIÊN TỤC:
+   - Bấm số trên bàn cờ tự động chọn số đó: Khi đang ở chế độ Tia chớp, nhấp vào bất kỳ ô nào đã có số
+     hợp lệ (ô cho trước hoặc ô đã giải đúng), hệ thống sẽ lập tức chuyển số Tia chớp sang con số đó để
+     người chơi tiếp tục điền liên tục các ô còn lại của số đó.
+   - Bấm số trên bàn phím số (Numpad 1-9) hoặc phím tắt 1-9 cũng kích hoạt/chuyển đổi số Tia chớp tương tự.
+   - Nhấp ô trống: Điền ngay con số đang chọn (hoặc ghi chú nháp nếu bật Ghi chú).
+   - Chống bấm nhầm số đã hoàn thành: Nếu một số đã điền đủ 9 ô (còn 0 ô), việc nhấp vào số đó trên Numpad
+     hoặc trên bàn cờ sẽ được xem là bấm nhầm và hoàn toàn bị bỏ qua (không khóa số đã xong).
+
+3. CƠ CHẾ HOÀN THÀNH 9 Ô & TỰ ĐỘNG RESET:
+   - Khi hoàn thành ô thứ 9 của một con số (remaining = 0): Hệ thống lập tức trở về trạng thái trung lập
+     như lúc mới bắt đầu ván đấu (reset cả fastFillDigit = null và selectedCell = null), sẵn sàng chờ người
+     chơi chủ động chọn con số Tia chớp tiếp theo chứ không giữ ô đang đứng.
+
+4. HIỆU ỨNG THỊ GIÁC BÀN PHÍM SỐ (#NUMPAD) CHUẨN MỰC:
+   - Con số đang chọn (.num-key.locked-digit): Giữ nguyên màu sắc thẻ và chữ số xanh chuẩn mực như bình thường,
+     kèm viền sáng xanh thanh lịch 2px nhận diện rõ ràng (không đổi màu nền khối gây chói mắt).
+   - Các chữ số chưa hoàn thành khác (.num-key.dimmed): Làm mờ nhẹ nhàng (opacity: 0.78), giữ thẻ trắng và chữ số xanh đặc trưng giúp mắt người chơi
+     dễ dàng phân biệt và tập trung vào số đang giải.
+   - Các chữ số đã hoàn thành 9/9 (.num-key.completed): Màu xám chìm (opacity: 0.22, nền surface-subtle xám nhạt), khóa tương tác,
+     tuyệt đối không bị gán hiệu ứng chọn hay làm mờ của Tia chớp.
 ================================================================================

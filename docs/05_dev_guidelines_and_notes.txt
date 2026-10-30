@@ -85,13 +85,13 @@ III. NGUYÊN TẮC VỀ FILE NÉN & KHỞI CHẠY OFFLINE (ZIP & LAUNCHER RULES)
      + Bản lưu trữ cột mốc chính thức Release v1.1 (Cài đặt, Song ngữ i18n, Dark Mode, Cấp bậc 9 Rank).
      + TUYỆT ĐỐI KHÔNG ĐƯỢC chỉnh sửa, ghi đè sau khi đã phát hành.
    - `Sudoku-Game-testing.zip`:
-     + Bản nén cập nhật liên tục toàn bộ tính năng và mã nguồn mới nhất cho quá trình phát triển tiếp theo.
+     + Bản nén cập nhật liên tục toàn bộ tính năng và mã nguồn mới nhất cho quá trình phát triển (hiện chứa toàn bộ tính năng chuẩn bị cho bản v2.0).
      + Mỗi khi hoàn thành một đợt nâng cấp mới, hãy rebuild file này để thử nghiệm offline ngay lập tức.
-     + Khi người dùng sẵn sàng ra mắt bản chính thức tiếp theo (v1.2 hay v2.0), file này mới được nhân bản thành release mới.
+     + Khi người dùng sẵn sàng ra mắt chính thức v2.0, file này mới được đóng gói và đặt tên thành Sudoku-Game-v2.0.zip.
 
 3. NGUYÊN TẮC TINH GỌN GÓI PHÁT HÀNH CHO NGƯỜI CHƠI (NO DOCS IN ZIP):
    - Các file zip phát hành (như `Sudoku-Game-v1.1.zip` hay `Sudoku-Game-testing.zip`)
-     được tinh gọn tối đa (~74 KB) để người chơi tải về và nhấp đúp `ChoiGame.bat` là chơi ngay.
+     được tinh gọn tối đa (~77 KB) để người chơi tải về và nhấp đúp `ChoiGame.bat` là chơi ngay.
    - TUYỆT ĐỐI KHÔNG đóng gói thư mục `docs/` hay `screenshots/` vào file zip.
      Người dùng và lập trình viên muốn nghiên cứu kiến trúc hệ thống sẽ xem trực tiếp
      trên repository GitHub.

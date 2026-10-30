@@ -134,9 +134,13 @@ V. CÁC HỘP THOẠI & MODAL TÙY BIẾN (CUSTOM DIALOGS & MODALS)
   vì chúng làm dừng luồng JavaScript và có giao diện thô cứng.
 - Sử dụng Custom Modal phủ mờ (backdrop-filter: blur(4px)):
   + Modal Chiến Thắng: Hiệu ứng pháo hoa giấy Canvas Confetti bung tỏa rực rỡ.
-  + Modal Game Over: Thể hiện nguyên nhân (hết 3 mạng hoặc do chạm trần chuỗi sai).
-  + Modal Bảng Điểm (Score Breakdown): Kê khai minh bạch từng dòng: Điểm ô đúng,
-    thưởng Combo, thưởng Thắng hoàn hảo, trừ Gợi ý, trừ Chuỗi sai, hệ số thời gian.
+  + Modal Game Over: Thể hiện rõ nguyên nhân (vượt quá số lỗi quy định hoặc chạm trần chuỗi sai).
+  + Màn hình Tổng Điểm (.gameover-final-score): Hiển thị trực tiếp con số tổng điểm lớn,
+    gradient nổi bật, bãi bỏ bảng kê chi tiết (.score-breakdown-card) giúp người chơi tập trung
+    vào thành tích thi đấu và kỹ thuật giải đố.
+  + Thanh công cụ (.tools-row): Gồm 5 nút đối xứng: Hoàn tác, Xóa, Tia chớp (⚡ #btn-fast-fill),
+    Ghi chú, Gợi ý. Bàn phím số (#numpad) tương tác thông minh: giữ số đang chọn bình thường kèm viền nhận diện (.locked-digit),
+    làm nhạt nhẹ các phím số chưa hoàn thành (.dimmed), và giữ màu xám cho các số đã xong (.completed).
 ================================================================================
 
 --------------------------------------------------------------------------------
@@ -162,6 +166,7 @@ Cấu trúc Modal Cài đặt gồm 4 phân khu chức năng được đóng khu
    - Tự động xóa ghi chú (Auto-Clear Notes): Công tắc gạt BẬT/TẮT.
    - Làm nổi bật số giống nhau (Highlight Duplicate Numbers): Công tắc gạt BẬT/TẮT.
    - Cảnh báo lỗi ngay lập tức (Highlight Mistakes Immediately): Công tắc gạt BẬT/TẮT.
+   - Tự động bật Chọn số trước (Auto-enable Digit-First Mode): Công tắc gạt BẬT/TẮT.
 
 4. PHÂN KHU NGUY HIỂM & DỮ LIỆU (DANGER ZONE & DATA):
    - Được đóng khung viền đỏ nhạt, chữ tiêu đề đỏ cảnh báo.

@@ -19,33 +19,35 @@ II. CHI TIẾT 11 MODULE JAVASCRIPT TRONG js/
 --------------------------------------------------------------------------------
 
 1. js/sudoku-engine.js (Module: SudokuEngine)
-   - Nhiệm vụ: Xử lý toàn bộ thuật toán toán học của trò chơi Sudoku.
+   - Nhiệm vụ: Xử lý toàn bộ thuật toán toán học, sinh câu đố và phân loại độ khó logic của Sudoku.
    - Cấu trúc biểu diễn bàn cờ: Mảng phẳng 81 phần tử (index từ 0 đến 80).
      + Hàng (row) = Math.floor(index / 9)
      + Cột (col) = index % 9
      + Khối 3x3 (box) = Math.floor(row / 3) * 3 + Math.floor(col / 3)
      + Giá trị 0 đại diện cho ô trống, 1-9 đại diện cho số đã điền.
    - Các thuật toán cốt lõi:
-     + isValid(board, index, val): Kiểm tra tính hợp lệ của số val tại vị trí index
-       theo 3 quy tắc Sudoku (không trùng hàng, cột và khối 3x3).
-     + solve(board): Thuật toán quay lui (Backtracking) để giải toàn bộ bàn cờ.
-     + generateFullBoard(): Tạo bàn cờ 9x9 hợp lệ ngẫu nhiên bằng cách xáo trộn
-       dãy số [1..9] và đệ quy lấp đầy 81 ô.
-     + countSolutions(board, limit=2): Đếm số nghiệm của câu đố để đảm bảo tính duy nhất.
-     + generatePuzzle(difficulty): Tạo câu đố dựa trên độ khó bằng thuật toán đào lỗ
-       (digging holes) ngẫu nhiên, chỉ giữ lại những ô thỏa mãn nghiệm duy nhất.
-       * Dễ (Easy): Cho trước 38 - 45 ô (còn 36 - 43 ô cần giải).
-       * Trung bình (Medium): Cho trước 30 - 35 ô (còn 46 - 51 ô cần giải).
-       * Khó (Hard): Cho trước 24 - 28 ô (còn 53 - 57 ô cần giải).
+     + isValidPlacement(board, row, col, num): Kiểm tra tính hợp lệ của số theo 3 quy tắc Sudoku.
+     + fillBoard(board): Tạo nghiệm hoàn chỉnh 9x9 ngẫu nhiên bằng cách xáo trộn dãy [1..9] và đệ quy.
+     + countSolutions(board, limit=2): Đếm số nghiệm của câu đố với cấu trúc bitmask tăng tốc,
+       bảo đảm tính duy nhất tuyệt đối (Unique Solution).
+     + solveLogical(puzzle): Bộ giải mô phỏng tư duy con người (Human-Solving Logical Grader):
+       * Cấp 1 (Level 1): Naked Singles & Hidden Singles trong hàng, cột, khối.
+       * Cấp 2 (Level 2): Pointing Pairs / Box-Line Reduction (Giao điểm khối - hàng/cột) & Naked Pairs.
+       * Cấp 3 (Level 3): Hidden Pairs, Naked/Hidden Triples, X-Wing hoặc phân tích chuỗi sâu.
+     + generate(difficulty): Tạo câu đố đạt chuẩn kỹ thuật giải đố:
+       * Dễ (Easy): 36 - 40 ô gợi ý, giải được 100% bằng Singles thuần túy.
+       * Trung bình (Medium): 30 - 34 ô gợi ý, yêu cầu kỹ thuật loại trừ cấp trung (Pointing/Pairs).
+       * Khó (Hard): 24 - 28 ô gợi ý, nghiệm duy nhất đảm bảo, yêu cầu kỹ thuật suy luận nâng cao.
+       * Tốc độ cực nhanh: < 50ms, không gây đơ lag giao diện.
 
 2. js/game.js (Module: Game)
    - Nhiệm vụ: Quản lý trạng thái ván cờ đang chơi và thực thi các quy tắc luật chơi.
    - Đối tượng Game State (state):
-     + initial: Mảng 81 số ban đầu của đề bài (ô cố định, không được sửa).
+     + puzzle: Mảng 81 số ban đầu của đề bài (ô cố định, không được sửa).
      + current: Mảng 81 số người chơi đang điền.
      + solution: Mảng 81 số đáp án chuẩn của ván cờ.
      + difficulty: Độ khó hiện tại ('easy', 'medium', 'hard').
-     + notes: Mảng 81 tập hợp (Set) lưu trữ các số ghi chú nháp trong từng ô.
+     + notes: Đối tượng lưu trữ mảng các số ghi chú nháp trong từng ô.
      + timer: Thời gian chơi tính bằng giây (chạy tăng dần).
      + mistakes: Số lần chọn sai đã mắc phải.
      + correctStreak: Chuỗi chọn số đúng liên tiếp hiện tại.
@@ -54,10 +56,16 @@ II. CHI TIẾT 11 MODULE JAVASCRIPT TRONG js/
      + hintPenalties: Tổng điểm bị trừ do dùng gợi ý.
      + wrongPenalties: Tổng điểm bị trừ do các lần chọn sai (tính theo số lần sai lũy kế n).
      + undoStack: Mảng lịch sử các bước đi để thực hiện hoàn tác (Undo).
+     + notesMode: Cờ bật/tắt chế độ ghi chú nháp.
+     + fastFillMode: Cờ bật/tắt chế độ "Tia chớp" (Lightning Mode / Digit-First).
+     + fastFillDigit: Con số đang được khóa (1-9 hoặc null).
      + isFinished: Cờ đánh dấu ván cờ đã kết thúc (thắng, thua, hoặc bỏ cuộc).
      + isPaused: Cờ tạm dừng bộ đếm giờ (khi mở modal, hướng dẫn...).
    - Các hàm API quan trọng:
-     + startNewGame(difficulty): Khởi tạo ván mới.
+     + start(difficulty): Khởi tạo ván mới (tự động nhận cài đặt fastFillDefault).
+     + selectCell(row, col): Chọn ô; trong chế độ Tia chớp: nhấp số trên bảng đổi số khóa, nhấp ô trống điền số ngay (đủ 9 ô tự reset về null cả số và ô chọn).
+     + toggleFastFill(digit): Bật/tắt chế độ Tia chớp.
+     + selectFastFillDigit(num): Chọn/đổi con số muốn khóa hoặc nhấn lại để hủy khóa (chặn số đã hoàn thành).
      + resumeGame(savedState): Phục hồi ván chơi từ LocalStorage.
      + selectCell(index): Chọn ô cờ hiện tại trên bàn.
      + inputNumber(num): Điền số vào ô được chọn (tự động phân biệt chế độ điền thật / ghi chú).
@@ -123,11 +131,15 @@ II. CHI TIẾT 11 MODULE JAVASCRIPT TRONG js/
        điểm số thời gian thực (#game-score), và huy hiệu chuỗi sai (#info-wrong-streak).
      + Bàn phím số 1-9 (#numpad): Tự động đếm số lần còn lại của từng chữ số trên bàn cờ;
        khi một chữ số đã được điền đủ 9 lần trên bàn cờ thì phím đó sẽ mờ đi và bị vô hiệu hóa.
-     + 4 nút hành động phụ trợ:
-       * Hoàn tác (#btn-undo): Có badge hiển thị số nước có thể hoàn tác.
+       Hỗ trợ chế độ Chọn số trước (Digit-First): làm sáng nổi bật con số đang khóa (.locked-digit)
+       và tự động làm mờ nhẹ các phím số còn lại (.dimmed).
+     + 5 nút công cụ hành động:
+       * Hoàn tác (#btn-undo): Hoàn tác bước đi trước đó.
        * Xóa (#btn-erase): Xóa giá trị ô hiện tại.
-       * Ghi chú (#btn-notes): Nút chuyển đổi trạng thái ON/OFF (đổi màu nổi bật khi bật).
-       * Gợi ý (#btn-hint): Có badge hiển thị mức trừ điểm của lần dùng tiếp theo.
+       * Tia chớp (#btn-fast-fill): Chế độ "Tia chớp - Điền liên tiếp" (Lightning Mode), biểu tượng tia chớp (⚡),
+         badge trạng thái ON/OFF, phím tắt 'F'.
+       * Ghi chú (#btn-notes): Nút chuyển đổi trạng thái ON/OFF (đổi màu nổi bật khi bật), phím tắt 'N'.
+       * Gợi ý (#btn-hint): Có badge đếm số gợi ý còn lại (tối đa 3), phím tắt 'H'.
      + Cảnh báo nguy hiểm thị giác:
        * Lớp phủ viền đỏ (#danger-overlay): Điều khiển các lớp CSS .flash-mild, .stage-mild, .stage-critical.
        * Băng rôn cảnh báo khẩn (#danger-banner): Hiển thị thông điệp cảnh báo nguy cơ Game Over.
@@ -194,8 +206,10 @@ II. CHI TIẾT 11 MODULE JAVASCRIPT TRONG js/
      + Hộp thoại Custom Dialog: App.confirm(title, msg) trả về Promise, hỗ trợ song ngữ.
      + Xử lý kết thúc ván: Modal Chiến Thắng (kèm pháo hoa confetti Canvas),
        Modal Game Over (quá 3 lỗi hoặc chạm giới hạn chuỗi sai liên tiếp).
-     + Modal Bảng tổng kết điểm chi tiết (Score Breakdown Modal) hỗ trợ song ngữ.
-     + Lắng nghe phím tắt bàn phím vật lý (Phím 1-9, Delete, Backspace, N, H, U, Arrow keys).
+     + Màn hình kết thúc tối giản & trang trọng: Hiển thị trực tiếp Tổng Điểm Đạt Được
+       (.gameover-final-score), bãi bỏ bảng kê chi tiết để người chơi tập trung vào thi đấu.
+     + Lắng nghe phím tắt bàn phím vật lý: Phím 1-9 (điền số / khóa số), Delete/Backspace (xóa),
+       Ctrl+Z (hoàn tác), N (bật/tắt ghi chú), F (bật/tắt chọn số trước), H (gợi ý), Arrow keys.
      + Phát hiện thiết bị di động (Mobile Device Notice): Tự động hiển thị màn hình thông báo PC.
 
 10. js/sound.js (Module: Sound)
