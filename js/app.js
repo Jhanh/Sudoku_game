@@ -87,15 +87,22 @@ const App = (() => {
       icon = '🏳️';
       title = typeof I18n !== 'undefined' ? I18n.t('gameover_giveup_title') : 'Đã Bỏ Cuộc';
       subtitle = typeof I18n !== 'undefined' ? I18n.t('gameover_giveup_subtitle') : 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:';
-    } else if (reason === 'streak_over') {
+    } else if (reason === 'consecutive_streak_over' || reason === 'streak_over') {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💀';
       title = typeof I18n !== 'undefined' ? I18n.t('gameover_streak_title') : 'Hết Lượt Sai Liên Tiếp!';
-      const maxStreak = state.difficulty === 'hard' ? 10 : 15;
+      const maxConsecutive = state.difficulty === 'hard' ? 3 : (state.difficulty === 'medium' ? 5 : 16);
       subtitle = typeof I18n !== 'undefined' 
-        ? I18n.t('gameover_streak_subtitle', { maxStreak, diff: breakdown.diffLabel })
-        : `Bạn đã chọn sai ${maxStreak} lần liên tiếp ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
+        ? I18n.t('gameover_streak_subtitle', { maxStreak: maxConsecutive, diff: breakdown.diffLabel })
+        : `Bạn đã chọn sai ${maxConsecutive} lần liên tiếp ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
+    } else if (reason === 'total_mistakes_over') {
+      if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
+      if (modalEl) modalEl.classList.add('lose');
+      icon = '💀';
+      title = 'Vượt Quá Giới Hạn Lỗi!';
+      const maxTotal = state.difficulty === 'hard' ? 11 : 16;
+      subtitle = `Bạn đã phạm ${maxTotal} lỗi ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
     } else {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');

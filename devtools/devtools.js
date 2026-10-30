@@ -282,15 +282,24 @@ const DevTools = (() => {
     document.getElementById('dev-btn-fill-80').addEventListener('click', _fillExceptOne);
 
     // Danger Stage Tests
-    document.getElementById('dev-btn-stage1').addEventListener('click', () => _setWrongStreak(5));
-    document.getElementById('dev-btn-stage2').addEventListener('click', () => _setWrongStreak(6));
+    document.getElementById('dev-btn-stage1').addEventListener('click', () => {
+      const state = typeof Game !== 'undefined' ? Game.getState() : null;
+      _setWrongStreak(5, 1);
+    });
+    document.getElementById('dev-btn-stage2').addEventListener('click', () => {
+      const state = typeof Game !== 'undefined' ? Game.getState() : null;
+      if (state && state.difficulty === 'hard') _setWrongStreak(6, 1);
+      else if (state && state.difficulty === 'medium') _setWrongStreak(6, 2);
+      else _setWrongStreak(6, 6);
+    });
     document.getElementById('dev-btn-stage3').addEventListener('click', () => {
       const state = typeof Game !== 'undefined' ? Game.getState() : null;
-      const target = (state && state.difficulty === 'hard') ? 6 : 11;
-      _setWrongStreak(target);
+      if (state && state.difficulty === 'hard') _setWrongStreak(10, 2);
+      else if (state && state.difficulty === 'medium') _setWrongStreak(15, 4);
+      else _setWrongStreak(15, 15);
     });
     document.getElementById('dev-btn-gameover').addEventListener('click', _triggerGameOver);
-    document.getElementById('dev-btn-reset-wrong').addEventListener('click', () => _setWrongStreak(0));
+    document.getElementById('dev-btn-reset-wrong').addEventListener('click', () => _setWrongStreak(0, 0));
 
     // Time Testing
     document.getElementById('dev-btn-time-fast').addEventListener('click', () => _setTimer(70));
@@ -576,7 +585,7 @@ const DevTools = (() => {
   }
 
   // 5. Danger Stage Simulator
-  function _setWrongStreak(streakCount) {
+  function _setWrongStreak(mistakesCount, streakCount = 1) {
     if (typeof Game === 'undefined') return;
     const state = Game.getState();
     if (!state) {
@@ -588,24 +597,14 @@ const DevTools = (() => {
       return;
     }
 
-    const maxAllowed = (Game.MAX_WRONG_STREAK && Game.MAX_WRONG_STREAK[state.difficulty]) || 15;
-    if (streakCount > maxAllowed) {
-      _triggerGameOver();
-      return;
-    }
-
+    state.mistakes = mistakesCount;
     state.wrongStreak = streakCount;
-    if (streakCount > 0) {
-      state.mistakes = Math.min(3, streakCount);
-    } else {
-      state.mistakes = 0;
-    }
 
     if (typeof UIControls !== 'undefined' && UIControls.update) {
       UIControls.update(state);
     }
     if (typeof App !== 'undefined' && App.showToast) {
-      App.showToast(streakCount === 0 ? '🔄 Đã reset chuỗi sai về 0' : `⚠️ Đã đặt Chuỗi Sai = ${streakCount}`);
+      App.showToast(mistakesCount === 0 ? '🔄 Đã reset lỗi về 0' : `⚠️ Đã đặt: ${mistakesCount} lỗi (Chuỗi: ${streakCount})`);
     }
   }
 
@@ -638,10 +637,9 @@ const DevTools = (() => {
     }
 
     if (targetRow !== -1) {
-      // Set streak to exactly max allowed so this wrong placement triggers Game Over via genuine engine
-      const maxAllowed = (Game.MAX_WRONG_STREAK && Game.MAX_WRONG_STREAK[state.difficulty]) || 15;
+      // Set streak to max allowed so this wrong placement triggers Game Over via genuine engine
+      const maxAllowed = (Game.MAX_CONSECUTIVE_WRONG && Game.MAX_CONSECUTIVE_WRONG[state.difficulty]) || 15;
       state.wrongStreak = maxAllowed;
-      state.mistakes = 2; // Making this 3rd mistake
       Game.selectCell(targetRow, targetCol);
       Game.placeNumber(wrongDigit);
       return;

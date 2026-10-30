@@ -83,18 +83,19 @@ const UIControls = (() => {
     const mistakesEl = document.getElementById('info-mistakes');
     if (mistakesEl) {
       mistakesEl.textContent = state.mistakes;
-      mistakesEl.classList.toggle('mistake-warning', state.wrongStreak >= 3 && state.wrongStreak < 5);
-      mistakesEl.classList.toggle('mistake-danger', state.wrongStreak >= 5);
+      mistakesEl.classList.toggle('mistake-warning', state.mistakes >= 5 && state.mistakes < 10);
+      mistakesEl.classList.toggle('mistake-danger', state.mistakes >= 10);
     }
 
     const wrongStreakEl = document.getElementById('info-wrong-streak');
     if (wrongStreakEl) {
       const wStreak = state.wrongStreak || 0;
-      if (wStreak >= 1) {
-        const penalty = Game.getWrongPenalty(state.difficulty, wStreak);
-        const stage = Game.getWarningStage(state.difficulty, wStreak);
+      const mistakes = state.mistakes || 0;
+      if (mistakes >= 1 || wStreak >= 1) {
+        const penalty = Game.getWrongPenalty(state.difficulty, mistakes);
+        const stage = Game.getWarningStage(state.difficulty, mistakes, wStreak);
         const isEn = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en';
-        wrongStreakEl.textContent = isEn ? `⚠️ ${wStreak} errors (-${penalty}pts)` : `⚠️ Sai ${wStreak} (-${penalty}đ)`;
+        wrongStreakEl.textContent = isEn ? `⚠️ Error #${mistakes} (-${penalty}pts)` : `⚠️ Lỗi #${mistakes} (-${penalty}đ)`;
         wrongStreakEl.className = 'wrong-streak-badge' + (stage === 3 ? ' stage-critical' : '');
       } else {
         wrongStreakEl.className = 'wrong-streak-badge hidden';
@@ -104,7 +105,7 @@ const UIControls = (() => {
     // Danger Screen Overlay & Warning Banner
     const overlayEl = document.getElementById('danger-overlay');
     const bannerEl = document.getElementById('danger-banner');
-    const stage = Game.getWarningStage(state.difficulty, state.wrongStreak || 0);
+    const stage = Game.getWarningStage(state.difficulty, state.mistakes || 0, state.wrongStreak || 0);
 
     if (stage >= 2 && stage > lastWarningStage && typeof Sound !== 'undefined' && Sound.playDanger) {
       Sound.playDanger();
@@ -125,24 +126,45 @@ const UIControls = (() => {
     if (bannerEl) {
       const bannerText = document.getElementById('danger-banner-text');
       const bannerIcon = document.getElementById('danger-banner-icon');
+      const pen = Game.getWrongPenalty(state.difficulty, state.mistakes || 0);
+      const diff = state.difficulty;
+      const wStreak = state.wrongStreak || 0;
+      const mistakes = state.mistakes || 0;
+
       if (stage === 0) {
         bannerEl.className = 'danger-banner hidden';
       } else if (stage === 1) {
         bannerEl.className = 'danger-banner stage-mild';
         if (bannerIcon) bannerIcon.textContent = '⚠️';
-        if (bannerText) bannerText.textContent = 'Cảnh báo: Bạn đã chọn sai 5 lần liên tiếp! Tiếp tục sai sẽ bị trừ điểm nặng hơn.';
+        if (bannerText) bannerText.textContent = `Cảnh báo: Bạn đã phạm ${mistakes} lỗi! Lỗi tiếp theo sẽ bị trừ ${pen}đ.`;
       } else if (stage === 2) {
         bannerEl.className = 'danger-banner stage-mild';
-        const pen = Game.getWrongPenalty(state.difficulty, state.wrongStreak);
         if (bannerIcon) bannerIcon.textContent = '⚠️';
-        if (bannerText) bannerText.textContent = `Cảnh báo chuỗi sai: Bạn đang bị trừ ${pen}đ cho mỗi lần chọn sai liên tiếp!`;
+        if (diff === 'hard' && wStreak >= 1) {
+          bannerText.textContent = `Cảnh báo chuỗi sai: Đang sai ${wStreak}/3 lần liên tiếp! Tiếp tục sai sẽ bị xử thua!`;
+        } else if (diff === 'medium' && wStreak >= 2) {
+          bannerText.textContent = `Cảnh báo chuỗi sai: Đang sai ${wStreak}/5 lần liên tiếp! Tiếp tục sai sẽ bị xử thua!`;
+        } else {
+          bannerText.textContent = `Cảnh báo: Bạn đã phạm ${mistakes} lỗi! Mỗi lần sai tiếp theo bị trừ ${pen}đ.`;
+        }
       } else if (stage === 3) {
         bannerEl.className = 'danger-banner stage-critical';
-        const pen = Game.getWrongPenalty(state.difficulty, state.wrongStreak);
-        const maxStreak = state.difficulty === 'hard' ? 10 : 15;
-        const overLimit = state.difficulty === 'hard' ? 11 : 16;
         if (bannerIcon) bannerIcon.textContent = '🚨';
-        if (bannerText) bannerText.textContent = `NGUY HIỂM: Sai ${state.wrongStreak}/${maxStreak} lần liên tiếp (-${pen}đ/lượt)! Sang lần ${overLimit} sẽ GAME OVER!`;
+        if (diff === 'hard') {
+          if (wStreak >= 2) {
+            bannerText.textContent = `NGUY HIỂM CẤP BÁO: Đã sai 2/3 lần liên tiếp! Sai thêm 1 lần nữa sẽ GAME OVER!`;
+          } else {
+            bannerText.textContent = `NGUY HIỂM: Đã phạm ${mistakes}/10 lỗi (-${pen}đ/lượt)! Phạm lỗi thứ 11 sẽ GAME OVER!`;
+          }
+        } else if (diff === 'medium') {
+          if (wStreak >= 4) {
+            bannerText.textContent = `NGUY HIỂM CẤP BÁO: Đã sai 4/5 lần liên tiếp! Sai thêm 1 lần nữa sẽ GAME OVER!`;
+          } else {
+            bannerText.textContent = `NGUY HIỂM: Đã phạm ${mistakes}/15 lỗi (-${pen}đ/lượt)! Phạm lỗi thứ 16 sẽ GAME OVER!`;
+          }
+        } else {
+          bannerText.textContent = `NGUY HIỂM: Đã phạm ${mistakes}/15 lỗi (-${pen}đ/lượt)! Phạm lỗi thứ 16 sẽ GAME OVER!`;
+        }
       }
     }
 

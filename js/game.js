@@ -8,8 +8,8 @@ const Game = (() => {
   let onGameOver = null;
 
   const DIFF_LABELS = { easy: 'Dễ', medium: 'Trung bình', hard: 'Khó' };
-  const SCORE_PER_CELL = { easy: 10, medium: 20, hard: 30 };
-  const PERFECT_BONUS = { easy: 100, medium: 150, hard: 200 };
+  const SCORE_PER_CELL = { easy: 10, medium: 20, hard: 40 };
+  const PERFECT_BONUS = { easy: 100, medium: 200, hard: 300 };
 
   /* ---- penalties configuration ---- */
   const HINT_PENALTIES = {
@@ -18,11 +18,19 @@ const Game = (() => {
     hard: [50, 100, 150]
   };
 
-  const MAX_WRONG_STREAK = {
-    easy: 15,    // 16th is game over
-    medium: 15,  // 16th is game over
-    hard: 10     // 11th is game over
+  const MAX_TOTAL_MISTAKES = {
+    easy: 15,    // 16th total mistake is game over
+    medium: 15,  // 16th total mistake is game over
+    hard: 10     // 11th total mistake is game over
   };
+
+  const MAX_CONSECUTIVE_WRONG = {
+    easy: 15,    // 16th consecutive is game over
+    medium: 4,   // 5th consecutive is game over
+    hard: 2      // 3rd consecutive is game over
+  };
+
+  const MAX_WRONG_STREAK = MAX_CONSECUTIVE_WRONG; // backwards compatibility
 
   function getHintPenalty(difficulty, hintCountUsed) {
     const list = HINT_PENALTIES[difficulty] || [30, 50, 70];
@@ -30,33 +38,51 @@ const Game = (() => {
     return list[idx];
   }
 
-  function getWrongPenalty(difficulty, wrongStreak) {
+  function getWrongPenalty(difficulty, mistakesCount) {
+    const n = Math.max(1, mistakesCount || 1);
     if (difficulty === 'easy') {
-      if (wrongStreak <= 5) return 5;
-      if (wrongStreak <= 10) return 50;
-      return 100;
+      if (n <= 5) return 5;
+      if (n <= 10) return 15;
+      return 30;
     }
     if (difficulty === 'medium') {
-      if (wrongStreak <= 5) return 7;
-      if (wrongStreak <= 10) return 70;
-      return 140;
+      if (n <= 5) return 7;
+      if (n <= 10) return 20;
+      return 40;
     }
     if (difficulty === 'hard') {
-      if (wrongStreak <= 5) return 10;
-      return 100;
+      if (n <= 5) return 10;
+      return 30;
     }
     return 5;
   }
 
-  function getWarningStage(difficulty, wrongStreak) {
-    if (wrongStreak < 5) return 0;
-    if (wrongStreak === 5) return 1; // ửng đỏ nhẹ lần 5
-    if (difficulty === 'hard') {
-      if (wrongStreak >= 6) return 3; // Hard từ lần 6 nhấp nháy đỏ đậm liên tục
-    } else {
-      if (wrongStreak >= 11) return 3; // Easy/Medium từ lần 11 nhấp nháy đỏ đậm
-      if (wrongStreak >= 6) return 2;  // Easy/Medium từ lần 6 đỏ nhẹ liên tục
+  function getWarningStage(difficulty, mistakes, wrongStreak) {
+    let m = mistakes;
+    let s = wrongStreak;
+    if (s === undefined) {
+      s = m;
+      m = m || 0;
     }
+    m = m || 0;
+    s = s || 0;
+
+    // Stage 3 (Critical pulse): Dangerously close to Game Over
+    if (difficulty === 'hard') {
+      if (s >= 2 || m >= 10) return 3; // 1 more mistake is Game Over!
+      if (s >= 1 || m >= 5) return 2;  // Mild persistent red
+      return 0;
+    }
+    if (difficulty === 'medium') {
+      if (s >= 4 || m >= 15) return 3; // 1 more mistake is Game Over!
+      if (s >= 2 || m >= 6) return 2;  // Mild persistent red
+      if (s === 1 || m === 5) return 1;
+      return 0;
+    }
+    // Easy
+    if (s >= 15 || m >= 15) return 3;
+    if (s >= 6 || m >= 6) return 2;
+    if (s === 5 || m === 5) return 1;
     return 0;
   }
 
@@ -340,8 +366,8 @@ const Game = (() => {
       state.wrongStreak = prevWrongStreak + 1;
       state.mistakes++;
 
-      // Penalty per consecutive wrong turn
-      const penalty = getWrongPenalty(state.difficulty, state.wrongStreak);
+      // Penalty per mistake turn (based on cumulative mistakes n)
+      const penalty = getWrongPenalty(state.difficulty, state.mistakes);
       state.score = Math.max(0, state.score - penalty);
       state.wrongPenalties = (state.wrongPenalties || 0) + penalty;
 
@@ -360,17 +386,22 @@ const Game = (() => {
       if (typeof Sound !== 'undefined' && Sound.playError) Sound.playError();
       if (onUpdate) onUpdate(state);
 
-      // Check consecutive error limit:
-      // Hard: max 10 consecutive, 11th is game over
-      // Easy & Medium: max 15 consecutive, 16th is game over
-      const maxAllowed = MAX_WRONG_STREAK[state.difficulty] || 15;
-      if (state.wrongStreak > maxAllowed) {
+      // Check Game Over limits:
+      // 1. Total cumulative mistakes (Easy: 16, Medium: 16, Hard: 11)
+      // 2. Consecutive wrong streak (Easy: 16, Medium: 5, Hard: 3)
+      const maxTotal = MAX_TOTAL_MISTAKES[state.difficulty] || 15;
+      const maxConsecutive = MAX_CONSECUTIVE_WRONG[state.difficulty] || 15;
+      const isTotalLimitOver = state.mistakes > maxTotal;
+      const isConsecutiveLimitOver = state.wrongStreak > maxConsecutive;
+
+      if (isTotalLimitOver || isConsecutiveLimitOver) {
         state.isFinished = true;
         stopTimer();
         const breakdown = getScoreBreakdown(state);
         Storage.recordGameResult(state.difficulty, false, state.timer, state.mistakes, breakdown.finalScore);
         Storage.clearGame();
-        if (onGameOver) onGameOver('streak_over', state, breakdown);
+        const reason = isConsecutiveLimitOver ? 'consecutive_streak_over' : 'total_mistakes_over';
+        if (onGameOver) onGameOver(reason, state, breakdown);
       }
       return;
     }
@@ -650,7 +681,7 @@ const Game = (() => {
     getRemaining, formatTime,
     getStreakMultiplier, getTimeMultiplier, getScoreBreakdown,
     getHintPenalty, getWrongPenalty, getWarningStage,
-    HINT_PENALTIES, MAX_WRONG_STREAK,
+    HINT_PENALTIES, MAX_WRONG_STREAK, MAX_TOTAL_MISTAKES, MAX_CONSECUTIVE_WRONG,
     DIFF_LABELS, SCORE_PER_CELL, PERFECT_BONUS, idx
   };
 })();
