@@ -3,22 +3,47 @@
        TÀI LIỆU HỆ THỐNG GIAO DIỆN, BẢNG MÀU, RESPONSIVE & HIỆU ỨNG
 ================================================================================
 
-I. HỆ THỐNG BẢNG MÀU (COLOR PALETTE & CSS VARIABLES)
-Toàn bộ màu sắc được định nghĩa tại :root trong css/main.css:
+I. HỆ THỐNG BẢNG MÀU & THIẾT KẾ ĐA CHỦ ĐỀ (COLOR PALETTES & THEMES)
+Toàn bộ biến thiết kế (Design Tokens) được định nghĩa tại :root và [data-theme="dark"] trong css/main.css:
 
-- Màu chủ đạo (Primary)     : #3B82F6 (Blue 500) - Tươi sáng, hiện đại
-- Màu chủ đạo đậm           : #2563EB (Blue 600) - Trạng thái Hover / Active
-- Màu chủ đạo nhạt          : #93C5FD (Blue 300) - Viền sáng, điểm nhấn
-- Nền xanh lam nhạt         : #EFF6FF (Blue 50)  - Nền hàng/cột được highlight
-- Màu điểm xuyết (Accent)   : #8B5CF6 (Purple 500)- Gradient trên logo & avatar
-- Màu thành công (Success)  : #22C55E (Green 500) - Ô điền đúng, vòng tròn hoàn hảo
-- Màu cảnh báo (Warning)    : #F59E0B (Amber 500) - Lỗi nhẹ, lưu ý
-- Màu báo động / lỗi (Error): #EF4444 (Red 500) / #DC2626 (Red 600) - Số sai, viền nguy hiểm
-- Nền ứng dụng (Background) : #F8FAFC (Slate 50) - Nền xám lạnh bảo vệ mắt
-- Nền bề mặt (Surface)      : #FFFFFF (White)    - Nền thẻ, bảng cờ, popup
-- Màu chữ chính (Text)      : #1E293B (Slate 800)- Tương phản cao, dễ đọc
-- Màu chữ phụ (Text Sec)    : #64748B (Slate 500)- Mô tả, nhãn thẻ, ghi chú
-- Màu đường viền (Border)   : #E2E8F0 (Slate 200)- Tách bạch tinh tế, mượt mà
+1. BẢNG MÀU CHẾ ĐỘ SÁNG (LIGHT THEME - MẶC ĐỊNH):
+   - Màu chủ đạo (Primary)     : #3B82F6 (Blue 500) - Tươi sáng, hiện đại
+   - Màu chủ đạo đậm           : #2563EB (Blue 600) - Trạng thái Hover / Active
+   - Màu chủ đạo nhạt          : #93C5FD (Blue 300) - Viền sáng, điểm nhấn
+   - Nền xanh lam nhạt         : #EFF6FF (Blue 50)  - Nền hàng/cột được highlight
+   - Màu điểm xuyết (Accent)   : #8B5CF6 (Purple 500)- Gradient trên logo & avatar
+   - Màu thành công (Success)  : #22C55E (Green 500) - Ô điền đúng, vòng tròn hoàn hảo
+   - Màu cảnh báo (Warning)    : #F59E0B (Amber 500) - Lỗi nhẹ, lưu ý
+   - Màu báo động / lỗi (Error): #EF4444 (Red 500) / #DC2626 (Red 600) - Số sai, viền nguy hiểm
+   - Nền ứng dụng (Background) : #F8FAFC (Slate 50) - Nền xám lạnh mát mắt
+   - Nền bề mặt (Surface)      : #FFFFFF (White)    - Nền thẻ, bảng cờ, popup
+   - Nền bề mặt nhẹ (Subtle)   : #F1F5F9 (Slate 100)- Nền nhóm cài đặt
+   - Màu chữ chính (Text)      : #1E293B (Slate 800)- Tương phản cao, dễ đọc
+   - Màu chữ phụ (Text Sec)    : #64748B (Slate 500)- Mô tả, nhãn thẻ, ghi chú
+   - Màu đường viền (Border)   : #E2E8F0 (Slate 200)- Tách bạch tinh tế, mượt mà
+   - Viền bàn cờ chính         : #1E293B (phân tách khối 3×3) và #CBD5E1 (lưới con)
+
+2. BẢNG MÀU CHẾ ĐỘ TỐI DỊU MẮT (EYE-FRIENDLY DARK THEME):
+   - Triết lý: Không dùng màu đen tuyền (#000000) gây chói mắt và tương phản gắt.
+     Sử dụng hệ màu đá phiến thẫm (Deep Slate & Charcoal) chuẩn công thái học:
+   - Nền ứng dụng (Background) : #0F172A (Slate 900) - Tối dịu, sâu lắng, không mỏi mắt
+   - Nền bề mặt (Surface)      : #1E293B (Slate 800) - Thẻ người chơi, modal, bảng cờ
+   - Nền bề mặt phụ (Subtle)   : #24334C - Nhóm cài đặt, hàng được highlight
+   - Nền nổi (Elevated)        : #283548 - Thẻ có đổ bóng
+   - Màu chữ chính (Text)      : #F1F5F9 (Slate 100)- Trắng ngà dịu mắt, độ tương phản cao
+   - Màu chữ phụ (Text Sec)    : #94A3B8 (Slate 400)- Nhãn thẻ, mô tả, đơn vị
+   - Màu chữ mờ (Text Muted)   : #64748B (Slate 500)- Text thứ cấp
+   - Màu đường viền (Border)   : #334155 (Slate 700)- Kẻ viền thanh lịch, không chói
+   - Trạng thái ô bàn cờ:
+     * Viền khối 3×3 lớn: #64748B | Lưới con giữa các ô: #334155
+     * Ô người chơi điền (User) : Chữ màu xanh neon dịu #60A5FA
+     * Ô đề bài cho trước (Given): Chữ trắng ngà đậm nét #F1F5F9 (font-weight: 700)
+     * Ô đang chọn (Selected)    : Nền hoàng gia #1E40AF
+     * Ô cùng số (Highlight num) : Nền xanh trầm #1E3A5F
+     * Ô điền sai (Error)        : Nền đỏ mờ rgba(239, 68, 68, 0.25)
+   - Hiệu ứng chuyển động (Theme Transition):
+     * Cấu hình transition: background-color 0.22s, border-color 0.22s, color 0.22s
+     * Chuyển đổi giữa 2 môi trường cực kỳ mượt mà, không giật màn hình.
 
 --------------------------------------------------------------------------------
 II. BỐ CỤC CHUYÊN BIỆT 100% CHO MÀN HÌNH PC (PC DESKTOP-FIRST SYSTEM)
@@ -79,12 +104,18 @@ IV. THIẾT KẾ TAB HỒ SƠ CHUẨN DASHBOARD PC 1 MÀN HÌNH (SINGLE-SCREEN P
 Được tái thiết kế hoàn toàn để vừa vặn trọn vẹn trong 1 màn hình máy tính (Zero vertical
 scroll trên màn hình 1080p, 1440p và laptop 1366x768):
 
-1. CỘT TRÁI (SIDEBAR - 310px):
-   - Thẻ người chơi (Profile Card): Avatar tròn gradient, tên kỳ thủ kèm nút sửa tên
-     nhanh tại chỗ, tổng thời gian chơi lũy kế.
-   - Thẻ cài đặt âm thanh (Profile Settings Card): Nút bật/tắt tiếng hiệu ứng và mô tả.
-   - Khu vực quản lý dữ liệu (Danger Zone): Nút viền nét đứt "Đặt Lại / Xóa Toàn Bộ Dữ Liệu"
-     có hộp thoại xác nhận an toàn 2 lớp.
+1. CỘT TRÁI (SIDEBAR - 320px):
+   - Thẻ người chơi (Profile Card):
+     * Avatar tròn SVG gradient tím-xanh, tên kỳ thủ và tổng thời gian chơi lũy kế.
+     * Cụm nút xúc giác vật lý (.profile-actions-tactile):
+       - Nút Đổi tên (#btn-edit-name, .btn-tactile): Nút có viền, đổ bóng nổi, hover nhô lên.
+       - Nút Cài đặt Bánh răng (#btn-settings-profile, .btn-tactile): Nút tương tác chân thật
+         đồng bộ phong cách với nút đổi tên, bấm để mở Modal Cài đặt hệ thống.
+    - Thẻ Cấp Bậc Danh Hiệu Kỳ Thủ (Profile Rank Card):
+      * Hệ thống 9 bậc danh xưng gắn liền ma trận 9×9: 🥋 Nhập Môn -> 🥉 Tập Sự -> 🥈 Sơ Cấp -> 🥇 Thấu Suốt -> 🎖️ Tinh Anh -> 💠 Chuyên Gia -> 🔮 Bậc Thầy -> 👑 Kiện Tướng -> 🌟 Huyền Thoại Sudoku.
+      * Thanh tiến trình phần trăm (Mastery Progress Bar) gradient chuyển màu, hiệu ứng hoàng kim rực rỡ khi chạm mốc tối đa 10,000,000+ điểm.
+      * Dòng số liệu trực quan: [X] / [Y] điểm | [Z]%, tự động chuyển sang "Đỉnh Cao Danh Vọng" ở cấp 9.
+   - Không gian sạch sẽ: Ô âm thanh và nút xóa dữ liệu đã được đưa trọn vẹn vào trong Modal Cài Đặt.
 
 2. CỘT PHẢI (MAIN DASHBOARD - 1fr):
    - Hàng chọn cấp độ (Difficulty Tabs): Dễ, Trung bình, Khó thiết kế dạng pill hiện đại.
@@ -108,3 +139,32 @@ V. CÁC HỘP THOẠI & MODAL TÙY BIẾN (CUSTOM DIALOGS & MODALS)
     thưởng Combo, thưởng Thắng hoàn hảo, trừ Gợi ý, trừ Chuỗi sai, hệ số thời gian.
 ================================================================================
 
+--------------------------------------------------------------------------------
+VI. HỘP THOẠI CÀI ĐẶT HỆ THỐNG CHUYÊN SÂU (SETTINGS MODAL UI)
+--------------------------------------------------------------------------------
+Được mở thông qua Nút Bánh Răng xúc giác (#btn-settings-profile) tại Tab Hồ sơ:
+Cấu trúc Modal Cài đặt gồm 4 phân khu chức năng được đóng khung trang nhã:
+
+1. PHÂN KHU GIAO DIỆN & NGÔN NGỮ (APPEARANCE & LANGUAGE):
+   - Chuyển đổi ngôn ngữ (Segmented Control Pill):
+     * [ 🇻🇳 Tiếng Việt | 🇬🇧 English ]
+     * Tự động chuyển đổi toàn bộ giao diện và cập nhật ngôn ngữ ngay lập tức.
+   - Chuyển đổi môi trường (Segmented Control Pill):
+     * [ ☀️ Sáng (Light) | 🌙 Tối (Dark) ]
+     * Tự động hoán đổi toàn bộ bộ biến CSS (:root <-> [data-theme="dark"]).
+
+2. PHÂN KHU ÂM THANH & HIỆU ỨNG (AUDIO & EFFECTS):
+   - Hiệu ứng âm thanh (Sound Effects):
+     * Công tắc gạt hiện đại (.toggle-switch) với thanh trượt tròn (.toggle-slider).
+     * Bật/tắt toàn bộ 10 âm thanh Web Audio procedural trong game, đồng bộ với nút loa.
+
+3. PHÂN KHU HỖ TRỢ GIẢI ĐỐ (GAMEPLAY HELPERS):
+   - Tự động xóa ghi chú (Auto-Clear Notes): Công tắc gạt BẬT/TẮT.
+   - Làm nổi bật số giống nhau (Highlight Duplicate Numbers): Công tắc gạt BẬT/TẮT.
+   - Cảnh báo lỗi ngay lập tức (Highlight Mistakes Immediately): Công tắc gạt BẬT/TẮT.
+
+4. PHÂN KHU NGUY HIỂM & DỮ LIỆU (DANGER ZONE & DATA):
+   - Được đóng khung viền đỏ nhạt, chữ tiêu đề đỏ cảnh báo.
+   - Nút hành động nổi bật: [Xóa Dữ Liệu] (.btn-danger).
+   - Tích hợp hộp thoại xác thực an toàn 2 lớp (App.confirm) trước khi thực thi xóa.
+================================================================================

@@ -105,5 +105,8 @@ III. CHI TIẾT CÁC TÍNH NĂNG KIỂM THỬ (CORE CHEATS & QA TOOLS)
      + [🚨 Nhịp Nguy Hiểm]: Test nhịp tim trầm dồn dập khi đạt ngưỡng cảnh báo đỏ.
      + [🏆 Fanfare Thắng]: Test khúc ca chiến thắng khải hoàn rộn rã.
      + [💀 Nhạc Game Over]: Test hợp âm thứ trầm buồn kết thúc trận đấu.
+9. KIỂM THỬ TƯƠNG THÍCH DARK MODE & SONG NGỮ I18N TRONG DEVTOOLS:
+   - DevTools HUD tự động kế thừa và tương thích hoàn hảo trên cả 2 giao diện Sáng (Light) và Tối (Dark).
+   - Chế độ hiển thị đáp án mờ (Ghost Answers) hiển thị chữ số tím mờ rõ nét và không bị lóa trên nền bảng cờ tối.
+   - Các hành động cheat (Instant Win, Auto Fill 80/81) hoạt động nhất quán bất kể ngôn ngữ hiện tại đang là Tiếng Việt hay English.
 ================================================================================
-

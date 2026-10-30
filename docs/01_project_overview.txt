@@ -36,28 +36,29 @@ Sudoku_game/
 ├── server.py                   # Máy chủ Python nội bộ phục vụ thử nghiệm dev không cache
 │
 ├── css/                        # Thư mục mã định dạng giao diện CSS module hóa
-│   ├── main.css                # Biến màu sắc toàn cục (:root), CSS reset, kiểu chữ, navbar
+│   ├── main.css                # Biến màu sắc toàn cục (:root & [data-theme="dark"]), nút xúc giác tactile
 │   ├── splash.css              # Giao diện màn hình mở đầu (Splash Screen) với hiệu ứng số nảy
 │   ├── lobby.css               # Giao diện sảnh chính, thẻ biến thể và thẻ tiếp tục ván dở
-│   ├── gameplay.css            # Giao diện bàn cờ 9x9, bàn phím số, overlay cảnh báo đỏ
-│   ├── modals.css              # Giao diện các hộp thoại thông báo, hướng dẫn, bảng tổng kết điểm
-│   └── profile.css             # Giao diện tab Hồ sơ: thẻ tổng quan hình chữ nhật & 6 thẻ thông số
+│   ├── gameplay.css            # Giao diện bàn cờ 9x9, bàn phím số, overlay cảnh báo đỏ, token viền & lỗi
+│   ├── modals.css              # Giao diện hộp thoại: Cài đặt (Settings), hướng dẫn, Game Over, Toast
+│   └── profile.css             # Giao diện tab Hồ sơ: thẻ người chơi, nút Cài đặt, cấp độ kỳ thủ, 6 thẻ
 │
 ├── devtools/                  # Thư mục công cụ độc lập dành cho nhà phát triển & QA
 │   ├── devtools.js            # Logic xác thực mật khẩu, HUD console & cheat engine
 │   └── devtools.css           # Giao diện HUD dark mode & modal xác thực
 │
-├── js/                         # Thư mục mã logic JavaScript (chia theo Module IIFE độc lập)
+├── js/                         # Thư mục mã logic JavaScript (11 Module IIFE độc lập)
 │   ├── sudoku-engine.js        # Thuật toán sinh bàn cờ ngẫu nhiên, giải cờ và đào lỗ câu đố
 │   ├── game.js                 # Bộ máy quản lý ván cờ (timer, tính điểm, combo, phạt, game over)
 │   ├── storage.js              # Tầng lưu trữ Persistent Data (LocalStorage + Memory Fallback)
 │   ├── sound.js                # Hệ thống âm thanh procedural Web Audio API (Zero external audio files)
+│   ├── i18n.js                 # Động cơ đa ngôn ngữ song ngữ (Việt - Anh) phản ứng tức thì
 │   ├── ui-board.js             # Xử lý render và tương tác trên bàn cờ 9x9 (highlight, animations)
 │   ├── ui-controls.js          # Xử lý bàn phím số, công cụ phụ trợ (Gợi ý, Tẩy, Ghi chú, Cảnh báo đỏ)
-│   ├── profile.js              # Xử lý hiển thị tab Hồ sơ, biểu đồ tròn tỉ lệ thắng, 6 thẻ thành tích
-│   ├── tutorial.js             # Hướng dẫn chơi tương tác từng bước (4 bước cơ bản)
-│   ├── variants.js             # Dữ liệu 4 biến thể Sudoku nổi tiếng thế giới kèm thông báo Toast
-│   └── app.js                  # Bộ điều phối trung tâm (Router SPA, sự kiện, modals, dialogs)
+│   ├── profile.js              # Xử lý tab Hồ sơ, biểu đồ tròn, cấp bậc kỳ thủ, 6 thẻ thành tích
+│   ├── tutorial.js             # Hướng dẫn chơi tương tác từng bước (3 bước cơ bản kèm animation)
+│   ├── variants.js             # Dữ liệu 4 biến thể Sudoku nổi tiếng thế giới kèm đa ngôn ngữ
+│   └── app.js                  # Bộ điều phối trung tâm (Router SPA, sự kiện, Settings modal, dialogs)
 │
 ├── docs/                       # Thư mục tài liệu kỹ thuật toàn diện cho AI & Developer
 │   ├── 01_project_overview.txt         # Tài liệu này: tổng quan, cây thư mục, quy trình

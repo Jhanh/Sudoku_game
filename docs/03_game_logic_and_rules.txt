@@ -196,3 +196,66 @@ Tab Hồ Sơ (Profile) lưu trữ và thống kê toàn diện dữ liệu thi �
    - ⏱️ Thời gian nhanh nhất: Kỷ lục hoàn thành ván cờ ngắn nhất.
    - 📈 Thời gian trung bình: Thời gian hoàn thành trung bình trên các trận thắng.
 ================================================================================
+
+--------------------------------------------------------------------------------
+XII. HỆ THỐNG CẤP BẬC DANH HIỆU KỲ THỦ (9-TIER MASTERY RANK PROGRESSION SYSTEM)
+--------------------------------------------------------------------------------
+Hệ thống cấp bậc được xây dựng dựa trên nguyên tắc ma trận 9×9 biểu tượng của Sudoku,
+sử dụng TỔNG ĐIỂM TÍCH LŨY (Mastery Points) làm thước đo chính xác phản ánh thực lực,
+tốc độ giải đố và độ chuẩn xác của kỳ thủ (thay vì chỉ đếm số lượng trận thắng thô).
+
+1. TRIẾT LÝ TOÁN HỌC & ĐỘ CÂN BẰNG TÍCH LŨY:
+   - Dựa trên công thức tính điểm (điểm từng ô, chuỗi combo streak, thưởng thắng hoàn hảo
+     và hệ số thời gian), tốc độ tích lũy điểm trên mỗi giờ chơi thực tế giữa cả 3 cấp độ
+     được cân bằng tự nhiên ở mức ~25,000 điểm / 1 giờ chơi:
+     + Mức Dễ (Easy)       : ~1,000 điểm / ván (~2.5 phút/ván)  => ~24,000 điểm / giờ
+     + Mức Trung bình (Med): ~2,500 điểm / ván (~6.0 phút/ván)  => ~25,000 điểm / giờ
+     + Mức Khó (Hard)      : ~4,200 điểm / ván (~10.0 phút/ván) => ~25,200 điểm / giờ
+
+2. BẢNG CHI TIẾT 9 BẬC DANH HIỆU & SỐ GIỜ CẦN CHƠI ƯỚC TÍNH:
+
++-----+-----------------------+-------------------+------+--------------+-------------------+----------------------+-----------------------------------------------+
+| Bậc | Danh Hiệu Tiếng Việt  | English Title     | Icon | Điểm Ngưỡng  | SỐ GIỜ CẦN CHƠI   | Ước Tính Số Ván      | Cảnh Giới Chinh Phục & Trải Nghiệm            |
++-----+-----------------------+-------------------+------+--------------+-------------------+----------------------+-----------------------------------------------+
+|  1  | Nhập Môn              | Novice            |  🥋  | 0 điểm       | 0 giờ             | 0 ván                | Bắt đầu hành trình, làm quen ma trận số 9x9.  |
+|  2  | Tập Sự                | Apprentice        |  🥉  | 10,000 điểm  | ~25 phút (~0.4h)  | 4 - 10 ván           | Nắm vững luật loại trừ cơ bản hàng/cột/khối.  |
+|  3  | Sơ Cấp                | Adept             |  🥈  | 35,000 điểm  | ~1.5 giờ          | 10 - 35 ván          | Biết dùng nháp, tìm ô độc nhất (Naked Single).|
+|  4  | Thấu Suốt             | Skilled           |  🥇  | 100,000 điểm | ~4.0 giờ          | 25 - 100 ván         | Tự tin giải Trung Bình, duy trì combo streak. |
+|  5  | Tinh Anh              | Tactician         |  🎖️  | 300,000 điểm | ~12.0 giờ         | 70 - 300 ván         | 1-2 tuần chơi, làm quen và chinh phục mức Khó.|
+|  6  | Chuyên Gia            | Expert            |  💠  | 800,000 điểm | ~32.0 giờ         | 200 - 800 ván        | ~1 tháng chơi, nhuần nhuyễn kỹ thuật loại trừ.|
+|  7  | Bậc Thầy              | Master            |  🔮  | 2,000,000 đ  | ~80.0 giờ         | 500 - 2,000 ván      | 2-3 tháng rèn luyện, tốc độ giải cờ siêu tốc. |
+|  8  | Kiện Tướng            | Grandmaster       |  👑  | 5,000,000 đ  | ~200.0 giờ        | 1,200 - 5,000 ván    | 6-8 tháng kiên trì, đẳng cấp thi đấu đỉnh cao.|
+|  9  | Huyền Thoại Sudoku    | Sudoku Legend     |  🌟  | 10,000,000 đ | ~400.0 giờ        | ~3,500 - 5,000+ ván  | Đỉnh cao danh vọng tối thượng ngàn trận đấu!  |
++-----+-----------------------+-------------------+------+--------------+-------------------+----------------------+-----------------------------------------------+
+
+3. CƠ CHẾ HIỂN THỊ TIẾN TRÌNH TRÊN HỒ SƠ:
+   - Thanh tiến trình (.rank-progress-fill) tính chính xác phần trăm hoàn thành theo công thức:
+     pct = Math.round(((totalScore - minScore) / (nextScore - minScore)) * 100)
+   - Văn bản hiển thị:
+     + Bậc 1 - 8: "[Điểm hiện tại] / [Điểm mục tiêu] điểm" bên trái, phần trăm "[pct]%" bên phải.
+     + Bậc 9 (Huyền Thoại): Thanh tiến trình đạt 100% rực rỡ hiệu ứng hoàng kim (.rank-max),
+       văn bản bên phải hiển thị: "Đỉnh Cao Danh Vọng • Đạt Cấp Tối Đa" (Peak of Mastery • Max Rank Achieved).
+
+--------------------------------------------------------------------------------
+XIII. CƠ CHẾ TRỢ NĂNG GIẢI ĐỐ CẤU HÌNH ĐƯỢC (CONFIGURABLE GAMEPLAY HELPERS)
+--------------------------------------------------------------------------------
+Bên trong Modal Cài Đặt (Settings), người chơi có toàn quyền bật/tắt 3 cơ chế hỗ trợ:
+
+1. TỰ ĐỘNG XÓA GHI CHÚ (AUTO-CLEAR NOTES) - [Mặc định: BẬT]:
+   - Khi người chơi điền một chữ số chính xác (hoặc dùng gợi ý), hệ thống sẽ tự động
+     quét 9 ô cùng hàng ngang, 9 ô cùng cột dọc và 9 ô trong khối 3×3 tương ứng.
+   - Nếu trong ghi chú nháp (pencil marks) của các ô này có chứa chữ số vừa điền,
+     chúng sẽ được tự động xóa bỏ, giúp bảng cờ luôn gọn gàng và logic.
+   - Nếu tắt: Người chơi tự quản lý việc tẩy xóa ghi chú nháp thủ công.
+
+2. LÀM NỔI BẬT SỐ GIỐNG NHAU (HIGHLIGHT DUPLICATE NUMBERS) - [Mặc định: BẬT]:
+   - Khi bấm chọn vào bất kỳ ô nào đã có chữ số, toàn bộ các ô chứa cùng chữ số đó
+     trên khắp bàn cờ 9×9 sẽ đồng loạt được phủ lớp sáng nổi bật (--highlight-num).
+   - Giúp người chơi quan sát bao quát tần suất xuất hiện và phân bố của chữ số.
+
+3. CẢNH BÁO LỖI NGAY LẬP TỨC (HIGHLIGHT MISTAKES IMMEDIATELY) - [Mặc định: BẬT]:
+   - Khi người chơi điền một con số sai so với nghiệm chuẩn, ô đó sẽ lập tức đổi
+     sang màu đỏ viền đỏ (.cell.error) kèm hiệu ứng rung lắc nhẹ.
+   - Nếu tắt: Thích hợp cho kỳ thủ hardcore muốn tự kiểm chứng tính đúng sai mà
+     không dựa vào sự can thiệp tức thì của hệ thống.
+================================================================================

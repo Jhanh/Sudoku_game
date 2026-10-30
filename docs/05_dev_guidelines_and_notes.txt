@@ -119,20 +119,47 @@ IV. NGUYÊN TẮC CÔNG NGHỆ & MÃ NGUỒN (CODE CONSTRAINTS)
      di động hoặc màn hình hẹp (< 820px).
 
 --------------------------------------------------------------------------------
-V. BẢN ĐỒ TỌA ĐỘ NHANH CHO AI ASSISTANT (QUICK REFERENCE MAP)
+V. QUY TẮC ĐỒNG BỘ TÀI LIỆU TOÀN DIỆN (DOCUMENTATION INTEGRITY RULE - BẮT BUỘC)
+--------------------------------------------------------------------------------
+1. TẦM QUAN TRỌNG TỐI CAO CỦA THƯ MỤC docs/:
+   - Thư mục `docs/` là "Bộ não kiến thức" lưu trữ toàn bộ sự thật kỹ thuật (Single Source of Truth)
+     của toàn hệ thống Sudoku Web.
+   - Khi làm việc trong các phiên độc lập hoặc sau khi bị nén ngữ cảnh (context truncation),
+     AI Assistant (Antigravity) sẽ dựa vào `docs/` để thấu hiểu kiến trúc, bảng màu, logic và
+     các ràng buộc kỹ thuật mà không cần phải đoán mò hay suy diễn sai lệch.
+
+2. NGUYÊN TẮC BẤT DI BẤT DỊCH VỀ ĐỒNG BỘ TÀI LIỆU:
+   - BẤT KỲ khi nào có sửa đổi logic, bổ sung tính năng mới, tái cấu trúc CSS, thêm file JavaScript
+     hoặc tinh chỉnh giao diện người dùng:
+     => LẬP TỨC cập nhật đồng bộ các tài liệu tương ứng trong thư mục `docs/` trong cùng phiên làm việc!
+   - Tuyệt đối KHÔNG ĐƯỢC để code chạy trước mà tài liệu `docs/` bị lỗi thời hoặc bỏ sót.
+   - Bảng phân công trách nhiệm tài liệu khi cập nhật hệ thống:
+     * `docs/01_project_overview.txt`           : Kiến trúc thư mục, triết lý sản phẩm, tổng quan tính năng.
+     * `docs/02_architecture_and_modules.txt`   : Chi tiết 11 module JavaScript, hàm mới, localStorage schema.
+     * `docs/03_game_logic_and_rules.txt`       : Thuật toán, luật chơi, hệ thống tính điểm, cấp bậc Rank kỳ thủ, trợ năng.
+     * `docs/04_ui_ux_design_system.txt`        : Bảng màu (Light/Dark tokens), typography, quy chuẩn layout PC, modal spec.
+     * `docs/05_dev_guidelines_and_notes.txt`   : Quy chuẩn Git commit, quy tắc zero-dependency, hướng dẫn bảo trì.
+     * `docs/06_css_styling_and_architecture.txt`: Bóc tách chi tiết từng file CSS, quy tắc class, animation keyframes.
+     * `docs/07_developer_tools_and_testing.txt`: Hệ thống cheat HUD, phím tắt QA, kịch bản test tự động.
+
+--------------------------------------------------------------------------------
+VI. BẢN ĐỒ TỌA ĐỘ NHANH CHO AI ASSISTANT (QUICK REFERENCE MAP)
 --------------------------------------------------------------------------------
 Khi cần chỉnh sửa hay mở rộng hệ thống, hãy tìm đến đúng file:
 - Muốn sửa thuật toán Sudoku / đào lỗ / kiểm tra nghiệm   => `js/sudoku-engine.js`
 - Muốn sửa điểm số, combo, gợi ý, chuỗi sai, Game Over    => `js/game.js`
 - Muốn sửa âm thanh Procedural Web Audio SFX (10 SFX)     => `js/sound.js`
+- Muốn sửa từ điển song ngữ Việt - Anh (i18n)             => `js/i18n.js`
+- Muốn sửa bảng màu Dark Mode / Light Mode dịu mắt        => `css/main.css`, `css/gameplay.css`, `css/modals.css`
+- Muốn sửa modal Cài đặt (Settings), các nút gạt trợ năng => `index.html`, `css/modals.css`, `js/app.js`
 - Muốn sửa màn hình cảnh báo chỉ dành cho PC trên mobile  => `index.html`, `css/main.css` & `js/app.js`
 - Muốn sửa LocalStorage, lưu ván dở, reset dữ liệu        => `js/storage.js`
 - Muốn sửa màu sắc ô cờ, hiệu ứng chọn, highlight         => `js/ui-board.js` & `css/gameplay.css`
 - Muốn sửa bàn phím số, các lớp cảnh báo đỏ nhấp nháy     => `js/ui-controls.js` & `css/gameplay.css`
-- Muốn sửa tab Hồ sơ, biểu đồ tròn, 6 thẻ thành tích      => `js/profile.js` & `css/profile.css`
+- Muốn sửa tab Hồ sơ, cấp bậc Rank, biểu đồ tròn, 6 thẻ   => `js/profile.js` & `css/profile.css`
 - Muốn sửa hướng dẫn chơi 4 bước                         => `js/tutorial.js` & `css/modals.css`
 - Muốn sửa thông tin 4 biến thể                          => `js/variants.js` & `css/lobby.css`
 - Muốn sửa điều hướng tab, modal kết thúc ván, confetti   => `js/app.js` & `css/modals.css`
 - Muốn tra cứu kiến trúc 6 file CSS                      => `docs/06_css_styling_and_architecture.txt`
-- Muốn tra cứu bảng điểm & luật chơi                     => `docs/03_game_logic_and_rules.txt`
+- Muốn tra cứu bảng điểm, cấp bậc Rank & luật chơi       => `docs/03_game_logic_and_rules.txt`
 ================================================================================

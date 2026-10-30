@@ -53,6 +53,22 @@ II. CHI TIẾT TỪNG FILE CSS
        --highlight-row: #EFF6FF (vùng chữ thập)
        --highlight-num: #DBEAFE (các ô trùng số)
        --selected: #BFDBFE (ô đang bấm chọn)
+     * Giao diện Chế độ Tối Dịu Mắt ([data-theme="dark"]):
+       Được nghiên cứu khoa học để chống mỏi mắt khi chơi lâu, dùng dải Slate Navy sâu:
+       --bg: #0F172A (Deep Slate Navy - không đen kịt 100%, bảo vệ thị lực tối ưu)
+       --surface: #1E293B (Slate 800 - nền card nổi khối thanh lịch)
+       --surface-card: #334155 (Slate 700 - nền thẻ con/ô phụ)
+       --text: #F1F5F9 (Off-white Slate 100 - tương phản mềm mại, không gây chói)
+       --text-secondary: #94A3B8 (Slate 400 - văn bản phụ rõ ràng)
+       --border: #334155 (Slate 700 viền cờ và đường bao sắc nét)
+       --primary: #60A5FA (Blue 400 - dạ quang dịu mắt, nổi bật trên nền tối)
+       --primary-bg: rgba(59, 130, 246, 0.15) (Ánh sáng xanh mờ)
+       --selected: rgba(96, 165, 250, 0.35) (Vùng ô chọn)
+       --highlight-row: rgba(59, 130, 246, 0.08) (Chiếu sáng chữ thập)
+       --highlight-num: rgba(59, 130, 246, 0.18) (Chiếu sáng số trùng)
+     * Chuyển động chuyển Theme êm dịu:
+       Toàn bộ body, card, cell được cấu hình transition mượt mà:
+       transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
      * Bo góc & Đổ bóng:
        --radius: 12px | --radius-sm: 8px
        --shadow: 0 4px 24px rgba(0, 0, 0, 0.08)
@@ -118,13 +134,16 @@ II. CHI TIẾT TỪNG FILE CSS
        bảng công cụ (`.controls-panel`, rộng 260px - 300px).
      * Toàn bộ màn hình game nằm gọn trong 1 khung nhìn (100vh) không phát sinh cuộn trang.
   b. Trạng thái hiển thị từng ô cờ (`.cell`):
-     * `.cell.given`: Chữ màu đen, in đậm (đề bài cho trước).
-     * `.cell.user`: Chữ màu xanh lam (người chơi tự điền đúng).
+     * `.cell.given`: Chữ màu đen (#1E293B) trên Light Mode, trắng kem dịu (#F8FAFC) trên Dark Mode, in đậm (đề bài cho trước).
+     * `.cell.user`: Chữ màu xanh lam (#3B82F6 trên Light, #60A5FA trên Dark - người chơi tự điền đúng).
      * `.cell.selected`: Nền xanh dương nổi bật (`--selected`).
      * `.cell.highlighted`: Vùng chữ thập chiếu sáng theo hàng và cột.
      * `.cell.same-number`: Nền nổi bật mọi ô có cùng chữ số trên bàn.
      * `.cell.error`: Nền đỏ, chữ đỏ kèm animation rung lắc `@keyframes shake` 0.4s.
      * `.cell-notes`: Lưới 3x3 chữ số nháp font nhỏ 0.55rem màu xám bên trong ô trống.
+     * Cấu hình đường viền bàn cờ tương thích Dark Mode:
+       Đường viền biên cờ 9x9 (--grid-border), phân khối 3x3 (--block-border), và viền ô (--cell-border)
+       tự động chuyển thành Slate 700 (#334155) / Slate 600 (#475569) đảm bảo phân định rõ từng khối cờ.
   c. Hệ thống cảnh báo thị giác đỏ nguy hiểm (Visual Danger Overlay & Banner):
      * `.danger-overlay`: Lớp phủ viền màn hình dạng Vignette, `pointer-events: none`.
      * Cấp 1: Chớp đỏ nhẹ 0.8s (`@keyframes flashFade`).
@@ -153,7 +172,20 @@ II. CHI TIẾT TỪNG FILE CSS
        - Dòng trừ điểm: Chữ đỏ `#DC2626`.
        - Dòng hệ số thời gian: Chữ xanh đậm nổi bật.
        - Dòng tổng điểm cuối cùng: Font cực đại, viền phát sáng.
-  d. Thông báo nổi Toast (`.toast`):
+  d. Modal Cài Đặt Toàn Diện (`#modal-settings` & `.modal-settings`):
+     * Chiều rộng 440px bo góc 16px, tiêu đề có icon bánh răng xoay nhẹ khi mở.
+     * Phân khu theo từng nhóm chức năng (`.settings-section`):
+       - Nhóm Giao diện (Theme): Điều khiển chuyển đổi Giao diện Sáng (Light) / Tối (Dark).
+       - Nhóm Ngôn ngữ (Language): Điều khiển chuyển đổi Tiếng Việt / English.
+       - Nhóm Trợ năng chơi cờ (Gameplay Helpers): 3 công tắc gạt toggle switch tinh xảo
+         (Tự xóa ghi chú, Đánh dấu số trùng, Đánh dấu lỗi sai lập tức).
+       - Nhóm Âm thanh & Dữ liệu (Sound & Danger): Công tắc gạt Âm thanh SFX và Nút đỏ
+         "Xóa toàn bộ dữ liệu game" (được dời từ Hồ sơ vào đây để tăng tính an toàn).
+     * Thiết kế tương tác Segmented Control (`.segmented-control`):
+       Khung viên thuốc chứa các tab lựa chọn, nút active trượt nền trắng/xanh có shadow nhẹ.
+     * Thiết kế công tắc Toggle Switch hiện đại (`.toggle-switch`, `.toggle-slider`):
+       Cần gạt iOS/Fluent mượt mà, đổi màu xanh lam khi bật (background: var(--primary)), nút tròn nảy nhịp 0.25s.
+  e. Thông báo nổi Toast (`.toast`):
      * Tự động trượt lên và biến mất sau 3 giây.
 
 --------------------------------------------------------------------------------
@@ -162,9 +194,19 @@ II. CHI TIẾT TỪNG FILE CSS
 - Vai trò: Trình bày dữ liệu thống kê, biểu đồ và hồ sơ cá nhân theo bố cục Dashboard PC.
 - Bố cục 2 cột đặc biệt (`.profile-container` - max-width: 980px, grid 310px 1fr):
   a. Cột trái (Sidebar - 310px):
-     * Thẻ người chơi (`.profile-card`): Avatar tròn 58px, tên kỳ thủ, sửa tên tại chỗ, tổng giờ chơi.
-     * Thẻ âm thanh (`.profile-settings-card`): Bật/tắt hiệu ứng Web Audio SFX kèm icon loa.
-     * Khu vực nguy hiểm (`.profile-danger-zone`): Nút nét đứt "Đặt Lại / Xóa Toàn Bộ Dữ Liệu".
+     * Thẻ người chơi (`.profile-card`):
+       - Avatar tròn 58px kèm huy hiệu cấp bậc mini.
+       - Tên kỳ thủ kèm 2 nút bấm xúc giác chân thật (`.btn-tactile`):
+         + Nút Sửa Tên (`#btn-edit-name`): Icon bút chì, viền nổi, hiệu ứng lún 3D khi bấm.
+         + Nút Cài Đặt (`#btn-settings-profile`): Icon bánh răng cơ khí chân thật, mở trực tiếp Modal Cài Đặt.
+       - Tổng thời gian chơi tích lũy.
+     * Thẻ Cấp Bậc Danh Hiệu Kỳ Thủ (`.profile-rank-card`):
+       - Thay thế cho thẻ âm thanh và khu vực xóa dữ liệu cũ (đã chuyển vào Settings an toàn).
+       - Huy hiệu cấp bậc lớn nổi bật (9 cấp: 🥋 Nhập Môn, 🥉 Tập Sự, 🥈 Sơ Cấp, 🥇 Thấu Suốt, 🎖️ Tinh Anh, 💠 Chuyên Gia, 🔮 Bậc Thầy, 👑 Kiện Tướng, 🌟 Huyền Thoại Sudoku).
+       - Tên danh hiệu cùng chỉ số điểm ngưỡng yêu cầu và số giờ chơi ước tính.
+       - Thanh đo tiến trình (`.rank-progress-bar` & `.rank-progress-fill`) chuyển sắc xanh tím mượt mà,
+         và tự động chuyển sang hiệu ứng hoàng kim lấp lánh (`.rank-max`) khi đạt 10,000,000+ điểm.
+  
   b. Cột phải (Main Dashboard - 1fr):
      * Hàng chọn cấp độ (`.difficulty-tabs`): 3 tab Dễ, Trung bình, Khó.
      * Thẻ tổng quan (`.overview-card`):

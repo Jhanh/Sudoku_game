@@ -15,7 +15,7 @@ I. TỔNG QUAN KIẾN TRÚC MÃ NGUỒN
     └── Quản lý dữ liệu với Storage (storage.js)
 
 --------------------------------------------------------------------------------
-II. CHI TIẾT 10 MODULE JAVASCRIPT TRONG js/
+II. CHI TIẾT 11 MODULE JAVASCRIPT TRONG js/
 --------------------------------------------------------------------------------
 
 1. js/sudoku-engine.js (Module: SudokuEngine)
@@ -79,15 +79,24 @@ II. CHI TIẾT 10 MODULE JAVASCRIPT TRONG js/
      + Có cơ chế tự động kiểm tra bảo mật (Try/Catch) và fallback sang đối tượng
        bộ nhớ in-memory (memoryStore) nếu trình duyệt chặn quyền LocalStorage
        (ví dụ ở chế độ iframe sandbox hoặc duyệt web ẩn danh cực hạn).
-   - 3 Khóa lưu trữ (Storage Keys):
+   - 7 Khóa lưu trữ (Storage Keys):
      + 'sudoku_current_game': Lưu toàn bộ Game State ván đang chơi dở.
      + 'sudoku_profile': Lưu tên người chơi (mặc định "Kỳ thủ Sudoku") và tổng thời gian chơi.
      + 'sudoku_stats': Lưu đối tượng thống kê thành tích chia theo từng độ khó:
        { played, won, perfectWins, currentStreak, bestStreak, bestTime, totalWinTime, bestScore }.
+     + 'sudoku_sound_enabled': Lưu trạng thái bật (true) / tắt (false) âm thanh Web Audio.
+     + 'sudoku_language': Lưu tùy chọn ngôn ngữ ('vi' hoặc 'en').
+     + 'sudoku_theme': Lưu tùy chọn giao diện ('light' hoặc 'dark').
+     + 'sudoku_gameplay_settings': Lưu các trợ năng giải đố:
+       { autoClearNotes: bool, highlightSame: bool, highlightMistakes: bool }.
    - Các hàm API:
      + saveGame(state), loadGame(), clearGame(), hasActiveGame(): Quản lý ván dở.
      + getProfile(), saveProfile(p): Quản lý thông tin cá nhân.
      + getStats(), saveStats(s), recordGameResult(diff, won, time, mistakes, score): Ghi nhận trận đấu.
+     + isSoundEnabled(), setSoundEnabled(bool): Bật/tắt âm thanh.
+     + getLanguage(), setLanguage(lang): Lấy/đổi ngôn ngữ hệ thống.
+     + getTheme(), setTheme(theme): Lấy/đổi chủ đề giao diện Sáng / Tối.
+     + getSettings(), saveSettings(s), updateSetting(key, val): Quản lý cài đặt hỗ trợ giải đố.
      + resetAllData(): Xóa toàn bộ dữ liệu, khôi phục game về trạng thái nguyên bản xuất xưởng.
 
 4. js/ui-board.js (Module: UIBoard)
@@ -124,20 +133,35 @@ II. CHI TIẾT 10 MODULE JAVASCRIPT TRONG js/
        * Băng rôn cảnh báo khẩn (#danger-banner): Hiển thị thông điệp cảnh báo nguy cơ Game Over.
 
 6. js/profile.js (Module: Profile)
-   - Nhiệm vụ: Xử lý dữ liệu và giao diện của Tab Hồ sơ cá nhân.
+   - Nhiệm vụ: Xử lý dữ liệu và giao diện của Tab Hồ sơ cá nhân chuẩn Dashboard PC.
    - Cấu trúc giao diện:
-     + Avatar SVG tùy biến và hiển thị Tổng thời gian chơi tích lũy của người dùng.
-     + Tính năng chỉnh sửa tên người chơi (nút bút chì, ô nhập inline kèm nút Lưu / Hủy).
-     + Bộ tab chọn 3 độ khó: Dễ, Trung bình, Khó.
+     + Thẻ Người Chơi (Profile Card):
+       * Avatar SVG phong cách thân thiện và tổng thời gian chơi tích lũy.
+       * Cụm nút xúc giác vật lý (.profile-actions-tactile):
+         - Nút Đổi tên (#btn-edit-name, .btn-tactile): Mở ô sửa tên inline.
+         - Nút Cài đặt Bánh răng (#btn-settings-profile, .btn-tactile): Mở Modal Cài đặt hệ thống.
+      + Thẻ Cấp Bậc Danh Hiệu (Profile Rank Card):
+        * Tự động tính toán 9 bậc danh hiệu dựa trên Tổng Điểm Tích Lũy (Mastery Points):
+          - 🥋 Nhập Môn (Novice): 0 đ (~0h)
+          - 🥉 Tập Sự (Apprentice): 10,000 đ (~0.4h)
+          - 🥈 Sơ Cấp (Adept): 35,000 đ (~1.5h)
+          - 🥇 Thấu Suốt (Skilled): 100,000 đ (~4h)
+          - 🎖️ Tinh Anh (Tactician): 300,000 đ (~12h)
+          - 💠 Chuyên Gia (Expert): 800,000 đ (~32h)
+          - 🔮 Bậc Thầy (Master): 2,000,000 đ (~80h)
+          - 👑 Kiện Tướng (Grandmaster): 5,000,000 đ (~200h)
+          - 🌟 Huyền Thoại Sudoku (Sudoku Legend): 10,000,000+ đ (~400h)
+        * Thanh tiến trình phần trăm (Mastery Progress Bar) tính điểm chi tiết, hiệu ứng hoàng kim .rank-max ở bậc 9.
+     + Bộ tab chọn 3 độ khó: Dễ, Trung bình, Khó (kết nối đa ngôn ngữ).
      + Thẻ Tổng Quan Trận Đấu (Overview Card - Hình chữ nhật):
-       * Bên trái: Biểu đồ tròn Donut Chart SVG tính toán chính xác Tỉ lệ thắng (Win Rate %)
-         thông qua thuộc tính stroke-dashoffset động trên chu vi hình tròn r=54 (C = 339.29).
-       * Bên phải: 2 dòng thông số to rõ: 🏆 Số trận đã thắng & 🎮 Số trận đã chơi.
-     + Lưới 6 thẻ thông số chi tiết (chia thành 3 cặp chuẩn mực):
+       * Biểu đồ tròn Donut Chart SVG tỉ lệ thắng (Win Rate %) r=54 (C = 339.29).
+       * 2 dòng thông số to rõ: 🏆 Số trận đã thắng & 🎮 Số trận đã chơi.
+     + Lưới 6 thẻ thông số chi tiết (3 cặp chuẩn mực):
        * Cặp 1: 👑 Điểm cao nhất | 💎 Thắng hoàn hảo (0/3 lỗi)
        * Cặp 2: 🔥 Chuỗi thắng hiện tại | ⚡ Chuỗi thắng tốt nhất
        * Cặp 3: ⏱️ Thời gian nhanh nhất | 📈 Thời gian trung bình
-     + Nút Đặt lại dữ liệu (#btn-reset-data) ở khu vực cảnh báo cuối trang.
+     + Tách biệt hoàn toàn: Đã loại bỏ ô âm thanh và nút xóa dữ liệu thô khỏi màn hình,
+       chuyển toàn bộ vào trong Modal Cài Đặt (Settings Modal) bảo đảm giao diện PC 1 màn hình.
 
 7. js/tutorial.js (Module: Tutorial)
    - Nhiệm vụ: Cung cấp hướng dẫn chơi tương tác từng bước cho người mới bắt đầu.
@@ -158,17 +182,21 @@ II. CHI TIẾT 10 MODULE JAVASCRIPT TRONG js/
 9. js/app.js (Module: App)
    - Nhiệm vụ: Nhạc trưởng điều phối toàn bộ vòng đời ứng dụng.
    - Các chức năng quản lý:
-     + Tự động ẩn Splash Screen sau 2.5 giây và nạp sảnh chính.
+     + Khởi tạo I18n.init() và đồng bộ thuộc tính data-theme ngay khi nạp trang.
+     + Điều khiển Modal Cài Đặt (initSettings):
+       * Chuyển đổi song ngữ tức thì (Tiếng Việt / English).
+       * Chuyển đổi giao diện Sáng / Tối (Light / Dark mode).
+       * Đồng bộ công tắc bật/tắt âm thanh Web Audio SFX.
+       * Đồng bộ 3 công tắc hỗ trợ giải đố (Xóa ghi chú, Tô sáng số trùng, Báo lỗi ngay).
+       * Quản lý nút Xóa toàn bộ dữ liệu trong vùng nguy hiểm kèm hộp thoại xác thực 2 lớp.
      + Router chuyển đổi thanh điều hướng đáy: Trang chủ <-> Biến thể <-> Hồ sơ.
      + Phát hiện ván chơi dở: Hiển thị hộp thoại tiếp tục hoặc hủy ván an toàn.
-     + Hộp thoại Custom Dialog (thay thế hoàn toàn alert() và confirm() mặc định của trình duyệt):
-       App.alert(title, msg) và App.confirm(title, msg) trả về Promise.
-     + Xử lý kết thúc ván: Modal Chiến Thắng (kèm pháo hoa giấy confetti Canvas),
-       Modal Game Over (phân loại lý do: quá 3 lỗi thông thường hoặc do chạm giới hạn chuỗi sai).
-     + Modal Bảng tổng kết điểm chi tiết (Score Breakdown Modal).
+     + Hộp thoại Custom Dialog: App.confirm(title, msg) trả về Promise, hỗ trợ song ngữ.
+     + Xử lý kết thúc ván: Modal Chiến Thắng (kèm pháo hoa confetti Canvas),
+       Modal Game Over (quá 3 lỗi hoặc chạm giới hạn chuỗi sai liên tiếp).
+     + Modal Bảng tổng kết điểm chi tiết (Score Breakdown Modal) hỗ trợ song ngữ.
      + Lắng nghe phím tắt bàn phím vật lý (Phím 1-9, Delete, Backspace, N, H, U, Arrow keys).
-     + Phát hiện thiết bị di động (Mobile Device Notice): Tự động phát hiện màn hình nhỏ hoặc
-       User-Agent di động để hiển thị màn hình thông báo lịch sự game chỉ tối ưu cho PC.
+     + Phát hiện thiết bị di động (Mobile Device Notice): Tự động hiển thị màn hình thông báo PC.
 
 10. js/sound.js (Module: Sound)
     - Nhiệm vụ: Hệ thống âm thanh hiệu ứng tương tác (Sound Effects - SFX) thời gian thực.
@@ -192,3 +220,20 @@ II. CHI TIẾT 10 MODULE JAVASCRIPT TRONG js/
       + Tích hợp đầy đủ vào QA Dev Console để kiểm thử nhanh từng âm thanh chỉ với 1 click.
 ================================================================================
 
+
+11. js/i18n.js (Module: I18n)
+    - Nhiệm vụ: Động cơ bản địa hóa đa ngôn ngữ song ngữ (Bilingual Internationalization Engine).
+    - Ngôn ngữ hỗ trợ: Tiếng Việt (vi - Mặc định) và Tiếng Anh (en).
+    - Cơ chế hoạt động thuần khiết (Zero Dependencies):
+      + Bộ từ điển đối xứng translations.vi và translations.en phủ rộng 100% các chuỗi
+        hiển thị của toàn bộ hệ thống: Splash, Home, Navigation, Variants, Profile,
+        Difficulty, Gameplay, Danger Warning, Game Over Breakdown, Tutorial, Settings,
+        Confirm Dialogs và Toast Notifications.
+      + Quét tự động các thuộc tính DOM:
+        * [data-i18n="<key>"]: Tự động cập nhật nội dung văn bản (textContent/innerHTML).
+        * [data-i18n-title="<key>"]: Tự động cập nhật thuộc tính title và aria-label.
+        * [data-i18n-placeholder="<key>"]: Tự động cập nhật thuộc tính placeholder.
+      + Hàm nội suy tham số: I18n.t(key, { count, target, diff, maxStreak... }).
+      + Chuyển đổi tức thì (Real-time Reactive): Gọi I18n.setLanguage('en' | 'vi')
+        sẽ cập nhật toàn bộ DOM đang mở, re-render các thành phần động và cập nhật
+        thuộc tính documentElement.lang mà không cần tải lại trang web.
