@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Jhanh/Sudoku_game/releases/tag/v1.0">
-    <img src="https://img.shields.io/badge/Release-v1.0-10B981?style=for-the-badge&logo=tag&logoColor=white" alt="Release">
+  <a href="https://github.com/Jhanh/Sudoku_game/releases/tag/v1.1">
+    <img src="https://img.shields.io/badge/Release-v1.1-10B981?style=for-the-badge&logo=tag&logoColor=white" alt="Release">
   </a>
   &nbsp;
   <a href="https://jhanh.github.io/Sudoku_game/">
@@ -68,7 +68,10 @@
   * **Gợi Ý Thông Minh (Hint):** Trợ giúp giải ô hóc búa kèm hiệu ứng tỏa sáng, dùng lần lượt từng ô tiện lợi.
   * **Bàn Phím Số Kèm Bộ Đếm:** Lưới phím 3x3 hiển thị số lượng con số còn thiếu, tự động làm mờ khi đã điền đủ 9 số.
 * 🎓 **Hướng Dẫn Tương Tác Trực Quan:** Chế độ Hướng dẫn 3 bước với hình ảnh động chuyển động ngay trên lưới cờ, giúp người chơi nắm vững quy tắc cơ bản chỉ sau 1 phút.
-* 📈 **Hồ Sơ & Thống Kê Toàn Diện:** Lưu trữ thành tích cá nhân, tính toán tỉ lệ thắng, chuỗi trận bất bại và thời gian giải nhanh nhất qua biểu đồ trực quan.
+* 📈 **Hồ Sơ & Hệ Thống 9 Cấp Bậc Danh Hiệu:** Lưu trữ thành tích cá nhân, tính toán tỉ lệ thắng, chuỗi trận bất bại và biểu đồ Donut trực quan. Vinh danh kỳ thủ qua thang **9 Cấp Bậc Danh Hiệu** (🥋 Nhập Môn -> 🌟 Huyền Thoại Sudoku) dựa trên Tổng Điểm Tích Lũy (Mastery Points) gắn liền ma trận 9×9.
+* 🌐 **Hỗ Trợ Song Ngữ Quốc Tế (Bilingual i18n):** Chuyển đổi liền mạch tức thì giữa **Tiếng Việt 🇻🇳** và **English 🇬🇧** chỉ với 1 click.
+* 🌙 **Chế Độ Tối Dịu Mắt (Eye-Friendly Dark Mode):** Bảng màu Slate Navy được nghiên cứu khoa học giúp bảo vệ thị lực và chống mỏi mắt khi tập trung cao độ, chuyển sắc mượt mà.
+* ⚙️ **Hộp Thoại Cài Đặt Toàn Diện (Settings Modal):** Nút tương tác bánh răng cơ khí chân thật (.btn-tactile), tích hợp chuyển đổi giao diện, ngôn ngữ, âm thanh, xóa an toàn dữ liệu và 3 công tắc Trợ năng chơi cờ (Tự xóa nháp, Đánh dấu số trùng, Báo lỗi ngay).
 * ⚡ **Thuần Khiết & Tiện Lợi (Zero Dependencies):** Không cần cài đặt thư viện nặng nề, không cần môi trường lập trình phức tạp. Nhấp đúp chuột là chơi ngay trên mọi trình duyệt hiện đại.
 * 💾 **Tự Động Lưu Trạng Thái (Zero-Loss):** Tự động ghi nhớ ván chơi dở dang. Bạn có thể yên tâm đóng trình duyệt và quay lại tiếp tục bất kỳ lúc nào.
 
@@ -81,7 +84,7 @@ Bạn có thể truy cập và chơi ngay không cần tải gì tại:
 👉 **[https://jhanh.github.io/Sudoku_game/](https://jhanh.github.io/Sudoku_game/)**
 
 ### 💻 Cách 2: Tải về chơi Offline trên máy tính
-1. Tải tệp nén **[Sudoku-Game-v1.0.zip](https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip)** về máy tính.
+1. Tải tệp nén **[Sudoku-Game-v1.1.zip](https://github.com/Jhanh/Sudoku_game/releases/tag/v1.1)** về máy tính.
 2. Giải nén thư mục.
 3. Nhấp đúp vào tệp **`ChoiGame.bat`** (trên Windows) hoặc mở trực tiếp tệp **`index.html`** bằng trình duyệt web yêu thích của bạn.
 
