@@ -51,7 +51,7 @@ const App = (() => {
   }
 
   /* ---- game over ---- */
-  function showGameOver(reason, state, breakdown) {
+    function showGameOver(reason, state, breakdown) {
     if (!breakdown && typeof Game !== 'undefined' && Game.getScoreBreakdown) {
       breakdown = Game.getScoreBreakdown(state);
     }
@@ -80,31 +80,34 @@ const App = (() => {
       if (typeof Sound !== 'undefined' && Sound.playWin) Sound.playWin();
       if (modalEl) modalEl.classList.add('win');
       icon = '🎉';
-      title = 'Chiến Thắng!';
-      subtitle = 'Chúc mừng bạn đã hoàn thành trọn vẹn ván cờ Sudoku!';
+      title = typeof I18n !== 'undefined' ? I18n.t('gameover_win_title') : 'Chiến Thắng!';
+      subtitle = typeof I18n !== 'undefined' ? I18n.t('gameover_win_subtitle') : 'Chúc mừng bạn đã hoàn thành trọn vẹn ván cờ Sudoku!';
     } else if (reason === 'give_up') {
       if (modalEl) modalEl.classList.add('give-up');
       icon = '🏳️';
-      title = 'Đã Bỏ Cuộc';
-      subtitle = 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:';
+      title = typeof I18n !== 'undefined' ? I18n.t('gameover_giveup_title') : 'Đã Bỏ Cuộc';
+      subtitle = typeof I18n !== 'undefined' ? I18n.t('gameover_giveup_subtitle') : 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:';
     } else if (reason === 'streak_over') {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💀';
-      title = 'Hết Lượt Sai Liên Tiếp!';
+      title = typeof I18n !== 'undefined' ? I18n.t('gameover_streak_title') : 'Hết Lượt Sai Liên Tiếp!';
       const maxStreak = state.difficulty === 'hard' ? 10 : 15;
-      subtitle = `Bạn đã chọn sai ${maxStreak} lần liên tiếp ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
+      subtitle = typeof I18n !== 'undefined' 
+        ? I18n.t('gameover_streak_subtitle', { maxStreak, diff: breakdown.diffLabel })
+        : `Bạn đã chọn sai ${maxStreak} lần liên tiếp ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
     } else {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💔';
-      title = 'Kết Thúc Trận Đấu';
-      subtitle = 'Ván đấu đã dừng lại. Hãy xem lại bảng điểm và thử lại nhé!';
+      title = typeof I18n !== 'undefined' ? I18n.t('gameover_lose_title') : 'Kết Thúc Trận Đấu';
+      subtitle = typeof I18n !== 'undefined' ? I18n.t('gameover_lose_subtitle') : 'Ván đấu đã dừng lại. Hãy xem lại bảng điểm và thử lại nhé!';
     }
 
-    const timeMultText = breakdown.timeMultiplier === 2.0 
-      ? `× 2.0 (Siêu tốc)`
-      : (breakdown.timeMultiplier === 1.5 ? `× 1.5 (Tốc độ)` : `× 1.0 (Chuẩn)`);
+    const isEn = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en';
+    const speedTag = isEn 
+      ? (breakdown.timeMultiplier === 2.0 ? '× 2.0 (Super speed)' : (breakdown.timeMultiplier === 1.5 ? '× 1.5 (Speedy)' : '× 1.0 (Standard)'))
+      : (breakdown.timeMultiplier === 2.0 ? '× 2.0 (Siêu tốc)' : (breakdown.timeMultiplier === 1.5 ? '× 1.5 (Tốc độ)' : '× 1.0 (Chuẩn)'));
 
     const contentEl = document.getElementById('gameover-content');
     contentEl.innerHTML = `
@@ -115,60 +118,60 @@ const App = (() => {
       </div>
 
       <div class="gameover-final-score">
-        <span class="final-score-label">TỔNG ĐIỂM ĐẠT ĐƯỢC</span>
+        <span class="final-score-label">${typeof I18n !== 'undefined' ? I18n.t('breakdown_final_score').toUpperCase() : 'TỔNG ĐIỂM ĐẠT ĐƯỢC'}</span>
         <span class="final-score-val">${breakdown.finalScore}</span>
       </div>
 
       <div class="score-breakdown-card">
         <div class="breakdown-title">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          <span>Chi Tiết Bảng Điểm (${breakdown.diffLabel})</span>
+          <span>${isEn ? 'Score Breakdown' : 'Chi Tiết Bảng Điểm'} (${breakdown.diffLabel})</span>
         </div>
         <div class="breakdown-row">
-          <span class="row-label">Ô điền đúng (${breakdown.correctCount} ô × ${breakdown.cellPts}đ)</span>
+          <span class="row-label">${isEn ? 'Correct digits' : 'Ô điền đúng'} (${breakdown.correctCount} ${isEn ? 'cells' : 'ô'} × ${breakdown.cellPts}đ)</span>
           <span class="row-val">+${breakdown.baseScore}</span>
         </div>
         <div class="breakdown-row">
-          <span class="row-label">Thưởng chuỗi combo (Max ${breakdown.maxStreak} ô)</span>
+          <span class="row-label">${typeof I18n !== 'undefined' ? I18n.t('breakdown_combo_bonus') : 'Thưởng chuỗi combo'} (Max ${breakdown.maxStreak})</span>
           <span class="row-val ${breakdown.comboBonus > 0 ? 'highlight-combo' : ''}">+${breakdown.comboBonus}</span>
         </div>
         ${breakdown.perfectBonus > 0 ? `
         <div class="breakdown-row">
-          <span class="row-label">⭐ Thưởng hoàn hảo (0/3 lỗi)</span>
+          <span class="row-label">⭐ ${typeof I18n !== 'undefined' ? I18n.t('breakdown_perfect_bonus') : 'Thưởng hoàn hảo'}</span>
           <span class="row-val highlight-perfect">+${breakdown.perfectBonus}</span>
         </div>` : ''}
         ${breakdown.hintPenalties > 0 ? `
         <div class="breakdown-row">
-          <span class="row-label">💡 Trừ dùng gợi ý (${state.hintsUsed || 0} lần)</span>
+          <span class="row-label">💡 ${typeof I18n !== 'undefined' ? I18n.t('breakdown_hint_penalty') : 'Trừ dùng gợi ý'} (${state.hintsUsed || 0})</span>
           <span class="row-val highlight-penalty">-${breakdown.hintPenalties}</span>
         </div>` : ''}
         ${breakdown.wrongPenalties > 0 ? `
         <div class="breakdown-row">
-          <span class="row-label">⚠️ Trừ chuỗi chọn sai</span>
+          <span class="row-label">⚠️ ${typeof I18n !== 'undefined' ? I18n.t('breakdown_wrong_penalty') : 'Trừ chuỗi chọn sai'}</span>
           <span class="row-val highlight-penalty">-${breakdown.wrongPenalties}</span>
         </div>` : ''}
         <div class="breakdown-row">
-          <span class="row-label">Điểm tích lũy bàn cờ</span>
+          <span class="row-label">${isEn ? 'Accumulated points' : 'Điểm tích lũy bàn cờ'}</span>
           <span class="row-val">${breakdown.rawScore}</span>
         </div>
         <div class="breakdown-row">
-          <span class="row-label">Thời gian (${breakdown.formattedTime})</span>
-          <span class="row-val ${breakdown.timeMultiplier > 1.0 ? 'highlight-time' : ''}">${timeMultText}</span>
+          <span class="row-label">${typeof I18n !== 'undefined' ? I18n.t('breakdown_time') : 'Thời gian'} (${breakdown.formattedTime})</span>
+          <span class="row-val ${breakdown.timeMultiplier > 1.0 ? 'highlight-time' : ''}">${speedTag}</span>
         </div>
         <div class="breakdown-row">
-          <span class="row-label">Số lỗi mắc phải</span>
+          <span class="row-label">${typeof I18n !== 'undefined' ? I18n.t('breakdown_mistakes') : 'Số lỗi mắc phải'}</span>
           <span class="row-val ${breakdown.mistakes === 0 ? 'highlight-perfect' : ''}">${breakdown.mistakes}/3</span>
         </div>
         <div class="breakdown-divider"></div>
         <div class="breakdown-row breakdown-total">
-          <span class="row-label">Tổng kết (${breakdown.rawScore} × ${breakdown.timeMultiplier})</span>
+          <span class="row-label">${isEn ? 'Final Total' : 'Tổng kết'} (${breakdown.rawScore} × ${breakdown.timeMultiplier})</span>
           <span class="row-val total-number">${breakdown.finalScore}</span>
         </div>
       </div>
 
       <div class="gameover-actions">
-        <button class="btn-primary btn-large" id="btn-go-new">Ván Chơi Mới</button>
-        <button class="btn-secondary btn-large" id="btn-go-lobby">Về Sảnh Chính</button>
+        <button class="btn-primary btn-large" id="btn-go-new">${typeof I18n !== 'undefined' ? I18n.t('btn_play_again') : 'Ván Chơi Mới'}</button>
+        <button class="btn-secondary btn-large" id="btn-go-lobby">${typeof I18n !== 'undefined' ? I18n.t('btn_back_lobby') : 'Về Sảnh Chính'}</button>
       </div>
     `;
 
@@ -270,8 +273,113 @@ const App = (() => {
     }
   }
 
+
+  /* ---- Settings Modal & Controls ---- */
+  function initSettings() {
+    // Current stored settings
+    const lang = Storage.getLanguage();
+    const theme = Storage.getTheme();
+    const settings = Storage.getSettings();
+
+    // 1. Language segmented buttons
+    const langBtns = document.querySelectorAll('#control-language .seg-btn');
+    langBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+      btn.addEventListener('click', () => {
+        langBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        I18n.setLanguage(btn.dataset.lang);
+        _updateHomeActions();
+      });
+    });
+
+    // 2. Theme segmented buttons
+    const themeBtns = document.querySelectorAll('#control-theme .seg-btn');
+    themeBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.theme === theme);
+      btn.addEventListener('click', () => {
+        themeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const newTheme = btn.dataset.theme;
+        Storage.setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+      });
+    });
+
+    // 3. Audio toggle
+    const soundToggle = document.getElementById('setting-toggle-sound');
+    if (soundToggle) {
+      soundToggle.checked = !Sound.isMuted();
+      soundToggle.addEventListener('change', () => {
+        Sound.toggle();
+      });
+    }
+
+    // 4. Gameplay helper toggles
+    const autoclearToggle = document.getElementById('setting-toggle-autoclear');
+    if (autoclearToggle) {
+      autoclearToggle.checked = settings.autoClearNotes !== false;
+      autoclearToggle.addEventListener('change', () => {
+        Storage.updateSetting('autoClearNotes', autoclearToggle.checked);
+      });
+    }
+
+    const sameNumToggle = document.getElementById('setting-toggle-same-num');
+    if (sameNumToggle) {
+      sameNumToggle.checked = settings.highlightSame !== false;
+      sameNumToggle.addEventListener('change', () => {
+        Storage.updateSetting('highlightSame', sameNumToggle.checked);
+        if (Game.isActive()) UIBoard.render(Game.getState());
+      });
+    }
+
+    const mistakesToggle = document.getElementById('setting-toggle-mistakes');
+    if (mistakesToggle) {
+      mistakesToggle.checked = settings.highlightMistakes !== false;
+      mistakesToggle.addEventListener('change', () => {
+        Storage.updateSetting('highlightMistakes', mistakesToggle.checked);
+        if (Game.isActive()) UIBoard.render(Game.getState());
+      });
+    }
+
+    // 5. Gear button in profile header
+    const gearBtn = document.getElementById('btn-settings-profile');
+    if (gearBtn) {
+      gearBtn.addEventListener('click', () => {
+        if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+        // Sync toggles state right before showing modal
+        if (soundToggle) soundToggle.checked = !Sound.isMuted();
+        openModal('modal-settings');
+      });
+    }
+
+    // 6. Reset data inside settings modal
+    const resetBtn = document.getElementById('btn-settings-reset-data');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', async () => {
+        const title = typeof I18n !== 'undefined' ? I18n.t('settings_reset_confirm_title') : 'Xóa Dữ Liệu';
+        const msg = typeof I18n !== 'undefined' ? I18n.t('settings_reset_confirm_msg') : 'Bạn có chắc chắn muốn xóa toàn bộ lịch sử đấu, thời gian chơi và đưa game về trạng thái ban đầu?';
+        const ok = await confirm(title, msg);
+        if (ok) {
+          Storage.resetAllData();
+          Profile.render();
+          closeModal('modal-settings');
+          _updateHomeActions();
+          showToast(typeof I18n !== 'undefined' ? I18n.t('toast_data_reset') : '🔄 Đã xóa toàn bộ dữ liệu thành công!');
+        }
+      });
+    }
+  }
+
   /* ---- wire everything ---- */
   function init() {
+    // Initialize Theme & Language on boot
+    if (typeof I18n !== 'undefined' && I18n.init) I18n.init();
+    if (typeof Storage !== 'undefined' && Storage.getTheme) {
+      document.documentElement.setAttribute('data-theme', Storage.getTheme());
+    }
+    initSettings();
+
     // Splash → Lobby navigation
     const splashEl = document.getElementById('screen-splash');
     const exploreBtn = document.getElementById('btn-explore');
@@ -309,7 +417,9 @@ const App = (() => {
     const inGameNewBtn = document.getElementById('btn-in-game-new');
     if (inGameNewBtn) {
       inGameNewBtn.addEventListener('click', async () => {
-        const ok = await confirm('Ván Chơi Mới', 'Bạn có muốn bắt đầu ván mới không? (Ván hiện tại sẽ bị hủy)');
+        const title = typeof I18n !== 'undefined' ? I18n.t('in_game_new_game_confirm_title') : 'Ván Chơi Mới';
+        const msg = typeof I18n !== 'undefined' ? I18n.t('in_game_new_game_confirm_msg') : 'Bạn có muốn bắt đầu ván mới không? (Ván hiện tại sẽ bị hủy)';
+        const ok = await confirm(title, msg);
         if (ok) {
           Game.abandonSaved();
           openModal('modal-difficulty');
@@ -342,7 +452,9 @@ const App = (() => {
 
     // Abandon saved game
     document.getElementById('btn-abandon').addEventListener('click', async () => {
-      const ok = await confirm('Bỏ Cuộc', 'Ván đang chơi sẽ bị xóa. Bạn có chắc chắn muốn bỏ cuộc?');
+      const title = typeof I18n !== 'undefined' ? I18n.t('home_abandon_confirm_title') : 'Bỏ Cuộc';
+      const msg = typeof I18n !== 'undefined' ? I18n.t('home_abandon_confirm_msg') : 'Ván đang chơi sẽ bị xóa. Bạn có chắc chắn muốn bỏ cuộc?';
+      const ok = await confirm(title, msg);
       if (ok) {
         Game.abandonSaved();
         _updateHomeActions();
@@ -365,7 +477,9 @@ const App = (() => {
 
     // Give up in-game
     document.getElementById('btn-give-up-header').addEventListener('click', async () => {
-      const ok = await confirm('Bỏ Cuộc', 'Ván này sẽ được tính là thua. Bạn có chắc chắn?');
+      const title = typeof I18n !== 'undefined' ? I18n.t('in_game_give_up_confirm_title') : 'Bỏ Cuộc';
+      const msg = typeof I18n !== 'undefined' ? I18n.t('in_game_give_up_confirm_msg') : 'Ván này sẽ được tính là thua. Bạn có chắc chắn?';
+      const ok = await confirm(title, msg);
       if (ok) {
         Game.giveUp();
       }

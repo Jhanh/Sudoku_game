@@ -6,7 +6,10 @@ const Storage = (() => {
     GAME: 'sudoku_current_game',
     PROFILE: 'sudoku_profile',
     STATS: 'sudoku_stats',
-    SOUND: 'sudoku_sound_enabled'
+    SOUND: 'sudoku_sound_enabled',
+    LANG: 'sudoku_language',
+    THEME: 'sudoku_theme',
+    SETTINGS: 'sudoku_gameplay_settings'
   };
 
   // In-memory fallback if localStorage is blocked by browser security
@@ -150,18 +153,62 @@ const Storage = (() => {
     _set(KEYS.SOUND, Boolean(enabled));
   }
 
+  /* ---------- Language Settings ---------- */
+  function getLanguage() {
+    const lang = _get(KEYS.LANG);
+    return (lang === 'en' || lang === 'vi') ? lang : 'vi';
+  }
+
+  function setLanguage(lang) {
+    if (lang === 'en' || lang === 'vi') {
+      _set(KEYS.LANG, lang);
+    }
+  }
+
+  /* ---------- Theme Settings ---------- */
+  function getTheme() {
+    const theme = _get(KEYS.THEME);
+    return (theme === 'dark' || theme === 'light') ? theme : 'light';
+  }
+
+  function setTheme(theme) {
+    if (theme === 'dark' || theme === 'light') {
+      _set(KEYS.THEME, theme);
+    }
+  }
+
+  /* ---------- Gameplay Helper Settings ---------- */
+  const DEFAULT_SETTINGS = {
+    autoClearNotes: true,
+    highlightSame: true,
+    highlightMistakes: true
+  };
+
+  function getSettings() {
+    const s = _get(KEYS.SETTINGS);
+    return { ...DEFAULT_SETTINGS, ...(s || {}) };
+  }
+
+  function saveSettings(s) {
+    _set(KEYS.SETTINGS, { ...DEFAULT_SETTINGS, ...(s || {}) });
+  }
+
+  function updateSetting(key, val) {
+    const s = getSettings();
+    s[key] = val;
+    saveSettings(s);
+  }
+
   /* ---------- Reset All Data ---------- */
   function resetAllData() {
     clearGame();
     _remove(KEYS.PROFILE);
     _remove(KEYS.STATS);
-    _remove(KEYS.SOUND);
     try {
       if (isLocalStorageAvailable) {
         window.localStorage.removeItem(KEYS.GAME);
         window.localStorage.removeItem(KEYS.PROFILE);
         window.localStorage.removeItem(KEYS.STATS);
-        window.localStorage.removeItem(KEYS.SOUND);
       }
     } catch (_) {}
   }
@@ -172,6 +219,9 @@ const Storage = (() => {
     getProfile, saveProfile,
     getStats, saveStats, recordGameResult,
     isSoundEnabled, setSoundEnabled,
+    getLanguage, setLanguage,
+    getTheme, setTheme,
+    getSettings, saveSettings, updateSetting,
     resetAllData
   };
 })();

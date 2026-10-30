@@ -19,15 +19,110 @@
   --warning: #F59E0B;
   --bg: #F8FAFC;
   --surface: #FFFFFF;
+  --surface-subtle: #F1F5F9;
+  --surface-elevated: #FFFFFF;
   --text: #1E293B;
   --text-secondary: #64748B;
+  --text-muted: #94A3B8;
   --border: #E2E8F0;
   --highlight-row: #EFF6FF;
   --highlight-num: #DBEAFE;
   --selected: #BFDBFE;
+  --board-border: #CBD5E1;
+  --board-major-border: #1E293B;
+  --cell-error-bg: #FEE2E2;
+  --pause-bg: rgba(248, 250, 252, 0.95);
   --radius: 12px;
   --radius-sm: 8px;
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== Dark Mode Theme Tokens ===== */
+[data-theme="dark"] {
+  --primary: #60A5FA;
+  --primary-dark: #3B82F6;
+  --primary-light: #93C5FD;
+  --primary-bg: rgba(96, 165, 250, 0.16);
+  --accent: #A78BFA;
+  --success: #34D399;
+  --error: #F87171;
+  --warning: #FBBF24;
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --surface-subtle: #24334C;
+  --surface-elevated: #283548;
+  --text: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --border: #334155;
+  --highlight-row: #24334C;
+  --highlight-num: #1E3A5F;
+  --selected: #1E40AF;
+  --board-border: #334155;
+  --board-major-border: #64748B;
+  --cell-error-bg: rgba(239, 68, 68, 0.25);
+  --pause-bg: rgba(15, 23, 42, 0.95);
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Tactile Action Buttons ===== */
+.btn-tactile,
+.btn-icon-tactile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.btn-tactile:hover,
+.btn-icon-tactile:hover {
+  background: var(--highlight-row);
+  border-color: var(--primary-light);
+  color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.btn-tactile:active,
+.btn-icon-tactile:active {
+  transform: translateY(0) scale(0.94);
+}
+
+.btn-tactile svg,
+.btn-icon-tactile svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== Smooth Theme Transitions ===== */
+body,
+.profile-card,
+.modal,
+.sudoku-board,
+.cell,
+.num-key,
+.tool-btn,
+.navbar,
+.btn-pill,
+.variant-card,
+.chart-card,
+.stat-card,
+.btn-tactile,
+.btn-icon-tactile,
+.segmented-control,
+.seg-btn {
+  transition: background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
 }
 
 /* ===== Base Styles ===== */

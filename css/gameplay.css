@@ -312,9 +312,9 @@
   grid-template-columns: repeat(9, 1fr);
   width: 450px;
   height: 450px;
-  background: var(--text);
+  background: var(--board-border);
   gap: 1px;
-  border: 2px solid var(--text);
+  border: 2px solid var(--board-major-border);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -349,14 +349,14 @@
 /* Vertical separators after columns 3 and 6 (0-indexed: 2 and 5) */
 .sudoku-board > .cell:nth-child(9n+3),
 .sudoku-board > .cell:nth-child(9n+6) {
-  border-right: 2px solid var(--text);
+  border-right: 2px solid var(--board-major-border);
 }
 
 /* Horizontal separators after rows 3 and 6 */
 /* Row 3 = cells 19–27, Row 6 = cells 46–54 */
 .sudoku-board > .cell:nth-child(n+19):nth-child(-n+27),
 .sudoku-board > .cell:nth-child(n+46):nth-child(-n+54) {
-  border-bottom: 2px solid var(--text);
+  border-bottom: 2px solid var(--board-major-border);
 }
 
 /* ===== Cell States ===== */
@@ -387,7 +387,7 @@
 }
 
 .cell.error {
-  background: #FEE2E2 !important;
+  background: var(--cell-error-bg) !important;
 }
 
 .cell.hint-flash {
@@ -443,7 +443,7 @@
 .pause-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(248, 250, 252, 0.95);
+  background: var(--pause-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
