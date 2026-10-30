@@ -30,7 +30,7 @@ Một commit message chuẩn mực gồm 2 thành phần chính:
    Cũng dùng để phân loại commit, nhưng chi tiết hơn về ý nghĩa một chút, trả lời
    cho câu hỏi: "Commit này thêm mới chức năng gì, fix chức năng gì?".
    Ví dụ định dạng:
-     VD : feature( login_sso ) : bugfix( user_profile )
+     VD : feature(login_sso): bugfix( user_profile )
 
 3. QUY ĐỊNH VỀ NGÔN NGỮ & ĐỘ DÀI (ENGLISH & CONCISENESS):
    - Ngôn ngữ: BẮT BUỘC sử dụng TIẾNG ANH (English) ngắn gọn, súc tích và chuyên nghiệp.
@@ -77,18 +77,26 @@ III. NGUYÊN TẮC VỀ FILE NÉN & KHỞI CHẠY OFFLINE (ZIP & LAUNCHER RULES)
    - File này CHỈ ĐƯỢC PHÉP NẰM BÊN TRONG CÁC FILE NÉN .ZIP.
    - TUYỆT ĐỐI KHÔNG ĐƯỢC để file `ChoiGame.bat` thừa thãi ra ngoài thư mục gốc của repository.
 
-2. QUẢN LÝ 2 FILE NÉN ĐẶC BIỆT:
+2. QUẢN LÝ CÁC FILE NÉN ĐẶC BIỆT (RELEASE & TESTING ARCHIVES):
    - `Sudoku-Game-v1.0.zip`:
-     + Đây là bản lưu trữ nguyên bản cột mốc phát hành đầu tiên (Release v1.0).
+     + Bản lưu trữ nguyên bản cột mốc phát hành đầu tiên (Release v1.0).
      + TUYỆT ĐỐI KHÔNG ĐƯỢC chỉnh sửa, ghi đè hay thay đổi nội dung file này.
+   - `Sudoku-Game-v1.1.zip`:
+     + Bản lưu trữ cột mốc chính thức Release v1.1 (Cài đặt, Song ngữ i18n, Dark Mode, Cấp bậc 9 Rank).
+     + TUYỆT ĐỐI KHÔNG ĐƯỢC chỉnh sửa, ghi đè sau khi đã phát hành.
    - `Sudoku-Game-testing.zip`:
-     + Đây là bản nén cập nhật liên tục toàn bộ tính năng và mã nguồn mới nhất.
-     + Mỗi khi hoàn thành một đợt nâng cấp, hãy rebuild file này để người dùng có thể
-       giải nén và thử nghiệm offline ngay lập tức.
-     + Khi người dùng sẵn sàng ra mắt bản chính thức tiếp theo (ví dụ v1.1 hay v2.0),
-       file này mới được đổi tên thành bản phát hành chính thức mới.
+     + Bản nén cập nhật liên tục toàn bộ tính năng và mã nguồn mới nhất cho quá trình phát triển tiếp theo.
+     + Mỗi khi hoàn thành một đợt nâng cấp mới, hãy rebuild file này để thử nghiệm offline ngay lập tức.
+     + Khi người dùng sẵn sàng ra mắt bản chính thức tiếp theo (v1.2 hay v2.0), file này mới được nhân bản thành release mới.
 
-3. QUY ƯỚC ĐÁNH SỐ PHIÊN BẢN (SEMANTIC 2-DIGIT VERSIONING):
+3. NGUYÊN TẮC TINH GỌN GÓI PHÁT HÀNH CHO NGƯỜI CHƠI (NO DOCS IN ZIP):
+   - Các file zip phát hành (như `Sudoku-Game-v1.1.zip` hay `Sudoku-Game-testing.zip`)
+     được tinh gọn tối đa (~74 KB) để người chơi tải về và nhấp đúp `ChoiGame.bat` là chơi ngay.
+   - TUYỆT ĐỐI KHÔNG đóng gói thư mục `docs/` hay `screenshots/` vào file zip.
+     Người dùng và lập trình viên muốn nghiên cứu kiến trúc hệ thống sẽ xem trực tiếp
+     trên repository GitHub.
+
+4. QUY ƯỚC ĐÁNH SỐ PHIÊN BẢN (SEMANTIC 2-DIGIT VERSIONING):
    - Thay vì dùng 3 chữ số rườm rà (v1.0.0, v1.0.1...), dự án thống nhất dùng chuẩn
      2 chữ số tinh gọn: `v1.0`, `v1.1`, `v1.2`, `v2.0`...
    - Tất cả các link trên README, tag git và tên file zip đều tuân theo chuẩn này.
