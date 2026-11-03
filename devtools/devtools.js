@@ -478,8 +478,9 @@ const DevTools = (() => {
           valSpan.classList.add('dev-ghost-number');
           if (notesDiv) notesDiv.style.display = 'none';
         } else {
-          // If cell has been placed by user or is given, remove ghost styling immediately so it displays solid black!
+          // If cell has been placed by user or is given, remove ghost styling immediately so it displays solid!
           valSpan.classList.remove('dev-ghost-number');
+          valSpan.style.display = '';
         }
       } else {
         // If turning off ghost, clean it

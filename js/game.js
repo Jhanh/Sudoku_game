@@ -376,6 +376,7 @@ const Game = (() => {
 
   function placeNumber(num) {
     if (!state || !state.selectedCell || state.isFinished || state.isPaused) return;
+    if (getRemaining(num) === 0) return;
     const { row, col } = state.selectedCell;
     const i = idx(row, col);
     if (state.given[i]) return;

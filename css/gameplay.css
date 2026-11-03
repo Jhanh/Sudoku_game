@@ -310,13 +310,15 @@
 .sudoku-board {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
   width: 450px;
   height: 450px;
-  background: var(--board-border);
-  gap: 1px;
-  border: 2px solid var(--board-major-border);
+  background: var(--surface);
+  gap: 0;
+  border: 2.5px solid var(--board-major-border);
   border-radius: 4px;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -329,6 +331,7 @@
 /* ===== Cells ===== */
 .cell {
   background: var(--surface);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -337,6 +340,8 @@
   transition: background-color 0.15s ease;
   user-select: none;
   font-size: 1.4rem;
+  border-right: 1px solid var(--board-border);
+  border-bottom: 1px solid var(--board-border);
 }
 
 @media (max-width: 768px) {
@@ -345,23 +350,39 @@
   }
 }
 
-/* ===== 3x3 Box Borders ===== */
-/* Vertical separators after columns 3 and 6 (0-indexed: 2 and 5) */
+/* ===== 3x3 Box Borders (100% continuous & seamless) ===== */
+/* Vertical major separators after columns 3 and 6 */
+.cell.box-right,
 .sudoku-board > .cell:nth-child(9n+3),
 .sudoku-board > .cell:nth-child(9n+6) {
-  border-right: 2px solid var(--board-major-border);
+  border-right: 2.5px solid var(--board-major-border) !important;
 }
 
-/* Horizontal separators after rows 3 and 6 */
-/* Row 3 = cells 19–27, Row 6 = cells 46–54 */
+/* Horizontal major separators after rows 3 and 6 */
+.cell.box-bottom,
 .sudoku-board > .cell:nth-child(n+19):nth-child(-n+27),
 .sudoku-board > .cell:nth-child(n+46):nth-child(-n+54) {
-  border-bottom: 2px solid var(--board-major-border);
+  border-bottom: 2.5px solid var(--board-major-border) !important;
+}
+
+/* Outermost cell boundaries flush against board outer border */
+.sudoku-board > .cell:nth-child(9n) {
+  border-right: none !important;
+}
+
+.sudoku-board > .cell:nth-child(n+73) {
+  border-bottom: none !important;
 }
 
 /* ===== Cell States ===== */
 .cell.selected {
   background: var(--selected) !important;
+  box-shadow: inset 0 0 0 2.5px #2563EB;
+  z-index: 2;
+}
+
+[data-theme="dark"] .cell.selected {
+  box-shadow: inset 0 0 0 2.5px #93C5FD;
 }
 
 .cell.highlighted {
@@ -372,18 +393,32 @@
   background: var(--highlight-num);
 }
 
+/* Number Colors & Weights:
+   - Given: Semibold (600) black in light mode, bright white in dark mode (thon gọn, thanh thoát hơn)
+   - User: Medium (500) vibrant blue in ALL states (dày dặn hơn 400, không bị mỏng)
+   - Error: Medium (500) red
+*/
 .cell.given .cell-value {
-  color: var(--text);
-  font-weight: 700;
+  color: var(--cell-given, #0F172A) !important;
+  font-weight: 600;
 }
 
 .cell.user .cell-value {
-  color: var(--primary);
+  color: var(--cell-user, #1D4ED8) !important;
   font-weight: 500;
 }
 
+[data-theme="dark"] .cell.given .cell-value {
+  color: var(--cell-given, #F8FAFC) !important;
+}
+
+[data-theme="dark"] .cell.user .cell-value {
+  color: var(--cell-user, #60A5FA) !important;
+}
+
 .cell.error .cell-value {
-  color: var(--error);
+  color: var(--error, #EF4444) !important;
+  font-weight: 500;
 }
 
 .cell.error {
@@ -637,34 +672,9 @@
 }
 
 .num-key.completed {
-  opacity: 0.22;
-  cursor: pointer;
-  background: var(--surface-subtle);
-  border-color: transparent;
-}
-
-.num-key.completed:hover {
-  opacity: 0.45;
-}
-
-.num-key.completed .num-digit {
-  color: var(--text-secondary);
-}
-
-.num-key.completed .num-remaining {
-  color: var(--text-secondary);
-}
-
-/* When a completed digit is selected in Lightning / Tia chớp mode to view its 9 cells */
-.num-key.completed.locked-digit {
-  opacity: 0.9 !important;
-  background: var(--surface) !important;
-  border: 2px solid var(--primary) !important;
-  box-shadow: 0 0 0 2px var(--primary-light), 0 2px 8px rgba(37, 99, 235, 0.18) !important;
-}
-
-.num-key.completed.locked-digit .num-digit {
-  color: var(--primary) !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
 }
 
 /* Fast-Fill (Tia chớp) locked digit & dimmed states */

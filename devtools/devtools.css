@@ -447,22 +447,27 @@
 }
 
 /* Khi ở chế độ Hiện Đáp Án Mờ:
-   1. Ô điền ĐÚNG: Màu xanh chủ đạo, KHÔNG IN ĐẬM để phân biệt rõ với đề bài màu đen in đậm */
+   1. Ô điền ĐÚNG: Luôn hiển thị màu xanh chủ đạo của người chơi, độ dày vừa vặn (Medium 500) */
 body.dev-ghost-active .cell.user:not(.error) .cell-value {
-  color: var(--primary, #3B82F6) !important;
+  color: var(--cell-user, #1D4ED8) !important;
   font-weight: 500 !important;
   opacity: 1 !important;
   font-style: normal !important;
   transform: none !important;
 }
 
-/* 2. Ô điền SAI: Chữ màu đỏ, nền màu đỏ như bình thường để báo lỗi */
+[data-theme="dark"] body.dev-ghost-active .cell.user:not(.error) .cell-value {
+  color: var(--cell-user, #60A5FA) !important;
+  font-weight: 500 !important;
+}
+
+/* 2. Ô điền SAI: Chữ màu đỏ, độ dày Medium 500, nền màu đỏ như bình thường để báo lỗi */
 body.dev-ghost-active .cell.error {
-  background: #FEE2E2 !important;
+  background: var(--cell-error-bg, #FEE2E2) !important;
 }
 body.dev-ghost-active .cell.error .cell-value {
   color: var(--error, #EF4444) !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   opacity: 1 !important;
   font-style: normal !important;
   transform: none !important;

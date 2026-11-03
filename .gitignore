@@ -39,6 +39,7 @@ pnpm-debug.log*
 # AI Agent & local workspace configurations
 .agents/
 .gemini/
+forDev/
 
 # Temporary test scripts & log files
 test-*.js
