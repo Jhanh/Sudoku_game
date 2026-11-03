@@ -83,13 +83,13 @@ flowchart TD
 
     P_STREAK["2. Hệ số chuỗi đúng (Streak Multiplier):<br/>- 11 - 20 ô liên tiếp: x1.2<br/>- 21 - 30 ô liên tiếp: x1.5<br/>- 31 - 40 ô liên tiếp: x1.7<br/>- 41+ ô liên tiếp: x2.0"]
 
-    P_PENALTY["3. Trừ điểm vi phạm & Gợi ý:<br/>- Phạt sai lũy tiến: -10đ, -20đ, -30đ...<br/>- Phạt dùng gợi ý: -50đ, -100đ, -150đ..."]
+    P_PENALTY["3. Trừ điểm vi phạm và Gợi ý:<br/>- Phạt sai lũy tiến: -10đ, -20đ, -30đ...<br/>- Phạt dùng gợi ý: -50đ, -100đ, -150đ..."]
 
     P_BONUS["4. Thưởng ván hoàn hảo (Perfect Bonus):<br/>- 0 Lỗi: +100đ (Dễ), +200đ (Vừa), +300đ (Khó)"]
 
-    P_TIME["5. Hệ số tốc độ khi thắng (Time Multiplier):<br/>- Hoàn thành < 01:30: x2.0<br/>- Hoàn thành < 05:00: x1.5<br/>- Hoàn thành > 05:00: x1.0"]
+    P_TIME["5. Hệ số tốc độ khi thắng (Time Multiplier):<br/>- Dưới 01:30: x2.0<br/>- Dưới 05:00: x1.5<br/>- Trên 05:00: x1.0"]
 
-    P_FINAL["🏁 ĐIỂM SỐ CHUNG CUỘC (Final Score)<br/>Hiển thị trên Victory Modal & Lưu vào Bảng Kỷ Lục"]
+    P_FINAL["🏁 ĐIỂM SỐ CHUNG CUỘC (Final Score)<br/>Hiển thị trên Victory Modal và lưu vào Bảng Kỷ Lục"]
 
     P_BASE --> P_STREAK
     P_STREAK --> P_PENALTY

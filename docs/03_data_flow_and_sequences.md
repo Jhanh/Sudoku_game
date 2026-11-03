@@ -20,36 +20,34 @@ sequenceDiagram
 
     Player->>UI: Click vào một ô trống (Row r, Col c)
     UI->>Game: Game.selectCell(r, c)
-    Game-->>UI: _notify() -> Cập nhật highlight hàng/cột/khối & cùng số
+    Game-->>UI: _notify() -> Cập nhật highlight hàng/cột/khối và cùng số
 
     Player->>UI: Bấm số n trên Numpad (ví dụ: số 4)
     UI->>Game: Game.placeNumber(n)
     
-    rect rgb(240, 249, 255)
-        Note over Game, Engine: Xác thực tính hợp lệ của số
-        Game->>Game: Kiểm tra ô có phải ô đề bài (given) không?
-        alt Ô là đề bài
-            Game-->>UI: Bỏ qua (không cho phép sửa ô đề bài)
-        else Ô trống hợp lệ
-            Game->>Engine: So sánh n với solution[i]
-            
-            alt Điền ĐÚNG (val == solution[i])
-                Game->>Game: correctStreak = prevStreak + 1
-                Game->>Game: wrongStreak = 0 (khử chuỗi sai)
-                Game->>Game: Tính điểm = Base * streakMultiplier
-                Game->>Game: Tự động xóa ghi chú số n cùng hàng/cột/khối
-                Game->>Game: Đẩy vào UndoStack (type: 'value', error: false)
-                Game->>Sound: Sound.playCorrect(correctStreak)
-                Game->>Storage: Storage.saveGame(state)
-            else Điền SAI (val != solution[i])
-                Game->>Game: mistakes = mistakes + 1
-                Game->>Game: wrongStreak = wrongStreak + 1
-                Game->>Game: correctStreak = 0 (mất chuỗi đúng)
-                Game->>Game: Tính phạt trừ điểm (-10đ / -20đ / -30đ)
-                Game->>Game: Đẩy vào UndoStack (type: 'value', error: true)
-                Game->>Sound: Sound.playError()
-                Game->>Game: Đánh giá Danger Stage (Cấp 1 / 2 / 3)
-            end
+    Note over Game, Engine: Xác thực tính hợp lệ của số
+    Game->>Game: Kiểm tra ô có phải ô đề bài (given) không?
+    alt Ô là đề bài
+        Game-->>UI: Bỏ qua (không cho phép sửa ô đề bài)
+    else Ô trống hợp lệ
+        Game->>Engine: So sánh n với solution[i]
+        
+        alt Điền ĐÚNG (val == solution[i])
+            Game->>Game: correctStreak = prevStreak + 1
+            Game->>Game: wrongStreak = 0 (khử chuỗi sai)
+            Game->>Game: Tính điểm = Base * streakMultiplier
+            Game->>Game: Tự động xóa ghi chú số n cùng hàng/cột/khối
+            Game->>Game: Đẩy vào UndoStack (type: 'value', error: false)
+            Game->>Sound: Sound.playCorrect(correctStreak)
+            Game->>Storage: Storage.saveGame(state)
+        else Điền SAI (val != solution[i])
+            Game->>Game: mistakes = mistakes + 1
+            Game->>Game: wrongStreak = wrongStreak + 1
+            Game->>Game: correctStreak = 0 (mất chuỗi đúng)
+            Game->>Game: Tính phạt trừ điểm (-10đ / -20đ / -30đ)
+            Game->>Game: Đẩy vào UndoStack (type: 'value', error: true)
+            Game->>Sound: Sound.playError()
+            Game->>Game: Đánh giá Danger Stage (Cấp 1 / 2 / 3)
         end
     end
 
@@ -118,7 +116,7 @@ flowchart TD
 
     GEN_DIG["3. Đục lỗ đối xứng (Symmetric Digging):<br/>- Chọn cặp ô đối xứng tâm (r, c) và (8-r, 8-c)<br/>- Tạm gỡ số ở 2 ô này"]
 
-    GEN_TEST{"4. Kiểm tra tính duy nhất nghiệm<br/>(countSolutions <= 1?)"}
+    GEN_TEST{"4. Kiểm tra tính duy nhất nghiệm<br/>(Duy nhất 1 nghiệm?)"}
 
     GEN_REVERT["Hoàn lại số cũ<br/>(Vì nếu xóa sẽ xuất hiện đa nghiệm)"]
     GEN_KEEP["Chấp nhận đục lỗ<br/>(Nghiệm vẫn là duy nhất)"]
@@ -128,7 +126,7 @@ flowchart TD
     GEN_DONE["Hoàn tất tạo đề:<br/>Trả về object { puzzle, solution, difficulty }"]
 
     GEN_START --> GEN_FULL --> GEN_TARGET --> GEN_DIG --> GEN_TEST
-    GEN_TEST -->|"Có >= 2 nghiệm"| GEN_REVERT --> GEN_DIG
+    GEN_TEST -->|"Có từ 2 nghiệm trở lên"| GEN_REVERT --> GEN_DIG
     GEN_TEST -->|"Chính xác 1 nghiệm"| GEN_KEEP --> GEN_CHECK
     GEN_CHECK -->|"Chưa đủ"| GEN_DIG
     GEN_CHECK -->|"Đã đạt ngưỡng"| GEN_DONE

@@ -7,71 +7,71 @@ Tài liệu này mô hình hóa toàn bộ vòng đời chuyển trạng thái c
 
 ---
 
-## 🧭 1. Luồng Điều Hướng Màn Hình (Screen Navigation)
+## 🧭 1. Luồng Điều Hướng Màn Hình (Screen Navigation Flow)
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Splash_Screen : Khởi động trang web
+flowchart TD
+    classDef screen fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
+    classDef modal fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#6B21A8;
+    classDef game fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
+    classDef endNode fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
 
-    state Splash_Screen {
-        [*] --> Intro_Display : Hiển thị Logo & Giới thiệu
-        Intro_Display --> Lobby_Screen : Bấm "Khám phá ngay"
-    }
+    START(("Khởi động web")) --> SCR_SPLASH["Màn hình Splash<br/>(Logo và Giới thiệu)"]
+    
+    SCR_SPLASH -->|Bấm 'Khám phá ngay'| SCR_LOBBY["Sảnh chính (Lobby)<br/>(Chọn độ khó, Biến thể, Tiếp tục)"]
 
-    state Lobby_Screen {
-        [*] --> Menu_Main : Sảnh chính
-        Menu_Main --> Modal_Tutorial : Bấm "Cách chơi"
-        Menu_Main --> Modal_Profile : Bấm "Hồ sơ"
-        Menu_Main --> Modal_Variants : Bấm "Biến thể"
-        
-        Modal_Tutorial --> Menu_Main : Đóng
-        Modal_Profile --> Menu_Main : Đóng
-        Modal_Variants --> Menu_Main : Đóng
+    subgraph SUB_MODALS ["Hộp thoại chức năng (Modals)"]
+        MOD_TUT["Modal Cách chơi"]
+        MOD_PROF["Modal Hồ sơ"]
+        MOD_VAR["Modal Biến thể"]
+    end
+    class SUB_MODALS,MOD_TUT,MOD_PROF,MOD_VAR modal;
 
-        Menu_Main --> InGame_Playing : Bấm "Chơi mới" (Chọn độ khó)
-        Menu_Main --> InGame_Playing : Bấm "Tiếp tục" (Có ván lưu)
-    }
+    SCR_LOBBY <-->|Xem hướng dẫn| MOD_TUT
+    SCR_LOBBY <-->|Xem thành tích| MOD_PROF
+    SCR_LOBBY <-->|Xem biến thể| MOD_VAR
 
-    state InGame_Playing {
-        [*] --> Active_Board
-        Active_Board --> Pause_Overlay : Bấm "Tạm dừng"
-        Pause_Overlay --> Active_Board : Bấm "Tiếp tục"
-        Pause_Overlay --> Lobby_Screen : Bấm "Về sảnh" (Lưu ván)
-        
-        Active_Board --> Modal_Confirm_Abandon : Bấm "Bỏ cuộc"
-        Modal_Confirm_Abandon --> Active_Board : Hủy
-        Modal_Confirm_Abandon --> Lobby_Screen : Xác nhận bỏ cuộc
-    }
+    SCR_LOBBY -->|Bấm 'Chơi mới' hoặc 'Tiếp tục'| IN_GAME["Màn hình ván chơi (In-Game)<br/>(Bàn cờ 9x9, Numpad, Công cụ)"]
+    class IN_GAME game;
 
-    InGame_Playing --> Victory_Modal : Hoàn thành chính xác 81 ô
-    InGame_Playing --> GameOver_Modal : Vượt quá giới hạn lỗi / Chuỗi sai
+    subgraph SUB_INGAME_ACTIONS ["Tác vụ trong ván"]
+        PAUSE_OVERLAY["Lớp Tạm dừng (Pause Overlay)"]
+        MOD_ABANDON["Hộp thoại Bỏ cuộc"]
+    end
 
-    Victory_Modal --> InGame_Playing : Ván chơi mới
-    Victory_Modal --> Lobby_Screen : Về sảnh chính
+    IN_GAME <-->|Bấm Tạm dừng / Tiếp tục| PAUSE_OVERLAY
+    PAUSE_OVERLAY -->|Bấm Về sảnh| SCR_LOBBY
+    IN_GAME <-->|Bấm Bỏ cuộc| MOD_ABANDON
+    MOD_ABANDON -->|Xác nhận bỏ cuộc| SCR_LOBBY
 
-    GameOver_Modal --> InGame_Playing : Thử lại
-    GameOver_Modal --> Lobby_Screen : Về sảnh chính
+    IN_GAME -->|Điền đúng 81 ô| MOD_VICTORY["Modal Chiến Thắng (Victory)"]
+    IN_GAME -->|Vượt quá giới hạn lỗi| MOD_GAMEOVER["Modal Thất Bại (Game Over)"]
+    class MOD_VICTORY,MOD_GAMEOVER endNode;
+
+    MOD_VICTORY -->|Chơi ván mới| IN_GAME
+    MOD_VICTORY -->|Về sảnh| SCR_LOBBY
+    MOD_GAMEOVER -->|Thử lại| IN_GAME
+    MOD_GAMEOVER -->|Về sảnh| SCR_LOBBY
 ```
 
 ---
 
 ## ⚡ 2. Máy Trạng Thái Trong Ván Chơi (In-Game Modes)
 
-Trong lúc chơi, người dùng có thể linh hoạt chuyển đổi giữa **Chế độ Thường (Normal Mode)**, **Chế độ Tia chớp (Fast-Fill Mode)** và **Chế độ Ghi chú (Notes Mode)**.
+Trong lúc chơi, người dùng có thể linh hoạt chuyển đổi qua lại giữa **Chế độ Thường (Normal Mode)**, **Chế độ Tia chớp (Fast-Fill Mode)** và **Chế độ Ghi chú (Notes Mode)**.
 
 ```mermaid
 flowchart TD
     classDef normal fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
     classDef fast fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
     classDef note fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#6B21A8;
-    classDef action fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
 
     subgraph MODE_NORMAL ["🎮 1. Chế độ Thường (Normal Input)"]
         direction TB
         NORM_SEL["Chọn ô trống (selectedCell)"]
         NORM_INP["Bấm số trên Numpad (1 - 9)"]
         NORM_CHK{"Kiểm tra số"}
-        NORM_OK["Điền số vào ô & Kiểm tra 81 ô"]
+        NORM_OK["Điền số vào ô và kiểm tra 81 ô"]
         
         NORM_SEL --> NORM_INP --> NORM_CHK
         NORM_CHK -->|"Đủ 9/9 số"| NORM_HIDE["Ẩn phím số đó trên Numpad<br/>(Giữ cố định vị trí các phím khác)"]
@@ -104,10 +104,10 @@ flowchart TD
     end
     class MODE_NOTES,NOTE_TOGGLE,NOTE_INP,NOTE_AUTO note;
 
-    %% Transitions between modes
-    MODE_NORMAL <==>|"Bấm nút Tia chớp"| MODE_FAST
-    MODE_NORMAL <==>|"Bấm nút Ghi chú"| MODE_NOTES
-    MODE_FAST <==>|"Tắt Tia chớp hoặc Bật Ghi chú"| MODE_NOTES
+    %% Chuyển đổi hai chiều giữa các chế độ
+    MODE_NORMAL <-->|"Bấm nút Tia chớp"| MODE_FAST
+    MODE_NORMAL <-->|"Bấm nút Ghi chú"| MODE_NOTES
+    MODE_FAST <-->|"Tắt Tia chớp hoặc Bật Ghi chú"| MODE_NOTES
 ```
 
 ---
@@ -130,18 +130,18 @@ flowchart LR
     
     ST_WARN["🟠 CẤP 2: NGUY HIỂM NHẸ<br/>- Sai 5-9 lỗi HOẶC chuỗi sai 2 lượt<br/>- Banner cảnh báo màu cam<br/>- Nhịp tim cảnh báo phát ra"]
     
-    ST_CRIT["🔴 CẤP 3: NGUY HIỂM CẤP BÁO<br/>- Đạt ngưỡng sát giới hạn thua<br/>(Dễ/Vừa: 10-15 lỗi, Khó: 10 lỗi)<br/>- Chuỗi sai sát nút (2/3 hoặc 4/5)<br/>- Màn hình thở đỏ rực + Còi báo động"]
+    ST_CRIT["🔴 CẤP 3: NGUY HIỂM CẤP BÁO<br/>- Đạt ngưỡng sát giới hạn thua<br/>(Dễ/Vừa: 10-15 lỗi, Khó: 10 lỗi)<br/>- Chuỗi sai sát nút (2/3 hoặc 4/5)<br/>- Màn hình thở đỏ rực và còi báo động"]
 
-    ST_DEAD["💀 GAME OVER<br/>- Vượt quá tổng lỗi cho phép<br/>HOẶC vượt chuỗi sai tối đa<br/>- Dừng tính giờ & Lưu thất bại"]
+    ST_DEAD["💀 GAME OVER<br/>- Vượt quá tổng lỗi cho phép<br/>HOẶC vượt chuỗi sai tối đa<br/>- Dừng tính giờ và lưu thất bại"]
 
     ST_SAFE ==>|"Phạm lỗi đầu tiên"| ST_MILD
     ST_MILD ==>|"Tiếp tục sai"| ST_WARN
     ST_WARN ==>|"Tiếp tục sai hoặc chuỗi sai dài"| ST_CRIT
     ST_CRIT ==>|"Sai thêm 1 lần nữa"| ST_DEAD
 
-    ST_WARN -.->|"Điền ĐÚNG 1 số<br/>(Khử chuỗi sai về 0)"| ST_MILD
-    ST_CRIT -.->|"Điền ĐÚNG 1 số<br/>(Khử chuỗi sai về 0)"| ST_WARN
-    ST_MILD -.->|"Undo lượt sai"| ST_SAFE
+    ST_WARN -. "Điền đúng 1 số (Khử chuỗi sai về 0)" .-> ST_MILD
+    ST_CRIT -. "Điền đúng 1 số (Khử chuỗi sai về 0)" .-> ST_WARN
+    ST_MILD -. "Undo lượt sai" .-> ST_SAFE
 
     class ST_SAFE safe;
     class ST_MILD stage1;
@@ -149,4 +149,3 @@ flowchart LR
     class ST_CRIT stage3;
     class ST_DEAD finish;
 ```
-

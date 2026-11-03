@@ -12,49 +12,42 @@ Sơ đồ tổng quan dưới đây mô phỏng sự tương tác giữa **4 ph�
 
 ```mermaid
 flowchart TB
-    %% Styling definitions
+    %% Định nghĩa màu sắc phân hệ
     classDef domainUI fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
     classDef domainLogic fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
     classDef domainState fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#6B21A8;
     classDef domainService fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
 
-    subgraph SUB_UI ["🖥️ 1. Phân Hệ Giao Diện & Tương Tác (UI / UX)"]
-        UI_BOX["Hiển thị Bảng 9x9, Bàn Phím Số, Thanh Công Cụ & Modal
-        (UIBoard, UIControls, Screen Navigation)"]
+    subgraph SUB_UI ["🖥️ 1. Phân Hệ Giao Diện và Tương Tác (UI / UX)"]
+        UI_BOX["Hiển thị Bảng 9x9, Bàn Phím Số, Thanh Công Cụ và Modal<br/>(UIBoard, UIControls, Screen Navigation)"]
     end
     class SUB_UI,UI_BOX domainUI;
 
-    subgraph SUB_LOGIC ["⚙️ 2. Phân Hệ Logic Cốt Lõi & Sinh Đề (Game Logic & Engine)"]
-        LOGIC_BOX["Quy tắc Sudoku, Thuật toán Sinh đề duy nhất nghiệm,
-        Kiểm tra đúng/sai & Tính điểm Combo
-        (Game.js, SudokuEngine.js)"]
+    subgraph SUB_LOGIC ["⚙️ 2. Phân Hệ Logic Cốt Lõi và Sinh Đề (Game Logic và Engine)"]
+        LOGIC_BOX["Quy tắc Sudoku, Thuật toán Sinh đề duy nhất nghiệm,<br/>Kiểm tra đúng/sai và Tính điểm Combo<br/>(Game.js, SudokuEngine.js)"]
     end
     class SUB_LOGIC,LOGIC_BOX domainLogic;
 
-    subgraph SUB_STATE ["🔄 3. Phân Hệ Vòng Đời & Trạng Thái (State & Lifecycle)"]
-        STATE_BOX["Quản lý Luồng Màn Hình, Chế độ Chơi (Thường, Tia chớp),
-        Cảnh báo nguy hiểm 3 cấp & Điều kiện Thắng/Thua
-        (State Machine, Danger Overlay)"]
+    subgraph SUB_STATE ["🔄 3. Phân Hệ Vòng Đời và Trạng Thái (State và Lifecycle)"]
+        STATE_BOX["Quản lý Luồng Màn Hình, Chế độ Chơi (Thường, Tia chớp),<br/>Cảnh báo nguy hiểm 3 cấp và Điều kiện Thắng/Thua<br/>(State Machine, Danger Overlay)"]
     end
     class SUB_STATE,STATE_BOX domainState;
 
-    subgraph SUB_SERV ["💾 4. Phân Hệ Dịch Vụ Nền & Lưu Trữ (Services & Data)"]
-        SERV_BOX["Lưu ván chơi, Hồ sơ cá nhân, Âm thanh Web Audio,
-        Đa ngôn ngữ & Công cụ QA DevTools
-        (Storage, Sound, I18n, DevTools)"]
+    subgraph SUB_SERV ["💾 4. Phân Hệ Dịch Vụ Nền và Lưu Trữ (Services và Data)"]
+        SERV_BOX["Lưu ván chơi, Hồ sơ cá nhân, Âm thanh Web Audio,<br/>Đa ngôn ngữ và Công cụ QA DevTools<br/>(Storage, Sound, I18n, DevTools)"]
     end
     class SUB_SERV,SERV_BOX domainService;
 
-    %% High-level interaction links
+    %% Luồng liên kết giữa các phân hệ
     UI_BOX ==>|"Gửi thao tác người chơi (Click ô, bấm số, đổi chế độ)"| LOGIC_BOX
-    LOGIC_BOX ==>|"Cập nhật dữ liệu & Thông báo render lại"| UI_BOX
+    LOGIC_BOX ==>|"Cập nhật dữ liệu và thông báo render lại"| UI_BOX
 
-    LOGIC_BOX <==>|"Kích hoạt chuyển trạng thái (Pause, Danger, Finish)"| STATE_BOX
-    STATE_BOX ==>|"Cập nhật hiệu ứng & Điều hướng màn hình"| UI_BOX
+    LOGIC_BOX <-->|"Kích hoạt chuyển trạng thái (Pause, Danger, Finish)"| STATE_BOX
+    STATE_BOX ==>|"Cập nhật hiệu ứng và điều hướng màn hình"| UI_BOX
 
-    LOGIC_BOX ==>|"Lưu trạng thái ván, Ghi nhận điểm số & lịch sử"| SERV_BOX
-    SERV_BOX ==>|"Phát âm thanh SFX, Cung cấp cấu hình & ngôn ngữ"| UI_BOX
-    SERV_BOX <..>|"Kiểm thử & can thiệp trạng thái (QA HUD)"| LOGIC_BOX
+    LOGIC_BOX ==>|"Lưu trạng thái ván, Ghi nhận điểm số và lịch sử"| SERV_BOX
+    SERV_BOX ==>|"Phát âm thanh SFX, Cung cấp cấu hình và ngôn ngữ"| UI_BOX
+    SERV_BOX -. "Kiểm thử và can thiệp trạng thái (QA HUD)" .-> LOGIC_BOX
 ```
 
 ---
@@ -78,4 +71,3 @@ flowchart TB
 2. **Module Pattern & Encapsulation:** Mỗi module đóng gói trong một IIFE closure, bảo vệ biến nội bộ và chỉ xuất ra các phương thức public cần thiết.
 3. **Single Source of Truth:** `Game.js` đóng vai trò trung tâm lưu giữ trạng thái ván chơi (`state`), mọi thay đổi đều thông qua hàm tác vụ của `Game` và thông báo tới `UIBoard` / `UIControls` qua cơ chế Observer (`_notify`).
 4. **Resilient Data Persistence:** Tự động lưu tiến trình sau mỗi nước đi vào `localStorage`, khôi phục nguyên vẹn khi tải lại trang hoặc đổi thiết bị.
-

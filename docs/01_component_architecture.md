@@ -16,32 +16,32 @@ flowchart TD
     subgraph L1 ["🖥️ TẦNG TRÌNH DIỄN (Presentation Layer)"]
         direction TB
         subgraph L1_Screens ["Màn hình chính"]
-            SCR_SPLASH["Splash Screen<br/>(Intro & Khám phá)"]
+            SCR_SPLASH["Splash Screen<br/>(Intro và Khám phá)"]
             SCR_LOBBY["Lobby Screen<br/>(Chọn độ khó, Biến thể, Tiếp tục)"]
             SCR_GAME["Game Play Screen<br/>(Bàn cờ, Thanh trạng thái, Bàn phím)"]
         end
-        subgraph L1_UI ["Module Giao diện Bàn cờ & Điều khiển"]
+        subgraph L1_UI ["Module Giao diện Bàn cờ và Điều khiển"]
             UI_BOARD["UIBoard<br/>- Render 81 ô cờ<br/>- Highlight hàng/cột/khối<br/>- Phân biệt số đề/số điền"]
-            UI_CTRL["UIControls<br/>- Bàn phím số 3x3<br/>- Giữ vị trí ô hoàn thành<br/>- Banner & Overlay nguy hiểm<br/>- Nút Undo, Erase, Tia chớp, Ghi chú"]
+            UI_CTRL["UIControls<br/>- Bàn phím số 3x3<br/>- Giữ vị trí ô hoàn thành<br/>- Banner và Overlay nguy hiểm<br/>- Nút Undo, Erase, Tia chớp, Ghi chú"]
         end
         subgraph L1_Modals ["Hộp thoại chức năng (Modals)"]
             MOD_TUT["Tutorial.js<br/>(Hướng dẫn luật chơi)"]
-            MOD_PROF["Profile.js<br/>(Hồ sơ & Thành tích)"]
+            MOD_PROF["Profile.js<br/>(Hồ sơ và Thành tích)"]
             MOD_VAR["Variants.js<br/>(Biến thể Sudoku)"]
-            MOD_RES["Victory / Game Over / Pause<br/>(Kết quả & Tạm dừng)"]
+            MOD_RES["Victory / Game Over / Pause<br/>(Kết quả và Tạm dừng)"]
         end
     end
     class L1,SCR_SPLASH,SCR_LOBBY,SCR_GAME,UI_BOARD,UI_CTRL,MOD_TUT,MOD_PROF,MOD_VAR,MOD_RES presLayer;
 
-    subgraph L2 ["⚙️ TẦNG LOGIC & TRẠNG THÁI (Business Logic & State Layer)"]
+    subgraph L2 ["⚙️ TẦNG LOGIC VÀ TRẠNG THÁI (Business Logic và State Layer)"]
         direction TB
-        APP_CORE["App.js (Router & Orchestrator)<br/>- Khởi tạo hệ thống<br/>- Quản lý chuyển đổi màn hình & modal<br/>- Lắng nghe sự kiện bàn phím toàn cục"]
-        GAME_CORE["Game.js (State Machine & Rules)<br/>- Quản lý Game State (81 ô, nghiệm, ô đề)<br/>- Xác thực nước đi & chế độ Tia chớp<br/>- Bộ tính điểm combo/streak/thời gian<br/>- Quản lý cảnh báo nguy hiểm 3 cấp & Undo Stack"]
+        APP_CORE["App.js (Router và Orchestrator)<br/>- Khởi tạo hệ thống<br/>- Quản lý chuyển đổi màn hình và modal<br/>- Lắng nghe sự kiện bàn phím toàn cục"]
+        GAME_CORE["Game.js (State Machine và Rules)<br/>- Quản lý Game State (81 ô, nghiệm, ô đề)<br/>- Xác thực nước đi và chế độ Tia chớp<br/>- Bộ tính điểm combo/streak/thời gian<br/>- Quản lý cảnh báo nguy hiểm 3 cấp và Undo Stack"]
         ENGINE["SudokuEngine.js (Algorithms)<br/>- Thuật toán Backtracking giải Sudoku<br/>- Kiểm tra tính duy nhất nghiệm (Unique Solution)<br/>- Thuật toán sinh đề theo độ khó"]
     end
     class L2,APP_CORE,GAME_CORE,ENGINE logicLayer;
 
-    subgraph L3 ["💾 TẦNG DỊCH VỤ & HẠ TẦNG (Infrastructure & Services)"]
+    subgraph L3 ["💾 TẦNG DỊCH VỤ VÀ HẠ TẦNG (Infrastructure và Services)"]
         direction TB
         STORAGE["Storage.js<br/>- Lưu ván đấu dở dang<br/>- Lưu thống kê hồ sơ cá nhân<br/>- Lưu cấu hình cài đặt"]
         SOUND["Sound.js<br/>- Bộ tổng hợp âm Web Audio API<br/>- SFX: Tap, Correct Combo, Victory, Danger Heartbeat"]
@@ -49,16 +49,16 @@ flowchart TD
     end
     class L3,STORAGE,SOUND,I18N infraLayer;
 
-    subgraph L4 ["🛠️ CÔNG CỤ PHÁT TRIỂN & TEST (Developer & QA Tools)"]
-        DEVTOOLS["DevTools.js & CSS<br/>- Bảng điều khiển HUD nổi<br/>- Hiện đáp án mờ (Ghost Mode)<br/>- Vô hạn gợi ý, Thắng tức thì, Test cấp nguy hiểm"]
+    subgraph L4 ["🛠️ CÔNG CỤ PHÁT TRIỂN VÀ TEST (Developer và QA Tools)"]
+        DEVTOOLS["DevTools.js và CSS<br/>- Bảng điều khiển HUD nổi<br/>- Hiện đáp án mờ (Ghost Mode)<br/>- Vô hạn gợi ý, Thắng tức thì, Test cấp nguy hiểm"]
     end
     class L4,DEVTOOLS devLayer;
 
-    %% Direct flow linkages
+    %% Luồng liên kết phân tầng
     SCR_SPLASH --> APP_CORE
     SCR_LOBBY --> APP_CORE
-    APP_CORE ==>|"Khởi tạo & Điều phối"| GAME_CORE
-    GAME_CORE ==>|"Sinh & kiểm tra đề bài"| ENGINE
+    APP_CORE ==>|"Khởi tạo và Điều phối"| GAME_CORE
+    GAME_CORE ==>|"Sinh và kiểm tra đề bài"| ENGINE
 
     GAME_CORE -->|"_notify(state)"| UI_BOARD
     GAME_CORE -->|"_notify(state)"| UI_CTRL
@@ -69,12 +69,12 @@ flowchart TD
     APP_CORE -.-> MOD_PROF
     APP_CORE -.-> MOD_VAR
 
-    GAME_CORE ==>|"Lưu trạng thái & thành tích"| STORAGE
+    GAME_CORE ==>|"Lưu trạng thái và thành tích"| STORAGE
     GAME_CORE ==>|"Kích hoạt âm thanh theo tình huống"| SOUND
     APP_CORE ==>|"Áp dụng ngôn ngữ"| I18N
 
-    DEVTOOLS -.->|"Can thiệp & giám sát trạng thái"| GAME_CORE
-    DEVTOOLS -.->|"Hook vào hàm render bàn cờ"| UI_BOARD
+    DEVTOOLS -. "Can thiệp và giám sát trạng thái" .-> GAME_CORE
+    DEVTOOLS -. "Hook vào hàm render bàn cờ" .-> UI_BOARD
 ```
 
 ---
@@ -92,4 +92,3 @@ flowchart TD
 | **Sound** | `js/sound.js` | Phát âm thanh sinh động trực tiếp từ Web Audio API (không cần tải file audio bên ngoài), âm thanh tap, combo nốt nhạc tăng dần, nhịp tim nguy hiểm, nhạc thắng cuộc. | `playTap()`, `playCorrect(streak)`, `playError()`, `playDanger()`, `playWin()` |
 | **I18n** | `js/i18n.js` | Từ điển đa ngôn ngữ (Tiếng Việt & English), tự động cập nhật toàn bộ nhãn giao diện khi người dùng chuyển đổi ngôn ngữ. | `t(key)`, `getLanguage()`, `setLanguage(lang)` |
 | **DevTools** | `devtools/devtools.js` | Bộ công cụ kiểm thử dành riêng cho nhà phát triển và QA: Ghost Answers, vô hạn gợi ý, thắng nhanh, mô phỏng các chuỗi sai nguy hiểm. | `init()`, `isGhostActive()` |
-

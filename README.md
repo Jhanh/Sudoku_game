@@ -139,14 +139,12 @@ Sudoku_game/
 ├── README.md                  # Tài liệu giới thiệu sản phẩm & hướng dẫn
 ├── LICENSE                    # Giấy phép bản quyền mã nguồn mở MIT
 ├── .gitignore                 # Danh sách tệp loại trừ không lưu trên Git
-├── docs/                      # Hệ thống tài liệu kỹ thuật toàn diện cho Dev & AI
-│   ├── 01_project_overview.txt         # Tổng quan, triết lý, cây thư mục & cách chạy
-│   ├── 02_architecture_and_modules.txt # Kiến trúc SPA & chi tiết các module JavaScript
-│   ├── 03_game_logic_and_rules.txt     # Chi tiết quy tắc tính điểm, combo, phạt & Game Over
-│   ├── 04_ui_ux_design_system.txt      # Bảng màu, typography, bố cục PC Desktop, cảnh báo
-│   ├── 05_dev_guidelines_and_notes.txt # Những lưu ý sống còn, quy chuẩn commit, quy tắc Git
-│   ├── 06_css_styling_and_architecture.txt # Phân tích chuyên sâu 6 file CSS desktop
-│   └── 07_developer_tools_and_testing.txt  # Hướng dẫn bộ công cụ DevTools & QA Cheat HUD
+├── docs/                      # Hệ thống tài liệu kiến trúc & sơ đồ Mermaid trực quan
+│   ├── README.md                       # Sơ đồ tổng thể hệ thống (Master System Map) & Chỉ mục
+│   ├── 01_component_architecture.md    # Sơ đồ kiến trúc phân tầng 3 lớp (Presentation, Logic, Infra)
+│   ├── 02_game_state_lifecycle.md      # Sơ đồ máy trạng thái (Screen flow, In-game modes, Danger stages)
+│   ├── 03_data_flow_and_sequences.md   # Sơ đồ tuần tự điền số, chế độ Tia chớp & thuật toán sinh đề
+│   └── 04_storage_and_scoring_models.md # Sơ đồ ER dữ liệu LocalStorage & công thức tính điểm
 ├── devtools/                  # Bộ công cụ Developer Tools & Cheat kiểm thử (Tách biệt độc lập)
 │   ├── devtools.css           # Giao diện Dark Console HUD & Ghost Answers
 │   └── devtools.js            # Module xác thực & logic can thiệp game engine
@@ -169,16 +167,17 @@ Sudoku_game/
 │   ├── modals.css             # Hộp thoại Hướng dẫn, Cài đặt, Game Over tối giản
 │   └── profile.css            # Hồ sơ Dashboard PC: Biểu đồ Donut & 6 thẻ thông số
 └── js/
-    ├── storage.js             # Lớp lưu trữ LocalStorage & Memory Fallback
-    ├── sound.js               # Động cơ âm thanh Web Audio procedural SFX (10 SFX)
-    ├── sudoku-engine.js       # Thuật toán sinh đề & bộ phân loại logic (Logical Grader)
+    ├── app.js                 # Điều hướng ứng dụng, router & mobile detection
     ├── game.js                # Quản lý ván chơi, bộ đếm giờ, lỗi, chọn số trước, điểm
+    ├── sudoku-engine.js       # Thuật toán sinh đề & bộ phân loại logic (Logical Grader)
     ├── ui-board.js            # Render bàn cờ, highlight hàng/cột/khối & số trùng
     ├── ui-controls.js         # Bàn phím số, công cụ phụ trợ (5 nút công cụ), cảnh báo đỏ
+    ├── i18n.js                # Từ điển đa ngôn ngữ (Bilingual: Tiếng Việt 🇻🇳 / English 🇬🇧)
+    ├── storage.js             # Lớp lưu trữ LocalStorage & Memory Fallback
+    ├── sound.js               # Động cơ âm thanh Web Audio procedural SFX (10 SFX)
     ├── tutorial.js            # Quản lý các bước hướng dẫn động
     ├── variants.js            # Danh sách thông tin 4 biến thể Sudoku
-    ├── profile.js             # Xử lý thống kê và vẽ biểu đồ tỉ lệ thắng
-    └── app.js                 # Điều hướng ứng dụng, router & mobile detection
+    └── profile.js             # Xử lý thống kê và vẽ biểu đồ tỉ lệ thắng
 ```
 
 ---
