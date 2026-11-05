@@ -434,6 +434,16 @@ const Sound = (() => {
     return !isMuted;
   }
 
+  function syncWithStorage() {
+    if (typeof Storage !== 'undefined' && Storage.isSoundEnabled) {
+      isMuted = !Storage.isSoundEnabled();
+    }
+    if (masterGain && ctx) {
+      masterGain.gain.setValueAtTime(isMuted ? 0 : 0.85, ctx.currentTime);
+    }
+    updateToggleButtons();
+  }
+
   function init() {
     if (initialized) return;
     initialized = true;
@@ -470,6 +480,7 @@ const Sound = (() => {
   return {
     init,
     toggle,
+    syncWithStorage,
     isMuted: () => isMuted,
     updateUI: updateToggleButtons,
     playTap,

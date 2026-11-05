@@ -214,6 +214,188 @@ const Storage = (() => {
     } catch (_) {}
   }
 
+  /* ---------- Export & Import Data (Transfer & Backup) ---------- */
+  async function exportData() {
+    try {
+      const payload = {
+        app: 'Sudoku_Web_PC',
+        version: '2.0',
+        exportedAt: new Date().toISOString(),
+        data: {
+          game: loadGame(),
+          profile: getProfile(),
+          stats: getStats(),
+          settings: getSettings(),
+          sound: isSoundEnabled(),
+          language: getLanguage(),
+          theme: getTheme()
+        }
+      };
+
+      const jsonStr = JSON.stringify(payload, null, 2);
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const fileName = `sudoku_backup_${dateStr}.json`;
+
+      // 1. Modern File System Access API (Opens native Save As dialog allowing user to choose save folder)
+      if (typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function') {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: fileName,
+            id: 'sudoku-backup-file',
+            types: [{
+              description: 'Sudoku Backup File (*.json)',
+              accept: { 'application/json': ['.json'] }
+            }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(jsonStr);
+          await writable.close();
+          return { success: true, method: 'picker' };
+        } catch (pickerErr) {
+          // If the user cancelled the Save As dialog, don't download or show error
+          if (pickerErr && pickerErr.name === 'AbortError') {
+            return { success: false, aborted: true };
+          }
+          // If security or other error, fallback to <a> download below
+        }
+      }
+
+      // 2. Standard fallback: <a download>
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return { success: true, method: 'download' };
+    } catch (e) {
+      console.error('Export failed:', e);
+      return { success: false, error: e.message };
+    }
+  }
+
+  function importData(rawContent) {
+    try {
+      if (typeof rawContent !== 'string' || !rawContent.trim()) {
+        throw new Error('Tệp trống hoặc không đúng định dạng');
+      }
+
+      const parsed = JSON.parse(rawContent);
+
+      // Support either { app: 'Sudoku_Web_PC', data: { ... } } or raw data object { profile, stats, ... }
+      let payload = (parsed && (parsed.app === 'Sudoku_Web_PC' || parsed.exportedAt) && parsed.data)
+        ? parsed.data
+        : parsed;
+
+      if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+        throw new Error('Cấu trúc tệp sao lưu không hợp lệ');
+      }
+
+      // Handle raw localStorage dump if applicable
+      if (payload.sudoku_stats || payload.sudoku_profile) {
+        if (payload.sudoku_profile) {
+          const p = typeof payload.sudoku_profile === 'string' ? JSON.parse(payload.sudoku_profile) : payload.sudoku_profile;
+          saveProfile(p);
+        }
+        if (payload.sudoku_stats) {
+          const s = typeof payload.sudoku_stats === 'string' ? JSON.parse(payload.sudoku_stats) : payload.sudoku_stats;
+          saveStats(s);
+        }
+        if (payload.sudoku_gameplay_settings) {
+          const gs = typeof payload.sudoku_gameplay_settings === 'string' ? JSON.parse(payload.sudoku_gameplay_settings) : payload.sudoku_gameplay_settings;
+          saveSettings(gs);
+        }
+        if (payload.sudoku_current_game) {
+          const cg = typeof payload.sudoku_current_game === 'string' ? JSON.parse(payload.sudoku_current_game) : payload.sudoku_current_game;
+          saveGame(cg);
+        }
+        if (payload.sudoku_sound_enabled !== undefined) {
+          setSoundEnabled(payload.sudoku_sound_enabled === true || payload.sudoku_sound_enabled === 'true');
+        }
+        if (payload.sudoku_language) {
+          setLanguage(payload.sudoku_language);
+        }
+        if (payload.sudoku_theme) {
+          setTheme(payload.sudoku_theme);
+        }
+        return { success: true };
+      }
+
+      // Check standard keys
+      const hasAnyValidKey = payload.stats || payload.profile || payload.game !== undefined || payload.settings;
+      if (!hasAnyValidKey) {
+        throw new Error('Không tìm thấy dữ liệu game hợp lệ trong tệp');
+      }
+
+      // 1. Profile
+      if (payload.profile && typeof payload.profile === 'object') {
+        const p = {
+          name: typeof payload.profile.name === 'string' && payload.profile.name.trim()
+            ? payload.profile.name.trim().slice(0, 30)
+            : DEFAULT_PROFILE.name,
+          totalPlayTime: Math.max(0, Number(payload.profile.totalPlayTime) || 0)
+        };
+        saveProfile(p);
+      }
+
+      // 2. Stats
+      if (payload.stats && typeof payload.stats === 'object') {
+        const stats = {
+          easy: { ..._defaultDiff(), ...(payload.stats.easy || {}) },
+          medium: { ..._defaultDiff(), ...(payload.stats.medium || {}) },
+          hard: { ..._defaultDiff(), ...(payload.stats.hard || {}) }
+        };
+        ['easy', 'medium', 'hard'].forEach(diff => {
+          Object.keys(stats[diff]).forEach(k => {
+            stats[diff][k] = Math.max(0, Number(stats[diff][k]) || 0);
+          });
+        });
+        saveStats(stats);
+      }
+
+      // 3. Gameplay settings
+      if (payload.settings && typeof payload.settings === 'object') {
+        saveSettings({
+          autoClearNotes: payload.settings.autoClearNotes !== false,
+          highlightSame: payload.settings.highlightSame !== false,
+          highlightMistakes: payload.settings.highlightMistakes !== false,
+          fastFillDefault: payload.settings.fastFillDefault === true
+        });
+      }
+
+      // 4. Sound
+      if (payload.sound !== undefined) {
+        setSoundEnabled(Boolean(payload.sound));
+      }
+
+      // 5. Language
+      if (payload.language === 'en' || payload.language === 'vi') {
+        setLanguage(payload.language);
+      }
+
+      // 6. Theme
+      if (payload.theme === 'dark' || payload.theme === 'light') {
+        setTheme(payload.theme);
+      }
+
+      // 7. Active game state
+      if (payload.game && typeof payload.game === 'object' && Array.isArray(payload.game.board)) {
+        saveGame(payload.game);
+      } else if (payload.game === null) {
+        clearGame();
+      }
+
+      return { success: true };
+    } catch (e) {
+      console.warn('Import failed:', e);
+      return { success: false, error: e.message };
+    }
+  }
+
   /* ---------- public API ---------- */
   return {
     saveGame, loadGame, clearGame, hasActiveGame,
@@ -223,6 +405,7 @@ const Storage = (() => {
     getLanguage, setLanguage,
     getTheme, setTheme,
     getSettings, saveSettings, updateSetting,
-    resetAllData
+    resetAllData,
+    exportData, importData
   };
 })();

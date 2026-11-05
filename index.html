@@ -532,13 +532,37 @@
           </div>
         </div>
 
+        <!-- Section: Data Backup & Transfer -->
+        <div class="settings-group">
+          <div class="settings-group-title" data-i18n="settings_grp_data">Sao Lưu &amp; Khôi Phục Dữ Liệu</div>
+
+          <div class="setting-row">
+            <div class="setting-row-info">
+              <span class="setting-row-title" data-i18n="settings_export_title">Xuất dữ liệu trò chơi</span>
+            </div>
+            <button id="btn-settings-export-data" class="btn-secondary btn-small">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span data-i18n="settings_export_btn">Xuất Dữ Liệu</span>
+            </button>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row-info">
+              <span class="setting-row-title" data-i18n="settings_import_title">Nhập dữ liệu trò chơi</span>
+            </div>
+            <button id="btn-settings-import-data" class="btn-secondary btn-small">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span data-i18n="settings_import_btn">Nhập Tệp</span>
+            </button>
+            <input type="file" id="input-import-file" accept=".json,application/json" style="display:none;">
+          </div>
+        </div>
+
         <!-- Section: Danger Zone / Data Reset -->
         <div class="settings-group settings-danger-group">
-          <div class="settings-group-title danger-title" data-i18n="settings_grp_danger">Vùng Nguy Hiểm &amp; Dữ Liệu</div>
           <div class="setting-row danger-row">
             <div class="setting-row-info">
               <span class="setting-row-title danger-text" data-i18n="settings_reset_title">Đặt lại toàn bộ dữ liệu</span>
-              <span class="setting-row-desc" data-i18n="settings_reset_desc">Xóa mọi lịch sử ván đấu, chuỗi thắng, thời gian và đưa game về trạng thái ban đầu</span>
             </div>
             <button id="btn-settings-reset-data" class="btn-primary btn-danger btn-small" data-i18n="settings_reset_btn">
               Xóa Dữ Liệu

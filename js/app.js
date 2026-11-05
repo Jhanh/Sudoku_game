@@ -342,6 +342,108 @@ const App = (() => {
         }
       });
     }
+
+    // 7. Export data (Backup)
+    const exportBtn = document.getElementById('btn-settings-export-data');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', async () => {
+        if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+        const res = await Storage.exportData();
+        if (res && res.success) {
+          showToast(typeof I18n !== 'undefined' ? I18n.t('toast_export_success') : '📁 Đã xuất dữ liệu sao lưu thành công!');
+        } else if (res && res.aborted) {
+          // User cancelled Save As dialog - do nothing
+        } else {
+          showToast(typeof I18n !== 'undefined' ? I18n.t('toast_export_failed') : '❌ Có lỗi khi tạo tệp sao lưu!');
+        }
+      });
+    }
+
+    // 8. Import data (Transfer / Restore)
+    const importBtn = document.getElementById('btn-settings-import-data');
+    const importInput = document.getElementById('input-import-file');
+    if (importBtn && importInput) {
+      importBtn.addEventListener('click', () => {
+        if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+        importInput.value = '';
+        importInput.click();
+      });
+
+      importInput.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        const title = typeof I18n !== 'undefined' ? I18n.t('settings_import_confirm_title') : 'Khôi Phục Dữ Liệu';
+        const msg = typeof I18n !== 'undefined' ? I18n.t('settings_import_confirm_msg') : 'Nhập dữ liệu từ tệp này sẽ ghi đè toàn bộ tiến trình, lịch sử đấu và cài đặt hiện tại trên máy. Bạn có chắc chắn muốn tiếp tục?';
+        const ok = await confirm(title, msg);
+        if (!ok) {
+          importInput.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const raw = event.target.result;
+            const res = Storage.importData(raw);
+            if (res && res.success) {
+              // 1. Language & Theme synchronization
+              const newLang = Storage.getLanguage();
+              const newTheme = Storage.getTheme();
+              if (typeof I18n !== 'undefined' && I18n.setLanguage) {
+                I18n.setLanguage(newLang);
+              }
+              document.documentElement.setAttribute('data-theme', newTheme);
+
+              // 2. Segmented buttons state
+              const curLangBtns = document.querySelectorAll('#control-language .seg-btn');
+              curLangBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === newLang));
+              const curThemeBtns = document.querySelectorAll('#control-theme .seg-btn');
+              curThemeBtns.forEach(b => b.classList.toggle('active', b.dataset.theme === newTheme));
+
+              // 3. Audio synchronization
+              if (typeof Sound !== 'undefined' && Sound.syncWithStorage) {
+                Sound.syncWithStorage();
+              }
+              if (soundToggle) soundToggle.checked = Storage.isSoundEnabled();
+
+              // 4. Gameplay toggles
+              const curSettings = Storage.getSettings();
+              if (autoclearToggle) autoclearToggle.checked = curSettings.autoClearNotes !== false;
+              if (sameNumToggle) sameNumToggle.checked = curSettings.highlightSame !== false;
+              if (mistakesToggle) mistakesToggle.checked = curSettings.highlightMistakes !== false;
+              if (fastfillToggle) fastfillToggle.checked = curSettings.fastFillDefault === true;
+
+              // 5. Update Profile UI
+              if (typeof Profile !== 'undefined' && Profile.render) {
+                Profile.render();
+              }
+
+              // 6. Update Lobby Continue card
+              _updateHomeActions();
+
+              // 7. Audio & Toast feedback
+              if (typeof Sound !== 'undefined' && Sound.playCorrect) Sound.playCorrect();
+              showToast(typeof I18n !== 'undefined' ? I18n.t('toast_import_success') : '✨ Đã khôi phục dữ liệu thành công!');
+            } else {
+              showToast(typeof I18n !== 'undefined' ? I18n.t('toast_import_invalid') : '⚠️ Tệp dữ liệu không hợp lệ hoặc bị lỗi định dạng!');
+            }
+          } catch (err) {
+            console.error('Import reading error:', err);
+            showToast(typeof I18n !== 'undefined' ? I18n.t('toast_import_failed') : '❌ Lỗi khi đọc tệp sao lưu!');
+          } finally {
+            importInput.value = '';
+          }
+        };
+
+        reader.onerror = () => {
+          showToast(typeof I18n !== 'undefined' ? I18n.t('toast_import_failed') : '❌ Lỗi khi đọc tệp sao lưu!');
+          importInput.value = '';
+        };
+
+        reader.readAsText(file);
+      });
+    }
   }
 
   /* ---- wire everything ---- */

@@ -778,6 +778,7 @@
 .settings-danger-group {
   background: rgba(239, 68, 68, 0.05);
   border-color: rgba(239, 68, 68, 0.2);
+  padding: 10px 16px;
 }
 
 [data-theme="dark"] .settings-danger-group {
@@ -795,4 +796,13 @@
 
 .danger-row {
   border-bottom: none !important;
+}
+
+.setting-row .btn-small {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+#modal-confirm {
+  z-index: 1100;
 }

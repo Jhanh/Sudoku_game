@@ -103,3 +103,42 @@ flowchart TD
     class P_FINAL total;
 ```
 
+---
+
+## 🔄 3. Cơ Chế Sao Lưu & Chuyển Đổi Tiến Trình Trò Chơi (Backup & Cross-Device Transfer)
+
+Để hỗ trợ người chơi chuyển đổi giữa các thiết bị máy tính hoặc trình duyệt khác nhau mà không làm mất hàng trăm trận đấu và kỷ lục (do trò chơi vận hành phía client tĩnh trên GitHub Pages), hệ thống cung cấp tính năng **Xuất (Export)** và **Nhập (Import)** dữ liệu an toàn dưới chuẩn JSON:
+
+```mermaid
+flowchart TD
+    classDef client fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
+    classDef file fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
+    classDef system fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
+
+    subgraph EXPORT_FLOW ["📤 1. Quy Trình Xuất Dữ Liệu (Export Flow)"]
+        E_ACT["Người chơi bấm 'Xuất Dữ Liệu'"]
+        E_PKG["Thu thập: Profile, Stats, Settings, Saved Game, Sound, Theme"]
+        E_BLOB["Đóng gói Blob JSON và tải tệp sudoku_backup_YYYY-MM-DD.json"]
+        E_ACT --> E_PKG --> E_BLOB
+    end
+
+    subgraph BACKUP_FILE ["📦 Tệp Sao Lưu An Toàn (.json)"]
+        F_CONTENT["Chứa metadata (phiên bản, ngày giờ) & toàn bộ trạng thái LocalStorage"]
+    end
+
+    subgraph IMPORT_FLOW ["📥 2. Quy Trình Nhập Dữ Liệu (Import Flow)"]
+        I_ACT["Người chơi bấm 'Nhập Tệp' & chọn file .json"]
+        I_CONFIRM["Hộp thoại cảnh báo ghi đè xác nhận từ người chơi"]
+        I_PARSE["FileReader đọc nội dung & Storage.importData xác thực"]
+        I_HYDRATE["Ghi đè LocalStorage & làm mới giao diện ngay lập tức"]
+        I_ACT --> I_CONFIRM --> I_PARSE --> I_HYDRATE
+    end
+
+    E_BLOB -->|Lưu về máy| BACKUP_FILE
+    BACKUP_FILE -->|Tải lên máy mới| I_ACT
+
+    class E_ACT,I_ACT client;
+    class F_CONTENT file;
+    class E_PKG,E_BLOB,I_CONFIRM,I_PARSE,I_HYDRATE system;
+```
+
