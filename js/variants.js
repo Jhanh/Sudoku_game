@@ -1,5 +1,5 @@
 /* =========================================================
-   variants.js — Variant cards (placeholder, coming soon)
+   variants.js - Variant cards (placeholder, coming soon)
    ========================================================= */
 const Variants = (() => {
 

@@ -1,5 +1,5 @@
 /* =========================================================
-   app.js — Main router, screen manager, event wiring
+   app.js - Main router, screen manager, event wiring
    ========================================================= */
 const App = (() => {
 

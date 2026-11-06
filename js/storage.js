@@ -1,5 +1,5 @@
 /* =========================================================
-   storage.js — Persistent data layer (LocalStorage with Memory Fallback)
+   storage.js - Persistent data layer (LocalStorage with Memory Fallback)
    ========================================================= */
 const Storage = (() => {
   const KEYS = {

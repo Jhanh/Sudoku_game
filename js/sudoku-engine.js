@@ -1,5 +1,5 @@
 /* =========================================================
-   sudoku-engine.js — Puzzle generator & logical grader
+   sudoku-engine.js - Puzzle generator & logical grader
    Guarantees unique solution, international givens standards,
    and human-solving logical grading:
    - Easy: Solvable purely by Naked & Hidden Singles (givens ~36-40)

@@ -1,5 +1,5 @@
 /* =========================================================
-   i18n.js — Bilingual Internationalization Engine (VI & EN)
+   i18n.js - Bilingual Internationalization Engine (VI & EN)
    Pure Vanilla JS, Zero Dependencies, Real-time Reactive
    ========================================================= */
 const I18n = (() => {

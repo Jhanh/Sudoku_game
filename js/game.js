@@ -1,5 +1,5 @@
 /* =========================================================
-   game.js — Game state, timer, scoring, undo, auto-save
+   game.js - Game state, timer, scoring, undo, auto-save
    ========================================================= */
 const Game = (() => {
   let state = null;

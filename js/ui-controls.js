@@ -1,5 +1,5 @@
 /* =========================================================
-   ui-controls.js — Info bar, tools, numpad rendering
+   ui-controls.js - Info bar, tools, numpad rendering
    ========================================================= */
 const UIControls = (() => {
   let toolsBound = false;

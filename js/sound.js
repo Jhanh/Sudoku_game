@@ -1,5 +1,5 @@
 /* =========================================================
-   sound.js — Procedural Web Audio API sound effects engine
+   sound.js - Procedural Web Audio API sound effects engine
    Zero external audio files, zero latency, 100% synthesized
    ========================================================= */
 const Sound = (() => {
@@ -53,7 +53,7 @@ const Sound = (() => {
   /* ---------- Procedural Synthesizers ---------- */
 
   /**
-   * 1. playTap — Soft wooden tap for cell selection, menu navigation, button clicks
+   * 1. playTap - Soft wooden tap for cell selection, menu navigation, button clicks
    */
   function playTap() {
     if (!_canPlay()) return;
@@ -84,7 +84,7 @@ const Sound = (() => {
   }
 
   /**
-   * 2. playCorrect — Marimba pop with pentatonic pitch scaling based on streak
+   * 2. playCorrect - Marimba pop with pentatonic pitch scaling based on streak
    */
   function playCorrect(streak = 1) {
     if (!_canPlay()) return;
@@ -134,7 +134,7 @@ const Sound = (() => {
   }
 
   /**
-   * 3. playDigitComplete — Joyful ascending 3-note arpeggio when all 9 digits are placed
+   * 3. playDigitComplete - Joyful ascending 3-note arpeggio when all 9 digits are placed
    */
   function playDigitComplete() {
     if (!_canPlay()) return;
@@ -164,7 +164,7 @@ const Sound = (() => {
   }
 
   /**
-   * 4. playError — Low gentle thud / soft buzz for incorrect moves
+   * 4. playError - Low gentle thud / soft buzz for incorrect moves
    */
   function playError() {
     if (!_canPlay()) return;
@@ -204,7 +204,7 @@ const Sound = (() => {
   }
 
   /**
-   * 5. playNote — Crisp mini pencil tick for note placement / toggle
+   * 5. playNote - Crisp mini pencil tick for note placement / toggle
    */
   function playNote() {
     if (!_canPlay()) return;
@@ -230,7 +230,7 @@ const Sound = (() => {
   }
 
   /**
-   * 6. playErase — Soft downward whoosh for erase and undo actions
+   * 6. playErase - Soft downward whoosh for erase and undo actions
    */
   function playErase() {
     if (!_canPlay()) return;
@@ -262,7 +262,7 @@ const Sound = (() => {
   }
 
   /**
-   * 7. playHint — Shimmering celestial chimes for hint reveal
+   * 7. playHint - Shimmering celestial chimes for hint reveal
    */
   function playHint() {
     if (!_canPlay()) return;
@@ -292,7 +292,7 @@ const Sound = (() => {
   }
 
   /**
-   * 8. playDanger — Low dramatic tension heartbeat pulses for warning stage 2 & 3
+   * 8. playDanger - Low dramatic tension heartbeat pulses for warning stage 2 & 3
    */
   function playDanger() {
     if (!_canPlay()) return;
@@ -321,7 +321,7 @@ const Sound = (() => {
   }
 
   /**
-   * 9. playWin — Festive victory fanfare
+   * 9. playWin - Festive victory fanfare
    */
   function playWin() {
     if (!_canPlay()) return;
@@ -360,7 +360,7 @@ const Sound = (() => {
   }
 
   /**
-   * 10. playGameOver — Gentle descending minor triad for match over
+   * 10. playGameOver - Gentle descending minor triad for match over
    */
   function playGameOver() {
     if (!_canPlay()) return;

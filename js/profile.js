@@ -1,5 +1,5 @@
 /* =========================================================
-   profile.js — Profile header, stats charts, stat cards & rank
+   profile.js - Profile header, stats charts, stat cards & rank
    ========================================================= */
 const Profile = (() => {
 
@@ -166,12 +166,12 @@ const Profile = (() => {
       {
         icon: '⏱️',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_best_time') : 'Thời gian nhanh nhất',
-        value: s.bestTime > 0 ? (typeof Game !== 'undefined' ? Game.formatTime(s.bestTime) : s.bestTime) : '—'
+        value: s.bestTime > 0 ? (typeof Game !== 'undefined' ? Game.formatTime(s.bestTime) : s.bestTime) : '-'
       },
       {
         icon: '📈',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_avg_time') : 'Thời gian trung bình',
-        value: avgTime > 0 ? (typeof Game !== 'undefined' ? Game.formatTime(avgTime) : avgTime) : '—'
+        value: avgTime > 0 ? (typeof Game !== 'undefined' ? Game.formatTime(avgTime) : avgTime) : '-'
       }
     ];
 

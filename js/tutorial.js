@@ -1,5 +1,5 @@
 /* =========================================================
-   tutorial.js — Animated step-by-step Sudoku tutorial
+   tutorial.js - Animated step-by-step Sudoku tutorial
    ========================================================= */
 const Tutorial = (() => {
   let currentStep = 0;

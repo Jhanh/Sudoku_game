@@ -1,5 +1,5 @@
 /* =========================================================
-   devtools.js — Developer & QA Testing Tools Module
+   devtools.js - Developer & QA Testing Tools Module
    Tách biệt hoàn toàn với mã nguồn chính của game.
    Kích hoạt bằng tổ hợp phím: Ctrl + Shift + D hoặc phím ` (Tilde)
    Mật khẩu mở khóa: 123456

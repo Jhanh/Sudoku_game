@@ -1,5 +1,5 @@
 /* =========================================================
-   ui-board.js — Sudoku board rendering & interaction
+   ui-board.js - Sudoku board rendering & interaction
    ========================================================= */
 const UIBoard = (() => {
   const boardEl = () => document.getElementById('sudoku-board');

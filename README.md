@@ -107,9 +107,9 @@ Bạn có thể truy cập và chơi ngay không cần cài đặt tại:
 👉 **[https://jhanh.github.io/Sudoku_game/](https://jhanh.github.io/Sudoku_game/)**
 
 ### 💻 Cách 2: Tải về chơi Offline trên máy tính
-1. Tải tệp nén **[Sudoku-Game-testing.zip](https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip)** về máy tính.
-2. Giải nén thư mục.
-3. Nhấp đúp vào tệp **`ChoiGame.bat`** (trên Windows) hoặc mở trực tiếp tệp **`index.html`** bằng trình duyệt web yêu thích của bạn.
+1. Tải tệp nén **[Sudoku-Game-v2.0.zip](https://github.com/Jhanh/Sudoku_game/releases/latest)** về máy tính.
+2. Giải nén thư mục vừa tải về.
+3. Mở trực tiếp tệp **`index.html`** bằng trình duyệt web yêu thích (Chrome, Edge, Firefox, Brave, Safari...). Không cần cài đặt bất kỳ phần mềm nào khác!
 
 ### 🛠️ Cách 3: Chạy bằng máy chủ nội bộ Python (Dành cho Lập trình viên)
 ```bash
