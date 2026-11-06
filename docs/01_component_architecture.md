@@ -1,10 +1,10 @@
-# 🏛️ Sơ Đồ 01: Kiến Trúc Phân Tầng Module (Component Architecture)
+# 🏛️ Sơ đồ 01: Kiến trúc phân tầng module (Component Architecture)
 
 Tài liệu này mô tả chi tiết kiến trúc 3 tầng (**3-Tier Architecture**) của game Sudoku, danh sách các module theo chuẩn **Module Pattern (IIFE)**, trách nhiệm và mối quan hệ phụ thuộc giữa chúng.
 
 ---
 
-## 🏗️ 1. Sơ Đồ Phân Tầng Tổng Thể
+## 🏗️ 1. Sơ đồ phân tầng tổng thể
 
 ```mermaid
 flowchart TD
@@ -79,7 +79,7 @@ flowchart TD
 
 ---
 
-## 📋 2. Trách Nhiệm Chi Tiết Của Từng Module
+## 📋 2. Trách nhiệm chi tiết của từng module
 
 | Module | File nguồn | Trách nhiệm chính | Public API tiêu biểu |
 |:---|:---|:---|:---|

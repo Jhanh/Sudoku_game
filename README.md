@@ -1,4 +1,4 @@
-# 🧩 Sudoku Web - Phiên Bản Tối Ưu Hóa 100% Cho PC
+# 🧩 Sudoku Web - Phiên bản tối ưu hóa 100% cho PC
 
 <p align="center">
   <b>Trải nghiệm giải đố trí tuệ kinh điển với giao diện chuyên biệt cho máy tính (PC / Laptop), mượt mà, tĩnh lặng và đẳng cấp.</b>
@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/🎮%20Chơi%20Online-Click%20To%20Play-2563EB?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Play Online">
   </a>
   &nbsp;
-  <a href="https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip">
+  <a href="https://github.com/Jhanh/Sudoku_game/releases/latest">
     <img src="https://img.shields.io/badge/📥%20Tải%20Bản%20Offline-Download%20ZIP-6366F1?style=for-the-badge&logo=windows&logoColor=white" alt="Download ZIP">
   </a>
 </p>
@@ -27,7 +27,7 @@
 
 ---
 
-## 🌟 Trải Nghiệm Hình Ảnh (Showcase)
+## 🌟 Trải nghiệm hình ảnh (Showcase)
 
 <p align="center">
   <img src="screenshots/2-lobby-home.png" alt="Sảnh chính với thanh điều hướng Dock Desktop" width="48%">
@@ -42,13 +42,13 @@
 
 ---
 
-## 💎 Điểm Mạnh Vượt Trội So Với Các Trang Web Sudoku Khác
+## 💎 Điểm mạnh vượt trội so với các trang web Sudoku khác
 
 Hầu hết các trang web Sudoku hiện nay trên thị trường thường mắc phải các nhược điểm: giao diện co cụm sao chép từ mobile, đào lỗ ngẫu nhiên tạo câu đố nhiều nghiệm, gợi ý máy móc điền bừa đáp án không giải thích, hoặc ngập tràn quảng cáo và âm thanh gây xao nhãng.
 
 **Sudoku Web** được thiết kế lại hoàn toàn từ con số 0 nhằm khắc phục triệt để các vấn đề trên và mang đến một không gian thi đấu trí tuệ đẳng cấp:
 
-### 1. 💡 Gợi Ý Thông Minh Kèm Giải Thích Logic (Smart Hint with Explanations)
+### 1. 💡 Gợi ý thông minh kèm giải thích logic (Smart Hint with Explanations)
 * **Không điền bừa:** Thay vì chọn ngẫu nhiên một ô trống bất kỳ và hiện đáp án cụt lủn, hệ thống phân tích bàn cờ theo đúng trình tự tư duy của các kiện tướng Sudoku:
   * **Naked Single:** Tìm ô duy nhất chỉ còn 1 ứng viên hợp lệ.
   * **Hidden Single:** Tìm chữ số duy nhất chỉ còn 1 ô có thể đặt được trong hàng, cột hoặc khối 3x3.
@@ -58,7 +58,7 @@ Hầu hết các trang web Sudoku hiện nay trên thị trường thường m�
   * `Trong hàng 2, chỉ ô cột 5 có thể chứa số 8 (Hidden Single)`
 * Giúp người chơi không chỉ giải được ván cờ mà còn thực sự học hỏi và nâng cao tư duy logic sau mỗi lần bấm gợi ý.
 
-### 2. ⚡ Bút Chì Nhanh (Auto-Candidates) & Ghi Chú Thông Minh
+### 2. ⚡ Bút chì nhanh (Auto-Candidates) & ghi chú thông minh
 * **Bút chì nhanh (Phím tắt `A`):**
   * Tự động tính toán và điền toàn bộ ứng viên hợp lệ cho tất cả ô trống trên bàn cờ.
   * Bật ON để hỗ trợ suy luận nâng cao, tắt OFF để xóa sạch màn hình giúp thoáng mắt và tập trung. Bật lại sẽ tự động tính toán lại mà không trừ điểm thêm.
@@ -68,7 +68,7 @@ Hầu hết các trang web Sudoku hiện nay trên thị trường thường m�
 * **Highlight ứng viên đồng bộ:**
   * Khi chọn bất kỳ con số nào, toàn bộ các ứng viên ghi chú tương ứng trên khắp bàn cờ sẽ được viền/nền xanh nổi bật (`.note-highlighted`), hỗ trợ quan sát tổng thể tức thì như trên các ứng dụng Sudoku cao cấp nhất.
 
-### 3. 🛡️ Hệ Thống 3 Mạng Lỗi Sai & Hồi Sinh Bù Điểm Lũy Tiến
+### 3. 🛡️ Hệ thống 3 mạng lỗi sai & hồi sinh bù điểm lũy tiến
 * **Giới hạn 3 cơ hội sai chuẩn mực (0/3):** Mỗi lần điền sai trừ điểm theo độ khó (Dễ -5đ, TB -7đ, Khó -10đ) và reset chuỗi streak.
 * **Hồi sinh lũy tiến theo bảng cửu chương:** Khi phạm lỗi thứ 3 (3/3), trận đấu tạm dừng và mở Hộp thoại Hồi sinh. Người chơi có thể dùng chính số điểm kiếm được trong trận để đổi lấy thêm 1 cơ hội thi đấu:
   * Chi phí: $k \times \text{BaseCost}$ (Dễ 50đ, TB 100đ, Khó 150đ với $k$ là số lần hồi sinh).
@@ -77,41 +77,41 @@ Hầu hết các trang web Sudoku hiện nay trên thị trường thường m�
   * Hoàn tác nước đi SAI: Giữ nguyên số lỗi và điểm phạt (lỗi sai là vĩnh viễn, chỉ cứu được bằng Hồi sinh).
   * Hoàn tác nước đi ĐÚNG: Khấu trừ lại điểm đã cộng để chống gian lận điểm số.
 
-### 4. ⚡ Chế Độ Tia Chớp (Lightning Mode - Digit-First / Phím tắt `F`)
+### 4. ⚡ Chế độ Tia chớp (Lightning Mode - Digit-First / Phím tắt `F`)
 * Cho phép chọn 1 con số và click liên tục vào các ô trống trên bàn cờ để điền siêu tốc.
 * Bấm vào bất kỳ số nào trên bàn cờ để chuyển ngay sang số đó.
 * Khi đủ 9 ô của con số, phím số trên Numpad được ẩn đi nhưng **vẫn bảo toàn nguyên vẹn vị trí vật lý** để bảo vệ trí nhớ cơ bắp (muscle memory).
 
-### 5. 🎯 Đổi Gợi Ý Bằng Điểm Hồ Sơ Vĩnh Viễn (Mastery Points Exchange)
+### 5. 🎯 Đổi gợi ý bằng Điểm Hồ Sơ vĩnh viễn (Mastery Points Exchange)
 * Cấp sẵn 3 gợi ý miễn phí ban đầu (trừ điểm trận đấu).
 * Từ lượt thứ 4 trở đi, người chơi có thể đổi thêm gợi ý bằng **Điểm Hồ Sơ vĩnh viễn** lũy tiến theo bảng cửu chương ($k \times \text{BaseCost}$) mà không làm ảnh hưởng đến điểm số của trận đấu đang chơi.
 
-### 6. 🔊 Âm Thanh Procedural Web Audio API Thuần Khiết (Zero Audio Files)
+### 6. 🔊 Âm thanh procedural Web Audio API thuần khiết (Zero Audio Files)
 * 100% âm thanh được tổng hợp thời gian thực bằng sóng âm Web Audio API (tiếng gõ gỗ thanh lịch, đàn Marimba thăng hoa theo chuỗi Combo, khải hoàn ca chiến thắng...).
 * 0 byte tải về, không phụ thuộc file mp3 ngoài, độ trễ phản hồi bằng 0ms.
 
-### 7. 📁 Sao Lưu & Khôi Phục Đa Thiết Bị Chuẩn Native (JSON Backup & Restore)
+### 7. 📁 Sao lưu & khôi phục đa thiết bị chuẩn native (JSON Backup & Restore)
 * Tích hợp File System Access API (`showSaveFilePicker`), mở hộp thoại "Save As..." của Windows để người chơi tự do chọn thư mục lưu trữ file `.json`.
 * Trình duyệt tự động ghi nhớ vị trí lưu cho các lần xuất dữ liệu tiếp theo. Dễ dàng chuyển tiến trình và kỷ lục giữa máy tính cơ quan và máy tính cá nhân ở nhà.
 
-### 8. 🖥️ Không Gian Thi Đấu Tĩnh Lặng & Tinh Gọn (UI/UX Conciseness)
+### 8. 🖥️ Không gian thi đấu tĩnh lặng & tinh gọn (UI/UX Conciseness)
 * Thiết kế chuyên biệt cho màn hình PC, hiển thị toàn bộ bàn cờ, thông số và bảng điều khiển trong **đúng 1 màn hình duy nhất, tuyệt đối không cần cuộn trang**.
 * Giữ giao diện tĩnh lặng, thanh lịch, thông báo ngắn gọn dễ hiểu trong 1 giây, nói không với các hiệu ứng chớp đỏ giật cục hay âm thanh khó chịu.
 
 ---
 
-## 🚀 Cách Bắt Đầu Chơi Ngay
+## 🚀 Cách bắt đầu chơi ngay
 
 ### 🌐 Cách 1: Chơi trực tiếp trên trình duyệt
 Bạn có thể truy cập và chơi ngay không cần cài đặt tại:
 👉 **[https://jhanh.github.io/Sudoku_game/](https://jhanh.github.io/Sudoku_game/)**
 
-### 💻 Cách 2: Tải về chơi Offline trên máy tính
+### 💻 Cách 2: Tải về chơi offline trên máy tính
 1. Tải tệp nén **[Sudoku-Game-v2.0.zip](https://github.com/Jhanh/Sudoku_game/releases/latest)** về máy tính.
 2. Giải nén thư mục vừa tải về.
 3. Mở trực tiếp tệp **`index.html`** bằng trình duyệt web yêu thích (Chrome, Edge, Firefox, Brave, Safari...). Không cần cài đặt bất kỳ phần mềm nào khác!
 
-### 🛠️ Cách 3: Chạy bằng máy chủ nội bộ Python (Dành cho Lập trình viên)
+### 🛠️ Cách 3: Chạy bằng máy chủ nội bộ Python (dành cho lập trình viên)
 ```bash
 python server.py
 ```
@@ -119,7 +119,7 @@ python server.py
 
 ---
 
-## ⌨️ Bảng Phím Tắt Thao Tác Nhanh (PC Shortcuts)
+## ⌨️ Bảng phím tắt thao tác nhanh (PC Shortcuts)
 
 | Phím Tắt | Chức Năng |
 | :--- | :--- |
@@ -135,11 +135,12 @@ python server.py
 
 ---
 
-## 📁 Cấu Trúc Thư Mục Dự Án (Project Structure)
+## 📁 Cấu trúc thư mục dự án (Project Structure)
 
 ```text
 Sudoku_game/
 ├── index.html                 # Giao diện chính, bàn cờ, thanh công cụ 6 nút & banner gợi ý
+├── guide.txt                  # Hướng dẫn mở game & phím tắt nhanh cho bản nén
 ├── server.py                  # Máy chủ tĩnh nội bộ Python (Auto port + No-cache)
 ├── README.md                  # Tài liệu giới thiệu sản phẩm & hướng dẫn chi tiết
 ├── LICENSE                    # Giấy phép bản quyền mã nguồn mở MIT
@@ -176,6 +177,6 @@ Sudoku_game/
 
 ---
 
-## 📄 Bản Quyền & Giấy Phép (License)
+## 📄 Bản quyền & giấy phép (License)
 
 Dự án được phân phối dưới giấy phép mã nguồn mở **MIT License**. Bạn được tự do học tập, sử dụng và phát triển thêm.

@@ -1,0 +1,42 @@
+================================================================================
+                    SUDOKU WEB - HƯỚNG DẪN MỞ & TƯƠNG TÁC GAME
+================================================================================
+
+1. CÁCH MỞ GAME (RẤT ĐƠN GIẢN):
+--------------------------------------------------------------------------------
+- Bạn chỉ cần nhấp đúp chuột mở tệp "index.html" bằng bất kỳ trình duyệt web nào
+  sẵn có trên máy tính (Google Chrome, Microsoft Edge, Cốc Cốc, Mozilla Firefox,
+  Brave, Opera, Safari...).
+- Trò chơi chạy trực tiếp ngay lập tức, hoàn toàn không cần kết nối mạng Internet
+  và không cần cài đặt thêm bất kỳ phần mềm nào khác.
+
+
+2. HƯỚNG DẪN TƯƠNG TÁC & PHÍM TẮT:
+--------------------------------------------------------------------------------
+Bạn có thể dùng chuột hoặc sử dụng bàn phím máy tính để thao tác cực nhanh:
+
+[Thao tác chuột]:
+- Nhấp chọn 1 ô trên bàn cờ 9x9, sau đó nhấp vào số tương ứng ở bàn phím số
+  bên phải để điền.
+- Các nút công cụ bên phải gồm: Hoàn tác, Xóa, Gợi ý, Bút chì nhanh, Ghi chú,
+  Tia chớp.
+
+[Phím tắt bàn phím]:
+- Phím 1 đến 9: Điền số vào ô đang chọn (hoặc khóa số trong chế độ Tia chớp).
+- Phím F: Bật hoặc tắt chế độ Tia chớp (chọn 1 số rồi bấm liên tiếp vào các ô).
+- Phím A: Bật hoặc tắt Bút chì nhanh (tự động điền tất cả các số khả dĩ).
+- Phím N: Bật hoặc tắt chế độ Ghi chú thủ công.
+- Phím H: Nhận Gợi ý thông minh kèm dòng giải thích logic.
+- Phím Delete hoặc Backspace: Xóa số hoặc xóa ghi chú trong ô.
+- Phím Ctrl + Z: Hoàn tác nước đi gần nhất.
+- Phím Space (Dấu cách) hoặc P: Tạm dừng hoặc tiếp tục ván đấu.
+- Các phím mũi tên (Lên, Xuống, Trái, Phải): Di chuyển giữa các ô trên bàn cờ.
+
+
+3. THÔNG TIN THÊM:
+--------------------------------------------------------------------------------
+- Tiến trình chơi, kỷ lục thời gian và Điểm Hồ Sơ được lưu tự động trên máy tính.
+- Để xem chi tiết các tính năng mới và cập nhật mới nhất, bạn có thể ghé thăm
+  trang phát hành chính thức tại:
+  https://github.com/Jhanh/Sudoku_game/releases
+================================================================================

@@ -1,4 +1,4 @@
-# 🔄 Sơ Đồ 02: Vòng Đời & Máy Trạng Thái (Game State Lifecycle)
+# 🔄 Sơ đồ 02: Vòng đời & máy trạng thái (Game State Lifecycle)
 
 Tài liệu này mô hình hóa toàn bộ vòng đời chuyển trạng thái của người chơi, bao gồm:
 1. **Luồng điều hướng màn hình (Screen Navigation Flow)**
@@ -7,7 +7,7 @@ Tài liệu này mô hình hóa toàn bộ vòng đời chuyển trạng thái c
 
 ---
 
-## 🧭 1. Luồng Điều Hướng Màn Hình (Screen Navigation Flow)
+## 🧭 1. Luồng điều hướng màn hình (Screen Navigation Flow)
 
 ```mermaid
 flowchart TD
@@ -56,7 +56,7 @@ flowchart TD
 
 ---
 
-## ⚡ 2. Máy Trạng Thái Trong Ván Chơi (In-Game Modes)
+## ⚡ 2. Máy trạng thái trong ván chơi (In-Game Modes)
 
 Trong lúc chơi, người dùng có thể linh hoạt chuyển đổi qua lại giữa **Chế độ Thường (Normal Mode)**, **Chế độ Tia chớp (Fast-Fill Mode)** và **Chế độ Ghi chú (Notes Mode)**.
 
@@ -112,7 +112,7 @@ flowchart TD
 
 ---
 
-## 💔 3. Cơ Chế Giới Hạn 3 Lỗi Sai & Hồi Sinh Bù Điểm (3-Mistake Limit & Revive Lifecycle)
+## 💔 3. Cơ chế giới hạn 3 lỗi sai & hồi sinh bù điểm (3-Mistake Limit & Revive Lifecycle)
 
 Trong Sudoku tiêu chuẩn, người chơi được cung cấp tối đa **3 cơ hội sai** (`0/3` $\rightarrow$ `3/3`). Mỗi lần phạm lỗi sẽ bị trừ điểm theo độ khó (Dễ: -5đ, Trung bình: -7đ, Khó: -10đ, điểm số không âm). Khi đạt ngưỡng `3/3`, trận đấu tự động tạm dừng và mở Hộp thoại Hồi sinh.
 
@@ -152,7 +152,7 @@ flowchart TD
     class GAME_OVER finish;
 ```
 
-### 📋 Bảng Phạt Lỗi & Chi Phí Hồi Sinh Từng Độ Khó:
+### 📋 Bảng phạt lỗi & chi phí hồi sinh từng độ khó:
 
 | Độ khó | Điểm trừ mỗi lỗi sai | Chi phí Hồi sinh lần 1 ($1\times$) | Chi phí Hồi sinh lần 2 ($2\times$) | Chi phí Hồi sinh lần $k$ ($k\times$) | Trạng thái sau Hồi sinh |
 |:---|:---:|:---:|:---:|:---:|:---:|
