@@ -10,7 +10,7 @@ const Tutorial = (() => {
     return [
       {
         title: typeof I18n !== 'undefined' ? I18n.t('tut_step1_title') : 'Quy tắc Hàng & Cột',
-        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step1_desc') : 'Mỗi <strong>hàng ngang</strong> và mỗi <strong>cột dọc</strong> phải chứa đầy đủ các số từ 1 đến 9 — không có số nào được lặp lại.',
+        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step1_desc') : 'Mỗi <strong>hàng ngang</strong> và mỗi <strong>cột dọc</strong> phải chứa đầy đủ các số từ 1 đến 9 - không có số nào được lặp lại.',
         buildDemo: buildStep1
       },
       {

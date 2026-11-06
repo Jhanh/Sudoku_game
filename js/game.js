@@ -16,6 +16,7 @@ const Game = (() => {
   const MISTAKE_PENALTIES = { easy: 5, medium: 7, hard: 10 };
   const REVIVE_BASE_COST = { easy: 50, medium: 100, hard: 150 };
   const HINT_PERMANENT_COST = { easy: 50, medium: 100, hard: 150 };
+  const AUTO_NOTES_COST = { easy: 100, medium: 200, hard: 300 };
 
   /* ---- penalties configuration ---- */
   const HINT_PENALTIES = {
@@ -65,7 +66,9 @@ const Game = (() => {
   function getScoreBreakdown(st) {
     if (!st) return null;
     const timeMult = getTimeMultiplier(st.difficulty, st.timer);
-    const finalScore = Math.round(st.score * timeMult);
+    const autoNotesPenalty = st.autoNotesPenalty || 0;
+    const rawScore = st.score || 0;
+    const finalScore = Math.max(0, Math.round(Math.max(0, rawScore - autoNotesPenalty) * timeMult));
     const baseScore = st.baseScore || 0;
     const perfectBonus = st.perfectBonus || 0;
     const hintPenalties = st.hintPenalties || 0;
@@ -83,8 +86,9 @@ const Game = (() => {
       perfectBonus,
       hintPenalties,
       wrongPenalties,
+      autoNotesPenalty,
       isPerfect: st.mistakes === 0 && perfectBonus > 0,
-      rawScore: st.score || 0,
+      rawScore,
       maxStreak: st.maxStreak || 0,
       currentStreak: st.correctStreak || 0,
       reviveCount: st.reviveCount || 0,
@@ -123,6 +127,7 @@ const Game = (() => {
       perfectBonus: state.perfectBonus || 0,
       hintPenalties: state.hintPenalties || 0,
       wrongPenalties: state.wrongPenalties || 0,
+      autoNotesPenalty: state.autoNotesPenalty || 0,
       correctCount: state.correctCount,
       correctStreak: state.correctStreak,
       maxStreak: state.maxStreak,
@@ -130,6 +135,8 @@ const Game = (() => {
       timer: state.timer,
       undoStack: state.undoStack,
       notesMode: state.notesMode,
+      autoNotesMode: state.autoNotesMode || false,
+      autoNotesUsed: state.autoNotesUsed || false,
       fastFillMode: state.fastFillMode,
       fastFillDigit: state.fastFillDigit,
       isFinished: state.isFinished
@@ -219,6 +226,7 @@ const Game = (() => {
       perfectBonus: 0,
       hintPenalties: 0,
       wrongPenalties: 0,
+      autoNotesPenalty: 0,
       correctCount: 0,
       correctStreak: 0,
       maxStreak: 0,
@@ -227,8 +235,12 @@ const Game = (() => {
       undoStack: [],
       selectedCell: null,
       notesMode: false,
+      autoNotesMode: false,
+      autoNotesUsed: false,
       fastFillMode: defaultFastFill,
       fastFillDigit: null,
+      conflictCells: null,
+      hintExplanation: null,
       isFinished: false,
       isPaused: false
     };
@@ -249,12 +261,17 @@ const Game = (() => {
       perfectBonus: saved.perfectBonus || 0,
       hintPenalties: saved.hintPenalties || 0,
       wrongPenalties: saved.wrongPenalties || 0,
+      autoNotesPenalty: saved.autoNotesPenalty || 0,
+      autoNotesMode: saved.autoNotesMode || false,
+      autoNotesUsed: saved.autoNotesUsed || false,
       correctCount: saved.correctCount || 0,
       correctStreak: saved.correctStreak || 0,
       maxStreak: saved.maxStreak || 0,
       selectedCell: null,
       fastFillMode: saved.fastFillMode || false,
       fastFillDigit: saved.fastFillDigit || null,
+      conflictCells: null,
+      hintExplanation: null,
       isPaused: false
     };
     startTimer();
@@ -349,9 +366,51 @@ const Game = (() => {
 
     if (!state.notes[key]) state.notes[key] = [];
     const ni = state.notes[key].indexOf(num);
-    if (ni >= 0) { state.notes[key].splice(ni, 1); }
-    else { state.notes[key].push(num); }
+    if (ni >= 0) {
+      // Removing note is always allowed
+      state.notes[key].splice(ni, 1);
+      state.undoStack.push({ type: 'note', row, col, oldNotes });
+      save();
+      if (typeof Sound !== 'undefined' && Sound.playNote) Sound.playNote();
+      if (onUpdate) onUpdate(state);
+      return;
+    }
 
+    // Adding note: verify collision against existing placed numbers in row, col, and 3x3 block
+    const conflicts = [];
+    // Check row
+    for (let c = 0; c < 9; c++) {
+      const ci = idx(row, c);
+      if (state.current[ci] === num) conflicts.push(ci);
+    }
+    // Check col
+    for (let r = 0; r < 9; r++) {
+      const ci = idx(r, col);
+      if (state.current[ci] === num && !conflicts.includes(ci)) conflicts.push(ci);
+    }
+    // Check 3x3 box
+    const br = Math.floor(row / 3) * 3, bc = Math.floor(col / 3) * 3;
+    for (let r = br; r < br + 3; r++) {
+      for (let c = bc; c < bc + 3; c++) {
+        const ci = idx(r, c);
+        if (state.current[ci] === num && !conflicts.includes(ci)) conflicts.push(ci);
+      }
+    }
+
+    if (conflicts.length > 0) {
+      state.conflictCells = conflicts;
+      if (typeof Sound !== 'undefined' && Sound.playError) Sound.playError();
+      if (onUpdate) onUpdate(state);
+      setTimeout(() => {
+        if (state && state.conflictCells) {
+          state.conflictCells = null;
+          if (onUpdate) onUpdate(state);
+        }
+      }, 2000);
+      return;
+    }
+
+    state.notes[key].push(num);
     state.undoStack.push({ type: 'note', row, col, oldNotes });
     save();
     if (typeof Sound !== 'undefined' && Sound.playNote) Sound.playNote();
@@ -359,6 +418,7 @@ const Game = (() => {
   }
 
   function _placeValue(row, col, num) {
+    state.hintExplanation = null;
     const i = idx(row, col);
     const oldValue = state.current[i];
     const key = `${row},${col}`;
@@ -433,10 +493,9 @@ const Game = (() => {
     state.baseScore = (state.baseScore || 0) + basePts;
     state.score = (state.score || 0) + pointsEarned;
 
-    const gs = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
-    if (gs.autoClearNotes !== false) {
-      removeRelatedNotes(row, col, num);
-    }
+    // Automatically remove number from related notes in row, column, and box
+    removeRelatedNotes(row, col, num);
+
     state.undoStack.push({
       type: 'value',
       row, col,
@@ -484,26 +543,26 @@ const Game = (() => {
     if (!state || state.isFinished || state.isPaused) return;
     if (state.undoStack.length === 0) return;
 
+    state.hintExplanation = null;
     const action = state.undoStack.pop();
     const key = `${action.row},${action.col}`;
 
     if (action.type === 'value') {
       const i = idx(action.row, action.col);
-      // If it was an error, decrease mistake count and refund penalty
+      // If it was an error: DO NOT refund mistake count, DO NOT refund mistake penalty!
+      // The mistakes counter stays (e.g. 2/3 remains 2/3).
+      // Only reset cell value to empty/oldValue and restore notes.
       if (action.error) {
-        state.mistakes = Math.max(0, state.mistakes - 1);
-        if (action.penaltyDeducted) {
-          state.score += action.penaltyDeducted;
-          state.wrongPenalties = Math.max(0, (state.wrongPenalties || 0) - action.penaltyDeducted);
-        }
+        // state.mistakes and score penalty are IRREVERSIBLE
       } else {
+        // If undoing a correct placement: deduct earned points to prevent score exploit
         const pts = action.pointsEarned !== undefined ? action.pointsEarned : SCORE_PER_CELL[state.difficulty];
         const basePts = action.basePts !== undefined ? action.basePts : SCORE_PER_CELL[state.difficulty];
         state.score = Math.max(0, state.score - pts);
         state.baseScore = Math.max(0, (state.baseScore || 0) - basePts);
         state.correctCount = Math.max(0, (state.correctCount || 0) - 1);
       }
-      // Không hoàn lại lượt streak: quay về trạng thái chưa điền và reset streak về 0
+      // Reset streak to 0
       state.correctStreak = 0;
       state.current[i] = action.oldValue;
       state.notes[key] = action.oldNotes;
@@ -604,27 +663,47 @@ const Game = (() => {
   function _applyHint(isPurchased = false) {
     if (!state || state.isFinished) return false;
 
-    let row, col;
-    if (state.selectedCell) {
-      const i = idx(state.selectedCell.row, state.selectedCell.col);
-      if (!state.given[i] && state.current[i] !== state.solution[i]) {
-        row = state.selectedCell.row;
-        col = state.selectedCell.col;
-      }
-    }
+    // Use Smart Hint algorithm to find logical deduction
+    const smartHint = (typeof SudokuEngine !== 'undefined' && SudokuEngine.getSmartHint)
+      ? SudokuEngine.getSmartHint(state.current, state.solution)
+      : null;
 
-    // If selected cell can't be hinted, find a random empty/wrong cell
-    if (row === undefined) {
-      const empties = [];
-      for (let i = 0; i < 81; i++) {
+    let row, col, hintVal;
+    if (smartHint) {
+      row = smartHint.row;
+      col = smartHint.col;
+      hintVal = smartHint.value;
+      state.hintExplanation = {
+        technique: smartHint.technique,
+        reasonVi: smartHint.reasonVi,
+        reasonEn: smartHint.reasonEn
+      };
+    } else {
+      if (state.selectedCell) {
+        const i = idx(state.selectedCell.row, state.selectedCell.col);
         if (!state.given[i] && state.current[i] !== state.solution[i]) {
-          empties.push(i);
+          row = state.selectedCell.row;
+          col = state.selectedCell.col;
         }
       }
-      if (empties.length === 0) return false;
-      const ri = empties[Math.floor(Math.random() * empties.length)];
-      row = Math.floor(ri / 9);
-      col = ri % 9;
+      if (row === undefined) {
+        const empties = [];
+        for (let i = 0; i < 81; i++) {
+          if (!state.given[i] && state.current[i] !== state.solution[i]) {
+            empties.push(i);
+          }
+        }
+        if (empties.length === 0) return false;
+        const ri = empties[Math.floor(Math.random() * empties.length)];
+        row = Math.floor(ri / 9);
+        col = ri % 9;
+      }
+      hintVal = state.solution[idx(row, col)];
+      state.hintExplanation = {
+        technique: 'Direct Placement',
+        reasonVi: `Điền số ${hintVal} vào ô hàng ${row + 1}, cột ${col + 1} (Direct Placement)`,
+        reasonEn: `Place ${hintVal} at Row ${row + 1}, Col ${col + 1} (Direct Placement)`
+      };
     }
 
     const i = idx(row, col);
@@ -643,14 +722,11 @@ const Game = (() => {
       state.hintsUsed = (state.hintsUsed || 0) + 1;
     }
 
-    state.current[i] = state.solution[i];
+    state.current[i] = hintVal;
     state.notes[key] = [];
     state.given[i] = true; // Mark as given so it can't be erased
 
-    const gsHint = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
-    if (gsHint.autoClearNotes !== false) {
-      removeRelatedNotes(row, col, state.solution[i]);
-    }
+    removeRelatedNotes(row, col, hintVal);
 
     // Don't add to undo stack (hints are permanent)
     state.selectedCell = { row, col };
@@ -714,6 +790,46 @@ const Game = (() => {
     save();
     _applyHint(true);
     return true;
+  }
+
+  /* ---- auto notes (fast notes) ---- */
+  function fillAllCandidates() {
+    if (!state || typeof SudokuEngine === 'undefined') return;
+    const validCands = SudokuEngine.getAllValidCandidates(state.current);
+    for (let i = 0; i < 81; i++) {
+      if (state.current[i] === 0) {
+        const r = Math.floor(i / 9), c = i % 9;
+        state.notes[`${r},${c}`] = validCands[i];
+      }
+    }
+  }
+
+  function toggleAutoNotes() {
+    if (!state || state.isFinished || state.isPaused) return null;
+    state.autoNotesMode = !state.autoNotesMode;
+
+    let penaltyJustApplied = 0;
+    if (state.autoNotesMode) {
+      if (!state.autoNotesUsed) {
+        state.autoNotesUsed = true;
+        state.autoNotesPenalty = AUTO_NOTES_COST[state.difficulty] || 100;
+        penaltyJustApplied = state.autoNotesPenalty;
+      }
+      fillAllCandidates();
+    } else {
+      // Clear all notes to keep screen clean
+      state.notes = {};
+    }
+
+    save();
+    if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+    if (onUpdate) onUpdate(state);
+
+    return {
+      mode: state.autoNotesMode,
+      penaltyJustApplied,
+      totalPenalty: state.autoNotesPenalty
+    };
   }
 
   /* ---- mistake revival & scoring cheats ---- */
@@ -811,7 +927,7 @@ const Game = (() => {
 
   return {
     start, resume, selectCell, placeNumber,
-    undo, erase, toggleNotes, toggleFastFill, selectFastFillDigit,
+    undo, erase, toggleNotes, toggleAutoNotes, fillAllCandidates, toggleFastFill, selectFastFillDigit,
     useHint, buyExtraHint, getHintPermanentCost,
     getReviveCost, canRevive, revive, giveUpFromMistakes, modifyScore,
     togglePause, giveUp, abandonSaved, destroy,
@@ -819,7 +935,7 @@ const Game = (() => {
     getRemaining, formatTime,
     getStreakMultiplier, getTimeMultiplier, getScoreBreakdown,
     getHintPenalty, getWrongPenalty,
-    HINT_PENALTIES, MISTAKE_PENALTIES, REVIVE_BASE_COST, HINT_PERMANENT_COST,
+    HINT_PENALTIES, MISTAKE_PENALTIES, REVIVE_BASE_COST, HINT_PERMANENT_COST, AUTO_NOTES_COST,
     DIFF_LABELS, SCORE_PER_CELL, PERFECT_BONUS, idx
   };
 })();

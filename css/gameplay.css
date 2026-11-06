@@ -185,6 +185,89 @@
 .board-wrapper {
   position: relative;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== Hint Explanation Banner ===== */
+.hint-explanation-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  max-width: 450px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-radius: var(--radius-sm);
+  color: #1E3A8A;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.1);
+  box-sizing: border-box;
+  animation: hintBannerFadeIn 0.25s ease-out;
+}
+
+[data-theme="dark"] .hint-explanation-banner {
+  background: rgba(30, 58, 138, 0.35);
+  border-color: #1E40AF;
+  color: #93C5FD;
+}
+
+.hint-explanation-banner.hidden {
+  display: none !important;
+}
+
+.hint-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.hint-banner-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.hint-banner-text {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-hint-close {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.btn-hint-close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+@keyframes hintBannerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .sudoku-board {
@@ -354,6 +437,51 @@
   visibility: hidden;
 }
 
+/* Highlight candidate note matching selected/active digit */
+.cell-notes .note.note-highlighted {
+  background: #3B82F6 !important;
+  color: #FFFFFF !important;
+  border-radius: 3px;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="dark"] .cell-notes .note.note-highlighted {
+  background: #2563EB !important;
+  color: #FFFFFF !important;
+}
+
+/* Conflict flash for manual note placement collision (2s animation: 4 pulses x 0.5s) */
+.cell.conflict-flash {
+  animation: conflictPulse 0.5s ease-in-out 4;
+  z-index: 3;
+}
+
+@keyframes conflictPulse {
+  0%, 100% {
+    background-color: var(--surface);
+  }
+  50% {
+    background-color: #FEE2E2 !important;
+    box-shadow: inset 0 0 0 2.5px #EF4444 !important;
+  }
+}
+
+[data-theme="dark"] .cell.conflict-flash {
+  animation: conflictPulseDark 0.5s ease-in-out 4;
+  z-index: 3;
+}
+
+@keyframes conflictPulseDark {
+  0%, 100% {
+    background-color: var(--surface);
+  }
+  50% {
+    background-color: rgba(239, 68, 68, 0.4) !important;
+    box-shadow: inset 0 0 0 2.5px #F87171 !important;
+  }
+}
+
 /* ===== Pause Overlay ===== */
 .pause-overlay {
   position: absolute;
@@ -389,8 +517,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-width: 260px;
-  max-width: 300px;
+  min-width: 280px;
+  max-width: 330px;
 }
 
 @media (max-width: 768px) {
@@ -405,7 +533,7 @@
 .tools-row {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
+  gap: 5px;
 }
 
 .tool-btn {
@@ -414,7 +542,7 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 10px 8px;
+  padding: 8px 3px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -423,6 +551,7 @@
   position: relative;
   color: var(--text-secondary);
   font-family: inherit;
+  min-width: 0;
 }
 
 .tool-btn:hover {
@@ -457,14 +586,29 @@
   color: #FFFFFF;
 }
 
+.tool-btn#btn-auto-notes.active {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: #2563EB;
+  color: #2563EB;
+}
+
+.tool-btn#btn-auto-notes.active svg {
+  stroke: #2563EB;
+}
+
 .tool-btn svg {
   width: 22px;
   height: 22px;
+  flex-shrink: 0;
 }
 
 .tool-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 /* ===== Tool Badges ===== */

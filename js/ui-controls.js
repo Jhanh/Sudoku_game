@@ -51,6 +51,33 @@ const UIControls = (() => {
     document.getElementById('btn-erase').addEventListener('click', () => Game.erase());
     document.getElementById('btn-fast-fill').addEventListener('click', () => Game.toggleFastFill());
     document.getElementById('btn-notes').addEventListener('click', () => Game.toggleNotes());
+
+    const autoNotesBtn = document.getElementById('btn-auto-notes');
+    if (autoNotesBtn) {
+      autoNotesBtn.addEventListener('click', () => {
+        const res = Game.toggleAutoNotes();
+        if (res && res.penaltyJustApplied > 0) {
+          const lang = typeof I18n !== 'undefined' ? I18n.getLanguage() : 'vi';
+          const msg = lang === 'en'
+            ? `⚡ Fast Notes: -${res.penaltyJustApplied} pts (deducted at game end)`
+            : `⚡ Bút chì nhanh: -${res.penaltyJustApplied}đ (trừ vào tổng kết khi kết thúc ván)`;
+          if (typeof App !== 'undefined' && App.toast) {
+            App.toast(msg, 'warning');
+          }
+        }
+      });
+    }
+
+    const closeBannerBtn = document.getElementById('btn-close-hint-banner');
+    if (closeBannerBtn) {
+      closeBannerBtn.addEventListener('click', () => {
+        const st = Game.getState();
+        if (st) st.hintExplanation = null;
+        const banner = document.getElementById('hint-explanation-banner');
+        if (banner) banner.classList.add('hidden');
+      });
+    }
+
     document.getElementById('btn-hint').addEventListener('click', () => {
       const st = Game.getState();
       if (!st || st.isFinished || st.isPaused) return;
@@ -127,6 +154,21 @@ const UIControls = (() => {
       document.getElementById('btn-notes').classList.remove('active');
     }
 
+    // Auto Notes badge & button state
+    const autoNotesBtn = document.getElementById('btn-auto-notes');
+    const autoNotesBadge = document.getElementById('auto-notes-badge');
+    if (autoNotesBtn && autoNotesBadge) {
+      if (state.autoNotesMode) {
+        autoNotesBadge.textContent = 'ON';
+        autoNotesBadge.className = 'tool-badge badge-count';
+        autoNotesBtn.classList.add('active');
+      } else {
+        autoNotesBadge.textContent = 'OFF';
+        autoNotesBadge.className = 'tool-badge badge-off';
+        autoNotesBtn.classList.remove('active');
+      }
+    }
+
     // Fast-Fill badge & button state
     const ffBtn = document.getElementById('btn-fast-fill');
     const ffBadge = document.getElementById('fast-fill-badge');
@@ -144,6 +186,19 @@ const UIControls = (() => {
 
     // Hint badge
     document.getElementById('hint-badge').textContent = state.hints;
+
+    // Hint Explanation Banner
+    const hintBanner = document.getElementById('hint-explanation-banner');
+    const hintText = document.getElementById('hint-explanation-text');
+    if (hintBanner && hintText) {
+      if (state.hintExplanation && !state.isPaused) {
+        const isEn = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en';
+        hintText.textContent = isEn ? state.hintExplanation.reasonEn : state.hintExplanation.reasonVi;
+        hintBanner.classList.remove('hidden');
+      } else {
+        hintBanner.classList.add('hidden');
+      }
+    }
 
     // Numpad remaining counts & Fast-Fill highlight/dimming
     for (let n = 1; n <= 9; n++) {

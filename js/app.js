@@ -156,7 +156,7 @@ const App = (() => {
         const diffLabel = Game.DIFF_LABELS[saved.difficulty] || saved.difficulty;
         const time = Game.formatTime(saved.timer);
         const infoEl = document.getElementById('continue-info');
-        if (infoEl) infoEl.textContent = `${diffLabel} — ${time}`;
+        if (infoEl) infoEl.textContent = `${diffLabel} - ${time}`;
       }
     } else {
       newGameBtn.classList.remove('hidden');
@@ -706,6 +706,17 @@ const App = (() => {
         Game.undo();
       } else if (key === 'n' || key === 'N') {
         Game.toggleNotes();
+      } else if (key === 'a' || key === 'A') {
+        const res = Game.toggleAutoNotes();
+        if (res && res.penaltyJustApplied > 0) {
+          const lang = typeof I18n !== 'undefined' ? I18n.getLanguage() : 'vi';
+          const msg = lang === 'en'
+            ? `⚡ Fast Notes: -${res.penaltyJustApplied} pts (deducted at game end)`
+            : `⚡ Bút chì nhanh: -${res.penaltyJustApplied}đ (trừ vào tổng kết khi kết thúc ván)`;
+          if (typeof App !== 'undefined' && App.toast) {
+            App.toast(msg, 'warning');
+          }
+        }
       } else if (key === 'f' || key === 'F') {
         Game.toggleFastFill();
       } else if (key === 'h' || key === 'H') {

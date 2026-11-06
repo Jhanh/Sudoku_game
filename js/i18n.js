@@ -7,7 +7,7 @@ const I18n = (() => {
   const translations = {
     vi: {
       // General & Common
-      app_title: 'Sudoku — Rèn luyện tư duy',
+      app_title: 'Sudoku - Rèn luyện tư duy',
       brand_name: 'Sudoku Web',
       btn_cancel: 'Hủy',
       btn_confirm: 'Xác nhận',
@@ -28,7 +28,7 @@ const I18n = (() => {
 
       // Lobby / Home
       home_title: 'Sudoku Cổ Điển',
-      home_desc: 'Trò chơi trí tuệ kinh điển — điền số, rèn logic, chinh phục mọi thử thách',
+      home_desc: 'Trò chơi trí tuệ kinh điển - điền số, rèn logic, chinh phục mọi thử thách',
       home_btn_how_to_play: 'Cách chơi',
       home_btn_start: 'Bắt Đầu Thử Thách',
       home_btn_continue: 'Tiếp Tục Ván Đang Chơi',
@@ -93,11 +93,11 @@ const I18n = (() => {
       diff_medium: 'Trung bình',
       diff_hard: 'Khó',
       diff_modal_title: 'Chọn Độ Khó',
-      diff_easy_clues: '38 – 45 ô cho trước',
+      diff_easy_clues: '38 - 45 ô cho trước',
       diff_easy_sub: 'Phù hợp người mới bắt đầu',
-      diff_medium_clues: '30 – 35 ô cho trước',
+      diff_medium_clues: '30 - 35 ô cho trước',
       diff_medium_sub: 'Thử thách vừa phải',
-      diff_hard_clues: '24 – 28 ô cho trước',
+      diff_hard_clues: '24 - 28 ô cho trước',
       diff_hard_sub: 'Dành cho kỳ thủ thực thụ',
 
       // Gameplay Screen
@@ -112,6 +112,8 @@ const I18n = (() => {
       tool_erase: 'Xóa',
       tool_fast_fill: 'Tia chớp',
       tool_fast_fill_title: 'Chế độ Tia chớp - Điền liên tiếp (Phím tắt: F)',
+      tool_auto_notes: 'Bút chì nhanh',
+      tool_auto_notes_title: 'Bút chì nhanh - Tự động điền ứng viên hợp lệ (Phím tắt: A)',
       tool_notes: 'Ghi chú',
       tool_hint: 'Gợi ý',
       in_game_new_game_confirm_title: 'Ván Chơi Mới',
@@ -134,6 +136,7 @@ const I18n = (() => {
       breakdown_time_multiplier: 'Hệ số thời gian',
       breakdown_hint_penalty: 'Trừ điểm gợi ý',
       breakdown_wrong_penalty: 'Trừ điểm chuỗi sai',
+      breakdown_auto_notes_penalty: 'Trừ điểm bút chì nhanh',
       breakdown_final_score: 'Tổng điểm đạt được',
       breakdown_time: 'Thời gian hoàn thành',
       breakdown_mistakes: 'Số lỗi vi phạm',
@@ -164,7 +167,7 @@ const I18n = (() => {
       // Tutorial Modal
       tut_title: 'Cách Chơi Sudoku',
       tut_step1_title: 'Quy tắc Hàng & Cột',
-      tut_step1_desc: 'Mỗi <strong>hàng ngang</strong> và mỗi <strong>cột dọc</strong> phải chứa đầy đủ các số từ 1 đến 9 — không có số nào được lặp lại.',
+      tut_step1_desc: 'Mỗi <strong>hàng ngang</strong> và mỗi <strong>cột dọc</strong> phải chứa đầy đủ các số từ 1 đến 9 - không có số nào được lặp lại.',
       tut_step2_title: 'Quy tắc Khối 3×3',
       tut_step2_desc: 'Bảng Sudoku được chia thành 9 <strong>khối 3×3</strong>. Mỗi khối cũng phải chứa đúng các số từ 1 đến 9, không trùng lặp.',
       tut_step3_title: 'Suy luận & Ghi chú',
@@ -235,7 +238,7 @@ const I18n = (() => {
 
     en: {
       // General & Common
-      app_title: 'Sudoku — Brain Training & Logic',
+      app_title: 'Sudoku - Brain Training & Logic',
       brand_name: 'Sudoku Web',
       btn_cancel: 'Cancel',
       btn_confirm: 'Confirm',
@@ -256,7 +259,7 @@ const I18n = (() => {
 
       // Lobby / Home
       home_title: 'Classic Sudoku',
-      home_desc: 'The timeless logic puzzle — fill digits, sharpen reasoning, conquer every challenge',
+      home_desc: 'The timeless logic puzzle - fill digits, sharpen reasoning, conquer every challenge',
       home_btn_how_to_play: 'How to Play',
       home_btn_start: 'Start Challenge',
       home_btn_continue: 'Continue Game',
@@ -321,11 +324,11 @@ const I18n = (() => {
       diff_medium: 'Medium',
       diff_hard: 'Hard',
       diff_modal_title: 'Select Difficulty',
-      diff_easy_clues: '38 – 45 given clues',
+      diff_easy_clues: '38 - 45 given clues',
       diff_easy_sub: 'Great for beginners',
-      diff_medium_clues: '30 – 35 given clues',
+      diff_medium_clues: '30 - 35 given clues',
       diff_medium_sub: 'Balanced challenge',
-      diff_hard_clues: '24 – 28 given clues',
+      diff_hard_clues: '24 - 28 given clues',
       diff_hard_sub: 'For experienced masters',
 
       // Gameplay Screen
@@ -340,6 +343,8 @@ const I18n = (() => {
       tool_erase: 'Erase',
       tool_fast_fill: 'Lightning',
       tool_fast_fill_title: 'Lightning Mode - Fast continuous fill (Shortcut: F)',
+      tool_auto_notes: 'Fast Notes',
+      tool_auto_notes_title: 'Fast Notes - Auto-fill valid candidates (Shortcut: A)',
       tool_notes: 'Notes',
       tool_hint: 'Hint',
       in_game_new_game_confirm_title: 'New Game',
@@ -362,6 +367,7 @@ const I18n = (() => {
       breakdown_time_multiplier: 'Time Multiplier',
       breakdown_hint_penalty: 'Hint Penalty',
       breakdown_wrong_penalty: 'Mistake Streak Penalty',
+      breakdown_auto_notes_penalty: 'Fast Notes Penalty',
       breakdown_final_score: 'Final Score',
       breakdown_time: 'Completion Time',
       breakdown_mistakes: 'Total Mistakes',
@@ -392,7 +398,7 @@ const I18n = (() => {
       // Tutorial Modal
       tut_title: 'How to Play Sudoku',
       tut_step1_title: 'Row & Column Rules',
-      tut_step1_desc: 'Every <strong>row</strong> and <strong>column</strong> must contain digits 1 through 9 — no repeated numbers allowed.',
+      tut_step1_desc: 'Every <strong>row</strong> and <strong>column</strong> must contain digits 1 through 9 - no repeated numbers allowed.',
       tut_step2_title: '3×3 Box Rule',
       tut_step2_desc: 'The board is divided into nine <strong>3×3 boxes</strong>. Each box must also contain numbers 1 to 9 without duplicates.',
       tut_step3_title: 'Logic & Notes',

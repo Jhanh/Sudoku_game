@@ -21,8 +21,8 @@ flowchart TD
             SCR_GAME["Game Play Screen<br/>(Bàn cờ, Thanh trạng thái, Bàn phím)"]
         end
         subgraph L1_UI ["Module Giao diện Bàn cờ và Điều khiển"]
-            UI_BOARD["UIBoard<br/>- Render 81 ô cờ<br/>- Highlight hàng/cột/khối<br/>- Phân biệt số đề/số điền"]
-            UI_CTRL["UIControls<br/>- Bàn phím số 3x3<br/>- Giữ vị trí ô hoàn thành<br/>- Thanh trạng thái và bộ đếm lỗi 0/3<br/>- Nút Undo, Erase, Tia chớp, Ghi chú"]
+            UI_BOARD["UIBoard<br/>- Render 81 ô cờ<br/>- Highlight hàng/cột/khối & ứng viên trùng<br/>- Cảnh báo xung đột ghi chú 2s"]
+            UI_CTRL["UIControls<br/>- Bàn phím số 3x3<br/>- Giữ vị trí ô hoàn thành<br/>- Thanh trạng thái và bộ đếm lỗi 0/3<br/>- Banner gợi ý logic & 6 nút công cụ"]
         end
         subgraph L1_Modals ["Hộp thoại chức năng (Modals)"]
             MOD_TUT["Tutorial.js<br/>(Hướng dẫn luật chơi)"]
@@ -36,8 +36,8 @@ flowchart TD
     subgraph L2 ["⚙️ TẦNG LOGIC VÀ TRẠNG THÁI (Business Logic và State Layer)"]
         direction TB
         APP_CORE["App.js (Router và Orchestrator)<br/>- Khởi tạo hệ thống<br/>- Quản lý chuyển đổi màn hình và modal<br/>- Lắng nghe sự kiện bàn phím toàn cục"]
-        GAME_CORE["Game.js (State Machine và Rules)<br/>- Quản lý Game State (81 ô, nghiệm, ô đề)<br/>- Xác thực nước đi và chế độ Tia chớp<br/>- Hệ thống 3 mạng lỗi & Cơ chế Hồi sinh bù điểm<br/>- Mua gợi ý bằng Điểm Hồ sơ & Undo Stack"]
-        ENGINE["SudokuEngine.js (Algorithms)<br/>- Thuật toán Backtracking giải Sudoku<br/>- Kiểm tra tính duy nhất nghiệm (Unique Solution)<br/>- Thuật toán sinh đề theo độ khó"]
+        GAME_CORE["Game.js (State Machine và Rules)<br/>- Quản lý Game State (81 ô, nghiệm, ô đề)<br/>- Xác thực nước đi, Tia chớp, Bút chì nhanh<br/>- Hệ thống 3 mạng lỗi, Hồi sinh & Hoàn tác nghiêm ngặt<br/>- Gợi ý thông minh & Mua gợi ý bảng cửu chương"]
+        ENGINE["SudokuEngine.js (Algorithms)<br/>- Thuật toán Backtracking giải Sudoku<br/>- Đảm bảo duy nhất 1 nghiệm<br/>- Gợi ý thông minh & Quét ứng viên hợp lệ"]
     end
     class L2,APP_CORE,GAME_CORE,ENGINE logicLayer;
 

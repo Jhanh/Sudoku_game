@@ -24,6 +24,9 @@ erDiagram
         int mistakes "Tổng số lỗi đã phạm (0..3)"
         int reviveCount "Số lần đã hồi sinh bù điểm"
         int correctStreak "Chuỗi điền đúng liên tiếp"
+        bool autoNotesMode "Trạng thái bật/tắt Bút chì nhanh"
+        bool autoNotesUsed "Đã từng kích hoạt Bút chì nhanh"
+        int autoNotesPenalty "Điểm phạt Bút chì nhanh (100 | 200 | 300)"
         bool fastFillMode "Trạng thái bật/tắt Tia chớp"
         int fastFillDigit "Số đang ghim trong Tia chớp (null | 1..9)"
     }
@@ -70,7 +73,7 @@ erDiagram
 
 Điểm số cuối cùng của ván chơi được tổng hợp qua công thức:
 
-$$\text{Final Score} = \Big(\sum \text{Base Points} \times \text{Streak Mult} - \text{Mistake Penalties} - \text{Hint Penalties} + \text{Perfect Bonus}\Big) \times \text{Time Mult}$$
+$$\text{Final Score} = \Big(\max(0, \sum \text{Base Points} \times \text{Streak Mult} - \text{Mistake Penalties} - \text{Hint Penalties} - \text{AutoNotes Penalty} + \text{Perfect Bonus})\Big) \times \text{Time Mult}$$
 
 ```mermaid
 flowchart TD
@@ -83,7 +86,7 @@ flowchart TD
 
     P_STREAK["2. Hệ số chuỗi đúng (Streak Multiplier):<br/>- 11 - 20 ô liên tiếp: x1.2<br/>- 21 - 30 ô liên tiếp: x1.5<br/>- 31 - 40 ô liên tiếp: x1.7<br/>- 41+ ô liên tiếp: x2.0"]
 
-    P_PENALTY["3. Trừ điểm vi phạm & Gợi ý miễn phí:<br/>- Phạt lỗi theo độ khó: Dễ -5đ, Vừa -7đ, Khó -10đ<br/>- Phạt 3 gợi ý miễn phí: Dễ (30,50,70), Vừa (50,70,90), Khó (50,100,150)<br/>- Hồi sinh ván đấu (khi chạm 3 lỗi): k × BaseCost (50, 100, 150)<br/>- Gợi ý từ lần 4: Đổi bằng Điểm Hồ Sơ (k × BaseCost: 50đ, 100đ, 150đ)"]
+    P_PENALTY["3. Trừ điểm vi phạm & Công cụ hỗ trợ:<br/>- Phạt lỗi theo độ khó: Dễ -5đ, Vừa -7đ, Khó -10đ<br/>- Phạt 3 gợi ý miễn phí: Dễ (30,50,70), Vừa (50,70,90), Khó (50,100,150)<br/>- Hồi sinh ván đấu (khi chạm 3 lỗi): k × BaseCost (50, 100, 150)<br/>- Gợi ý từ lần 4: Đổi bằng Điểm Hồ Sơ (k × BaseCost: 50đ, 100đ, 150đ)<br/>- Phạt Bút chì nhanh: Dễ -100đ, Vừa -200đ, Khó -300đ (trừ vào tổng kết trận)"]
 
     P_BONUS["4. Thưởng ván hoàn hảo (Perfect Bonus):<br/>- 0 Lỗi: +100đ (Dễ), +200đ (Vừa), +300đ (Khó)"]
 

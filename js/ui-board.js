@@ -114,6 +114,11 @@ const UIBoard = (() => {
           cell.classList.add('hint-flash');
         }
 
+        // Conflict flash (manual note collision with existing placed numbers)
+        if (state.conflictCells && state.conflictCells.includes(i)) {
+          cell.classList.add('conflict-flash');
+        }
+
         // Render value or notes
         const valSpan = cell.querySelector('.cell-value');
         const notesDiv = cell.querySelector('.cell-notes');
@@ -128,15 +133,22 @@ const UIBoard = (() => {
         } else if (cellNotes.length > 0) {
           valSpan.style.display = 'none';
           notesDiv.style.display = '';
+          const targetNum = (state.fastFillMode && state.fastFillDigit) ? state.fastFillDigit : selNum;
           const noteSpans = notesDiv.querySelectorAll('.note');
           noteSpans.forEach(ns => {
             const n = parseInt(ns.dataset.note);
             if (cellNotes.includes(n)) {
               ns.textContent = n;
               ns.classList.remove('empty');
+              if (targetNum && n === targetNum) {
+                ns.classList.add('note-highlighted');
+              } else {
+                ns.classList.remove('note-highlighted');
+              }
             } else {
               ns.textContent = '';
               ns.classList.add('empty');
+              ns.classList.remove('note-highlighted');
             }
           });
         } else {

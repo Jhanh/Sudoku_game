@@ -366,11 +366,231 @@ const SudokuEngine = (() => {
     return { puzzle, solution };
   }
 
+  /* ---------- get all valid candidates for empty cells ---------- */
+  function getAllValidCandidates(current) {
+    const result = new Array(81).fill(null).map(() => []);
+    const rows = new Uint16Array(9);
+    const cols = new Uint16Array(9);
+    const boxes = new Uint16Array(9);
+
+    for (let i = 0; i < 81; i++) {
+      const val = current[i];
+      if (val > 0) {
+        const r = Math.floor(i / 9), c = i % 9;
+        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        const bit = 1 << val;
+        rows[r] |= bit;
+        cols[c] |= bit;
+        boxes[b] |= bit;
+      }
+    }
+
+    for (let i = 0; i < 81; i++) {
+      if (current[i] === 0) {
+        const r = Math.floor(i / 9), c = i % 9;
+        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        const used = rows[r] | cols[c] | boxes[b];
+        const cands = [];
+        for (let d = 1; d <= 9; d++) {
+          if (!(used & (1 << d))) {
+            cands.push(d);
+          }
+        }
+        result[i] = cands;
+      }
+    }
+    return result;
+  }
+
+  /* ---------- smart hint with human logical explanation ---------- */
+  function getSmartHint(current, solution) {
+    const rows = new Uint16Array(9);
+    const cols = new Uint16Array(9);
+    const boxes = new Uint16Array(9);
+
+    for (let i = 0; i < 81; i++) {
+      const val = current[i];
+      if (val > 0) {
+        const r = Math.floor(i / 9), c = i % 9;
+        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        const bit = 1 << val;
+        rows[r] |= bit;
+        cols[c] |= bit;
+        boxes[b] |= bit;
+      }
+    }
+
+    const candidates = new Uint16Array(81);
+    for (let i = 0; i < 81; i++) {
+      if (current[i] === 0) {
+        const r = Math.floor(i / 9), c = i % 9;
+        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+        const used = rows[r] | cols[c] | boxes[b];
+        candidates[i] = (~used) & 0x3FE;
+      }
+    }
+
+    // 1. Naked Singles
+    for (let i = 0; i < 81; i++) {
+      if (current[i] === 0 && popcount(candidates[i]) === 1) {
+        const d = getSingleDigit(candidates[i]);
+        if (d === solution[i]) {
+          const r = Math.floor(i / 9), c = i % 9;
+          return {
+            index: i,
+            row: r,
+            col: c,
+            value: d,
+            technique: 'Naked Single',
+            reasonVi: `Ô hàng ${r + 1}, cột ${c + 1} chỉ còn duy nhất số ${d} hợp lệ (Naked Single)`,
+            reasonEn: `Row ${r + 1}, Col ${c + 1} has only one possible candidate: ${d} (Naked Single)`
+          };
+        }
+      }
+    }
+
+    // 2. Hidden Singles in Rows
+    for (let u = 0; u < 9; u++) {
+      const row = UNITS[u];
+      for (let d = 1; d <= 9; d++) {
+        const mask = 1 << d;
+        let count = 0;
+        let targetIdx = -1;
+        for (const idx of row) {
+          if (current[idx] === 0 && (candidates[idx] & mask)) {
+            count++;
+            targetIdx = idx;
+            if (count > 1) break;
+          }
+        }
+        if (count === 1 && solution[targetIdx] === d) {
+          const r = Math.floor(targetIdx / 9), c = targetIdx % 9;
+          return {
+            index: targetIdx,
+            row: r,
+            col: c,
+            value: d,
+            technique: 'Hidden Single',
+            reasonVi: `Trong hàng ${r + 1}, chỉ ô cột ${c + 1} có thể chứa số ${d} (Hidden Single)`,
+            reasonEn: `In row ${r + 1}, only column ${c + 1} can contain ${d} (Hidden Single)`
+          };
+        }
+      }
+    }
+
+    // Hidden Singles in Columns
+    for (let u = 9; u < 18; u++) {
+      const col = UNITS[u];
+      for (let d = 1; d <= 9; d++) {
+        const mask = 1 << d;
+        let count = 0;
+        let targetIdx = -1;
+        for (const idx of col) {
+          if (current[idx] === 0 && (candidates[idx] & mask)) {
+            count++;
+            targetIdx = idx;
+            if (count > 1) break;
+          }
+        }
+        if (count === 1 && solution[targetIdx] === d) {
+          const r = Math.floor(targetIdx / 9), c = targetIdx % 9;
+          return {
+            index: targetIdx,
+            row: r,
+            col: c,
+            value: d,
+            technique: 'Hidden Single',
+            reasonVi: `Trong cột ${c + 1}, chỉ ô hàng ${r + 1} có thể chứa số ${d} (Hidden Single)`,
+            reasonEn: `In column ${c + 1}, only row ${r + 1} can contain ${d} (Hidden Single)`
+          };
+        }
+      }
+    }
+
+    // Hidden Singles in 3x3 Boxes
+    for (let u = 18; u < 27; u++) {
+      const box = UNITS[u];
+      for (let d = 1; d <= 9; d++) {
+        const mask = 1 << d;
+        let count = 0;
+        let targetIdx = -1;
+        for (const idx of box) {
+          if (current[idx] === 0 && (candidates[idx] & mask)) {
+            count++;
+            targetIdx = idx;
+            if (count > 1) break;
+          }
+        }
+        if (count === 1 && solution[targetIdx] === d) {
+          const r = Math.floor(targetIdx / 9), c = targetIdx % 9;
+          const br = Math.floor(r / 3) + 1, bc = Math.floor(c / 3) + 1;
+          return {
+            index: targetIdx,
+            row: r,
+            col: c,
+            value: d,
+            technique: 'Hidden Single',
+            reasonVi: `Trong khối (${br}, ${bc}), chỉ ô (${r + 1}, ${c + 1}) chứa được số ${d} (Hidden Single)`,
+            reasonEn: `In 3x3 block (${br}, ${bc}), only cell (${r + 1}, ${c + 1}) can contain ${d} (Hidden Single)`
+          };
+        }
+      }
+    }
+
+    // 3. Candidate Elimination / Cell with fewest candidates
+    let bestIdx = -1;
+    let minCandidates = 10;
+    for (let i = 0; i < 81; i++) {
+      if (current[i] === 0) {
+        const cnt = popcount(candidates[i]);
+        if (cnt > 0 && cnt < minCandidates) {
+          minCandidates = cnt;
+          bestIdx = i;
+        }
+      }
+    }
+
+    if (bestIdx !== -1) {
+      const r = Math.floor(bestIdx / 9), c = bestIdx % 9;
+      const val = solution[bestIdx];
+      return {
+        index: bestIdx,
+        row: r,
+        col: c,
+        value: val,
+        technique: 'Candidate Elimination',
+        reasonVi: `Loại trừ các ứng viên xung quanh, ô hàng ${r + 1}, cột ${c + 1} là số ${val} (Candidate Elimination)`,
+        reasonEn: `Eliminating surrounding candidates, Row ${r + 1}, Col ${c + 1} must be ${val} (Candidate Elimination)`
+      };
+    }
+
+    // 4. Fallback for any empty cell
+    for (let i = 0; i < 81; i++) {
+      if (current[i] === 0) {
+        const r = Math.floor(i / 9), c = i % 9;
+        const val = solution[i];
+        return {
+          index: i,
+          row: r,
+          col: c,
+          value: val,
+          technique: 'Direct Placement',
+          reasonVi: `Điền số ${val} vào ô hàng ${r + 1}, cột ${c + 1} để tiếp tục ván đấu (Direct Placement)`,
+          reasonEn: `Place ${val} at Row ${r + 1}, Col ${c + 1} to proceed (Direct Placement)`
+        };
+      }
+    }
+
+    return null;
+  }
+
   /* ---------- public ---------- */
   return {
     generate,
     isValidPlacement,
     solveLogical,
-    countSolutions
+    countSolutions,
+    getAllValidCandidates,
+    getSmartHint
   };
 })();

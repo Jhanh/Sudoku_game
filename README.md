@@ -1,16 +1,12 @@
-# 🧩 Sudoku Web — Phiên Bản Tối Ưu Hóa 100% Cho PC
+# 🧩 Sudoku Web - Phiên Bản Tối Ưu Hóa 100% Cho PC
 
 <p align="center">
-  <b>Trải nghiệm giải đố trí tuệ kinh điển với giao diện chuyên biệt cho máy tính (PC / Laptop), mượt mà và tối giản.</b>
+  <b>Trải nghiệm giải đố trí tuệ kinh điển với giao diện chuyên biệt cho máy tính (PC / Laptop), mượt mà, tĩnh lặng và đẳng cấp.</b>
   <br>
-  <i>Xây dựng 100% bằng HTML5, CSS3 và Vanilla JavaScript — Tinh gọn, thuần khiết, Web Audio procedural SFX, không phụ thuộc bất kỳ thư viện ngoài nào.</i>
+  <i>Xây dựng 100% bằng HTML5, CSS3 và Pure Vanilla JavaScript ES6+ - Tinh gọn, thuần khiết, Web Audio procedural SFX, Zero Dependencies, không phụ thuộc bất kỳ thư viện ngoài nào.</i>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Jhanh/Sudoku_game/releases/tag/v1.1">
-    <img src="https://img.shields.io/badge/Release-v1.1-10B981?style=for-the-badge&logo=tag&logoColor=white" alt="Release">
-  </a>
-  &nbsp;
   <a href="https://jhanh.github.io/Sudoku_game/">
     <img src="https://img.shields.io/badge/🎮%20Chơi%20Online-Click%20To%20Play-2563EB?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Play Online">
   </a>
@@ -46,55 +42,61 @@
 
 ---
 
-## ⚡ Điểm Khác Biệt & Độc Đáo So Với Các Web Sudoku Khác
+## 💎 Điểm Mạnh Vượt Trội So Với Các Trang Web Sudoku Khác
 
-Không giống như các trang web Sudoku thông thường sao chép giao diện di động thô sơ hay sử dụng thuật toán đào lỗ ngẫu nhiên, **Sudoku Web v2.0** được kiến tạo từ đầu nhằm mang lại trải nghiệm thi đấu trí tuệ đỉnh cao trên máy tính:
+Hầu hết các trang web Sudoku hiện nay trên thị trường thường mắc phải các nhược điểm: giao diện co cụm sao chép từ mobile, đào lỗ ngẫu nhiên tạo câu đố nhiều nghiệm, gợi ý máy móc điền bừa đáp án không giải thích, hoặc ngập tràn quảng cáo và âm thanh gây xao nhãng.
 
-* 🧠 **Thuật Toán Sinh Đề Phân Loại Bằng Tư Duy Con Người (Human-Solving Logical Grader):**
-  * **Không đào lỗ theo số lượng ô ngẫu nhiên:** Thay vì chỉ đếm số ô trống đơn thuần, bộ động cơ thẩm định câu đố dựa trên chính kỹ thuật giải thực tế của con người:
-    * **Dễ (Easy - 36-40 ô gợi ý):** Đảm bảo giải được 100% chỉ bằng *Naked Singles* (ô có 1 ứng viên duy nhất) và *Hidden Singles* (chữ số có 1 vị trí duy nhất trong hàng/cột/khối).
-    * **Trung bình (Medium - 30-34 ô gợi ý):** Đòi hỏi kỹ thuật loại trừ cấp trung như *Pointing Pairs / Box-Line Reduction* và *Naked Pairs* (cặp ô đôi).
-    * **Khó (Hard - 24-28 ô gợi ý):** Cực hạn bài toán Sudoku quốc tế, duy nhất 1 nghiệm (Unique Solution), đòi hỏi chuỗi tư duy nâng cao (*Hidden Pairs, Naked Triples, X-Wing*).
-  * **Tốc độ sinh đề tức thì:** < 50ms nhờ cấu trúc bitmask tăng tốc, không gây đơ lag trình duyệt.
+**Sudoku Web** được thiết kế lại hoàn toàn từ con số 0 nhằm khắc phục triệt để các vấn đề trên và mang đến một không gian thi đấu trí tuệ đẳng cấp:
 
-* ⚡ **Chế Độ Điền Nhanh "Tia Chớp" (Lightning Mode - Digit-First):**
-  * Thao tác thần tốc cho kỳ thủ giải tốc độ: Chọn một chữ số để khóa, sau đó nhấp điền liên tục vào nhiều ô trống trên bàn cờ. Bấm vào bất kỳ số nào trên bàn cờ để chuyển ngay sang số đó. Khi đủ 9 ô, hệ thống tự động hoàn tất và chờ chọn số kế tiếp.
-  * **Giao diện trực quan:** Phím số được chọn giữ màu sắc chuẩn (`.locked-digit`), các phím còn lại tự động mờ nhẹ (`.dimmed`), các số đã điền đủ 9 ô giữ màu xám hoàn thành (`.completed`) và được bảo vệ chống bấm nhầm.
-  * Bật/tắt linh hoạt bằng nút Tia chớp ⚡ trên thanh công cụ hoặc phím tắt `F`.
+### 1. 💡 Gợi Ý Thông Minh Kèm Giải Thích Logic (Smart Hint with Explanations)
+* **Không điền bừa:** Thay vì chọn ngẫu nhiên một ô trống bất kỳ và hiện đáp án cụt lủn, hệ thống phân tích bàn cờ theo đúng trình tự tư duy của các kiện tướng Sudoku:
+  * **Naked Single:** Tìm ô duy nhất chỉ còn 1 ứng viên hợp lệ.
+  * **Hidden Single:** Tìm chữ số duy nhất chỉ còn 1 ô có thể đặt được trong hàng, cột hoặc khối 3x3.
+  * **Candidate Elimination:** Loại trừ các ứng viên xung quanh để xác định ô tối ưu nhất.
+* **Banner giải thích trực quan:** Xuất hiện tinh gọn ngay phía trên bàn cờ kèm tên kỹ thuật trong ngoặc đơn, ví dụ:
+  * `Ô hàng 1, cột 3 chỉ còn duy nhất số 4 hợp lệ (Naked Single)`
+  * `Trong hàng 2, chỉ ô cột 5 có thể chứa số 8 (Hidden Single)`
+* Giúp người chơi không chỉ giải được ván cờ mà còn thực sự học hỏi và nâng cao tư duy logic sau mỗi lần bấm gợi ý.
 
-* 🔊 **Hệ Thống Âm Thanh Procedural SFX Thuần Khiết (Zero Audio Files):**
-  * Khác biệt hoàn toàn với các web Sudoku tĩnh lặng hoặc phải tải hàng megabyte file mp3: 100% âm thanh được tổng hợp sóng âm trực tiếp thời gian thực qua **Web Audio API** (10 âm thanh xúc giác: tiếng gõ gỗ thanh mảnh, đàn Marimba thăng hoa theo chuỗi Combo, khải hoàn ca chiến thắng...).
-  * 0 byte dung lượng nạp ngoài, độ trễ bằng 0, phản hồi tức thì theo từng mili-giây.
+### 2. ⚡ Bút Chì Nhanh (Auto-Candidates) & Ghi Chú Thông Minh
+* **Bút chì nhanh (Phím tắt `A`):**
+  * Tự động tính toán và điền toàn bộ ứng viên hợp lệ cho tất cả ô trống trên bàn cờ.
+  * Bật ON để hỗ trợ suy luận nâng cao, tắt OFF để xóa sạch màn hình giúp thoáng mắt và tập trung. Bật lại sẽ tự động tính toán lại mà không trừ điểm thêm.
+  * Phạt điểm chiến lược: Dễ -100đ, Trung bình -200đ, Khó -300đ (chỉ trừ 1 lần duy nhất vào bảng tổng kết kết thúc ván, bảo toàn điểm thi đấu thời gian thực).
+* **Cơ chế chống xung đột ghi chú thủ công độc quyền:**
+  * Khi người chơi ghi chú một con số đã xuất hiện trên cùng hàng, cùng cột hoặc cùng khối 3x3, hệ thống lập tức ngăn chặn và kích hoạt hiệu ứng nhấp nháy đỏ 2 giây trên các ô xung đột để người chơi nhận diện ngay sai lầm.
+* **Highlight ứng viên đồng bộ:**
+  * Khi chọn bất kỳ con số nào, toàn bộ các ứng viên ghi chú tương ứng trên khắp bàn cờ sẽ được viền/nền xanh nổi bật (`.note-highlighted`), hỗ trợ quan sát tổng thể tức thì như trên các ứng dụng Sudoku cao cấp nhất.
 
-* 🏆 **Thang 9 Cấp Bậc Danh Hiệu Chuẩn Mực (Mastery Points - Không Lạm Phát Cày Cuốc):**
-  * Tôn vinh kỳ thủ thực thụ từ 🥋 **Nhập Môn** đến 🌟 **Huyền Thoại Sudoku** dựa trên điểm tích lũy thi đấu thực chất (kỹ năng giải đúng, chuỗi combo, thưởng tốc độ, thưởng thắng hoàn hảo 0 lỗi).
-  * Thiết kế Dashboard Hồ sơ 2 cột chuyên biệt cho PC, hiển thị toàn bộ biểu đồ Donut tỷ lệ thắng, kỷ lục và tiến trình cấp bậc trong **đúng 1 màn hình duy nhất — Tuyệt đối không cần cuộn trang**.
+### 3. 🛡️ Hệ Thống 3 Mạng Lỗi Sai & Hồi Sinh Bù Điểm Lũy Tiến
+* **Giới hạn 3 cơ hội sai chuẩn mực (0/3):** Mỗi lần điền sai trừ điểm theo độ khó (Dễ -5đ, TB -7đ, Khó -10đ) và reset chuỗi streak.
+* **Hồi sinh lũy tiến theo bảng cửu chương:** Khi phạm lỗi thứ 3 (3/3), trận đấu tạm dừng và mở Hộp thoại Hồi sinh. Người chơi có thể dùng chính số điểm kiếm được trong trận để đổi lấy thêm 1 cơ hội thi đấu:
+  * Chi phí: $k \times \text{BaseCost}$ (Dễ 50đ, TB 100đ, Khó 150đ với $k$ là số lần hồi sinh).
+  * Hồi sinh thành công: Lỗi sai giảm từ 3/3 về **2/3** (KHÔNG reset về 0/3) và ô số điền sai thứ 3 được tự động xóa để người chơi suy nghĩ lại.
+* **Hoàn tác (Undo) chống gian lận nghiêm ngặt:**
+  * Hoàn tác nước đi SAI: Giữ nguyên số lỗi và điểm phạt (lỗi sai là vĩnh viễn, chỉ cứu được bằng Hồi sinh).
+  * Hoàn tác nước đi ĐÚNG: Khấu trừ lại điểm đã cộng để chống gian lận điểm số.
 
-* 🛡️ **Kiến Trúc Thuần Khiết 100% & Trải Nghiệm Máy Tính Tối Đa (Zero Dependencies):**
-  * Thuần khiết HTML5, CSS3, Vanilla ES6+ — không React/Vue nặng nề, không bundler, mở lên là chạy ngay trong chớp mắt.
-  * Tích hợp Song ngữ tức thì (**Tiếng Việt 🇻🇳 / English 🇬🇧**), Chế độ Tối dịu mắt (**Dark Mode Slate Navy**) và bộ cảnh báo thân thiện khi vô tình mở trên màn hình điện thoại.
+### 4. ⚡ Chế Độ Tia Chớp (Lightning Mode - Digit-First / Phím tắt `F`)
+* Cho phép chọn 1 con số và click liên tục vào các ô trống trên bàn cờ để điền siêu tốc.
+* Bấm vào bất kỳ số nào trên bàn cờ để chuyển ngay sang số đó.
+* Khi đủ 9 ô của con số, phím số trên Numpad được ẩn đi nhưng **vẫn bảo toàn nguyên vẹn vị trí vật lý** để bảo vệ trí nhớ cơ bắp (muscle memory).
 
----
+### 5. 🎯 Đổi Gợi Ý Bằng Điểm Hồ Sơ Vĩnh Viễn (Mastery Points Exchange)
+* Cấp sẵn 3 gợi ý miễn phí ban đầu (trừ điểm trận đấu).
+* Từ lượt thứ 4 trở đi, người chơi có thể đổi thêm gợi ý bằng **Điểm Hồ Sơ vĩnh viễn** lũy tiến theo bảng cửu chương ($k \times \text{BaseCost}$) mà không làm ảnh hưởng đến điểm số của trận đấu đang chơi.
 
-## 📦 Lịch Sử Phiên Bản (Release Notes)
+### 6. 🔊 Âm Thanh Procedural Web Audio API Thuần Khiết (Zero Audio Files)
+* 100% âm thanh được tổng hợp thời gian thực bằng sóng âm Web Audio API (tiếng gõ gỗ thanh lịch, đàn Marimba thăng hoa theo chuỗi Combo, khải hoàn ca chiến thắng...).
+* 0 byte tải về, không phụ thuộc file mp3 ngoài, độ trễ phản hồi bằng 0ms.
 
-* **🚀 v2.0 — Kỷ Nguyên Đột Phá Cốt Lõi & Trải Nghiệm Kỳ Thủ (Phiên Bản Hiện Tại):**
-  * **Động cơ sinh đề Logic Grader:** Phân loại độ khó theo kỹ thuật giải đố của con người (Singles, Pairs, Box-Line, X-Wing) thay vì đếm số ô ngẫu nhiên.
-  * **Chế độ Điền nhanh Chọn số trước (⚡ Digit-First Mode):** Khóa số điền liên tục, hỗ trợ phím tắt `F`, numpad mờ/sáng thông minh, tùy chọn mặc định trong Settings.
-  * **Hệ thống 3 mạng lỗi sai & Hồi sinh bù điểm:** Giới hạn 3 cơ hội sai chuẩn quốc tế (hiển thị 0/3). Phạt điểm trực tiếp theo độ khó (Dễ -5đ, Trung bình -7đ, Khó -10đ). Khi chạm mốc 3/3 lỗi, ván chơi tạm dừng và mở Hộp thoại Hồi Sinh (Revive Modal) cho phép bù điểm trận theo cấp số nhân ($k \times \text{BaseCost}$) để giảm lỗi về 2/3 và tiếp tục thi đấu.
-  * **Đổi gợi ý bằng Điểm Hồ Sơ tích lũy:** Cung cấp sẵn 3 gợi ý miễn phí đầu tiên; từ lượt thứ 4 trở đi, người chơi có thể đổi bằng Điểm vĩnh viễn trong Hồ Sơ (Mastery Points) theo cấp số nhân lũy tiến ($k \times \text{BaseCost}$: Dễ 50đ, TB 100đ, Khó 150đ) mà không trừ điểm trận đấu.
-  * **Không gian thi đấu thanh lịch & tĩnh lặng:** Duy trì độ tập trung tối đa với chỉ số lỗi trực quan 0/3, không hiệu ứng gây xao nhãng.
-  * **Tính năng Sao lưu & Nhập/Xuất tiến trình đa máy:** Xuất/Nhập file `.json` tiện lợi, hỗ trợ hộp thoại Windows "Save As..." ghi nhớ vị trí lưu.
-  * **Màn hình kết thúc ván tinh gọn & trang trọng:** Tập trung làm nổi bật Tổng Điểm Đạt Được và các hành động thi đấu.
-  * **Tái cân bằng 9 Cấp Bậc Danh Hiệu:** Ngưỡng điểm chuẩn mực (tối đa 3.000.000 điểm cho bậc Huyền Thoại ~1.000 ván đỉnh cao).
-* **✨ v1.1 — Trợ Năng Giải Đố & Cá Nhân Hóa:**
-  * Bổ sung Hộp thoại Cài Đặt hệ thống (Settings Modal) với 4 công tắc trợ năng (Tự xóa nháp, Đánh dấu số trùng, Báo lỗi ngay).
-  * Hỗ trợ Song ngữ đa quốc gia (Bilingual i18n Việt - Anh).
-  * Chế độ giao diện Tối dịu mắt (Eye-Friendly Dark Mode Slate Navy).
-  * Hệ thống âm thanh Web Audio procedural 10 hiệu ứng chuyên biệt.
-* **🌱 v1.0 — Bản Phát Hành Nền Tảng Đầu Tiên:**
-  * Bàn cờ Sudoku 9×9 tối ưu chuẩn PC với 3 cấp độ khó cơ bản.
-  * Hệ thống tính điểm thời gian thực, chuỗi combo liên hoàn và 4 biến thể Sudoku nổi tiếng thế giới.
+### 7. 📁 Sao Lưu & Khôi Phục Đa Thiết Bị Chuẩn Native (JSON Backup & Restore)
+* Tích hợp File System Access API (`showSaveFilePicker`), mở hộp thoại "Save As..." của Windows để người chơi tự do chọn thư mục lưu trữ file `.json`.
+* Trình duyệt tự động ghi nhớ vị trí lưu cho các lần xuất dữ liệu tiếp theo. Dễ dàng chuyển tiến trình và kỷ lục giữa máy tính cơ quan và máy tính cá nhân ở nhà.
+
+### 8. 🖥️ Không Gian Thi Đấu Tĩnh Lặng & Tinh Gọn (UI/UX Conciseness)
+* Thiết kế chuyên biệt cho màn hình PC, hiển thị toàn bộ bàn cờ, thông số và bảng điều khiển trong **đúng 1 màn hình duy nhất, tuyệt đối không cần cuộn trang**.
+* Giữ giao diện tĩnh lặng, thanh lịch, thông báo ngắn gọn dễ hiểu trong 1 giây, nói không với các hiệu ứng chớp đỏ giật cục hay âm thanh khó chịu.
 
 ---
 
@@ -105,30 +107,30 @@ Bạn có thể truy cập và chơi ngay không cần cài đặt tại:
 👉 **[https://jhanh.github.io/Sudoku_game/](https://jhanh.github.io/Sudoku_game/)**
 
 ### 💻 Cách 2: Tải về chơi Offline trên máy tính
-1. Tải tệp nén **[Sudoku-Game-v1.1.zip](https://github.com/Jhanh/Sudoku_game/releases/tag/v1.1)** về máy tính.
+1. Tải tệp nén **[Sudoku-Game-testing.zip](https://github.com/Jhanh/Sudoku_game/archive/refs/heads/main.zip)** về máy tính.
 2. Giải nén thư mục.
 3. Nhấp đúp vào tệp **`ChoiGame.bat`** (trên Windows) hoặc mở trực tiếp tệp **`index.html`** bằng trình duyệt web yêu thích của bạn.
 
 ### 🛠️ Cách 3: Chạy bằng máy chủ nội bộ Python (Dành cho Lập trình viên)
 ```bash
-# Mở Terminal tại thư mục dự án và gõ:
 python server.py
 ```
 > Trình duyệt sẽ tự động mở trang web tại địa chỉ `http://localhost:3000`.
 
 ---
 
-## ⌨️ Phím Tắt Thao Tác Nhanh (Bàn Phím PC)
+## ⌨️ Bảng Phím Tắt Thao Tác Nhanh (PC Shortcuts)
 
 | Phím Tắt | Chức Năng |
 | :--- | :--- |
-| `1` – `9` | Điền số vào ô được chọn (hoặc chọn/khóa số trong chế độ Tia chớp) |
+| `1` - `9` | Điền số vào ô được chọn (hoặc chọn/khóa số trong chế độ Tia chớp) |
 | `F` | Bật / Tắt chế độ Tia chớp - Điền liên tiếp (Lightning Mode) |
-| `N` | Bật / Tắt chế độ Ghi chú nháp (Pencil Notes) |
-| `Backspace` / `Delete` | Xóa số trong ô |
-| `Ctrl + Z` | Hoàn tác nước đi trước đó (Undo) |
-| `H` | Nhận gợi ý (Hint) cho ô hiện tại |
-| `Space` / `P` | Tạm dừng ván đấu |
+| `A` | Bật / Tắt chế độ Bút chì nhanh - Tự động điền ứng viên (Fast Notes) |
+| `N` | Bật / Tắt chế độ Ghi chú thủ công (Pencil Notes) |
+| `H` | Nhận Gợi ý thông minh kèm giải thích logic (Smart Hint) |
+| `Backspace` / `Delete` | Xóa số hoặc ghi chú trong ô |
+| `Ctrl + Z` | Hoàn tác nước đi trước đó (Anti-Cheat Undo) |
+| `Space` / `P` | Tạm dừng / Tiếp tục ván đấu |
 | `↑` `↓` `←` `→` | Di chuyển ô chọn trên bàn cờ 9x9 |
 
 ---
@@ -137,48 +139,37 @@ python server.py
 
 ```text
 Sudoku_game/
-├── index.html                 # Giao diện chính và cấu trúc DOM ứng dụng
+├── index.html                 # Giao diện chính, bàn cờ, thanh công cụ 6 nút & banner gợi ý
 ├── server.py                  # Máy chủ tĩnh nội bộ Python (Auto port + No-cache)
-├── README.md                  # Tài liệu giới thiệu sản phẩm & hướng dẫn
+├── README.md                  # Tài liệu giới thiệu sản phẩm & hướng dẫn chi tiết
 ├── LICENSE                    # Giấy phép bản quyền mã nguồn mở MIT
 ├── .gitignore                 # Danh sách tệp loại trừ không lưu trên Git
 ├── docs/                      # Hệ thống tài liệu kiến trúc & sơ đồ Mermaid trực quan
-│   ├── README.md                       # Sơ đồ tổng thể hệ thống (Master System Map) & Chỉ mục
-│   ├── 01_component_architecture.md    # Sơ đồ kiến trúc phân tầng 3 lớp (Presentation, Logic, Infra)
-│   ├── 02_game_state_lifecycle.md      # Sơ đồ máy trạng thái (Screen flow, In-game modes, 3-Mistake life system)
-│   ├── 03_data_flow_and_sequences.md   # Sơ đồ tuần tự điền số, chế độ Tia chớp & thuật toán sinh đề
-│   └── 04_storage_and_scoring_models.md # Sơ đồ ER dữ liệu LocalStorage & công thức tính điểm
-├── devtools/                  # Bộ công cụ Developer Tools & Cheat kiểm thử (Tách biệt độc lập)
-│   ├── devtools.css           # Giao diện Dark Console HUD & Ghost Answers
-│   └── devtools.js            # Module xác thực & logic can thiệp game engine
-├── screenshots/               # Thư viện ảnh chụp giao diện thực tế (10 màn hình PC)
-│   ├── 1-splash.png           # Màn hình mở đầu (Splash Screen) với hiệu ứng số nảy
-│   ├── 2-lobby-home.png       # Sảnh chính (Lobby Home) kèm thanh Dock Desktop
-│   ├── 3-tutorial.png         # Hướng dẫn tương tác từng bước trực quan
-│   ├── 4-variants.png         # Tab thông tin 4 biến thể Sudoku nổi tiếng
-│   ├── 5-profile.png          # Hồ sơ thành tích: Dashboard 2 cột không cuộn trang
-│   ├── 6-gameplay.png         # Bàn cờ 9x9 với tính điểm, combo, đồng hồ, phím số
-│   ├── 7-danger-warning.png   # Màn hình giới hạn lỗi sai & hộp thoại hồi sinh
-│   ├── 8-victory-modal.png    # Hộp thoại chiến thắng với bảng tổng kết điểm chi tiết
-│   ├── 9-devtools-qa.png      # Bảng điều khiển QA Dev Console & chế độ Ghost Answers
-│   └── 10-mobile-notice.png   # Màn hình thông báo thân thiện chỉ dành cho màn hình PC
+│   ├── README.md                       # Sơ đồ tổng thể hệ thống (Master System Map)
+│   ├── 01_component_architecture.md    # Sơ đồ kiến trúc 3 lớp (Presentation, Logic, Infra)
+│   ├── 02_game_state_lifecycle.md      # Sơ đồ máy trạng thái & vòng đời ván đấu
+│   ├── 03_data_flow_and_sequences.md   # Sơ đồ tuần tự điền số, Tia chớp, Bút chì nhanh & giải thuật
+│   └── 04_storage_and_scoring_models.md # Sơ đồ ER LocalStorage & đường ống tính điểm
+├── forDev/                    # Tài liệu kỹ thuật chi tiết dành riêng cho lập trình viên
+├── devtools/                  # Bộ công cụ QA Dev Console & Ghost Answers kiểm thử
+├── screenshots/               # Thư viện ảnh chụp giao diện thực tế trên máy tính
 ├── css/
-│   ├── main.css               # Reset CSS, hệ thống màu, chuyển màn hình, mobile notice
+│   ├── main.css               # Reset CSS, màu sắc, chuyển màn hình, mobile notice
 │   ├── splash.css             # Giao diện & hoạt ảnh Màn hình Khởi đầu
 │   ├── lobby.css              # Giao diện Sảnh chính, Menu Dock, thẻ ván dở
-│   ├── gameplay.css           # Bảng 9x9, bàn phím số, đếm lỗi 0/3
-│   ├── modals.css             # Hộp thoại Hướng dẫn, Cài đặt, Hồi sinh, Đổi gợi ý, Game Over tối giản
+│   ├── gameplay.css           # Bảng 9x9, bàn phím số, đếm lỗi 0/3, highlight ghi chú, banner
+│   ├── modals.css             # Hộp thoại Hướng dẫn, Cài đặt, Hồi sinh, Đổi gợi ý, Game Over
 │   └── profile.css            # Hồ sơ Dashboard PC: Biểu đồ Donut & 6 thẻ thông số
 └── js/
-    ├── app.js                 # Điều hướng ứng dụng, router & mobile detection
-    ├── game.js                # Quản lý ván chơi, bộ đếm giờ, lỗi 0/3, hồi sinh, điểm
-    ├── sudoku-engine.js       # Thuật toán sinh đề & bộ phân loại logic (Logical Grader)
-    ├── ui-board.js            # Render bàn cờ, highlight hàng/cột/khối & số trùng
-    ├── ui-controls.js         # Bàn phím số, công cụ phụ trợ (5 nút công cụ), đếm lỗi 0/3
-    ├── i18n.js                # Từ điển đa ngôn ngữ (Bilingual: Tiếng Việt 🇻🇳 / English 🇬🇧)
-    ├── storage.js             # Lớp lưu trữ LocalStorage & Sao lưu JSON đa thiết bị
+    ├── app.js                 # Điều hướng ứng dụng, router & phím tắt toàn cục
+    ├── game.js                # Quản lý ván chơi, 3 lỗi sai, hồi sinh, điểm, auto-notes, undo
+    ├── sudoku-engine.js       # Thuật toán sinh đề, Smart Hint & tính toán ứng viên hợp lệ
+    ├── ui-board.js            # Render bàn cờ, highlight hàng/cột/khối, số trùng & ghi chú
+    ├── ui-controls.js         # Bàn phím số, 6 nút công cụ, banner giải thích logic
+    ├── i18n.js                # Từ điển đa ngôn ngữ song ngữ tức thì (Tiếng Việt / English)
+    ├── storage.js             # Lớp lưu trữ LocalStorage & Sao lưu/Khôi phục JSON
     ├── sound.js               # Động cơ âm thanh Web Audio procedural SFX (Zero audio files)
-    ├── tutorial.js            # Quản lý các bước hướng dẫn động
+    ├── tutorial.js            # Quản lý các bước hướng dẫn giải đố trực quan
     ├── variants.js            # Danh sách thông tin 4 biến thể Sudoku
     └── profile.js             # Xử lý thống kê và vẽ biểu đồ tỉ lệ thắng
 ```
