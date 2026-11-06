@@ -3,7 +3,7 @@
 Tài liệu này mô hình hóa toàn bộ vòng đời chuyển trạng thái của người chơi, bao gồm:
 1. **Luồng điều hướng màn hình (Screen Navigation Flow)**
 2. **Máy trạng thái trong ván chơi (In-Game Modes & Interactions)**
-3. **Cơ chế leo thang cảnh báo lỗi 3 cấp (Danger & Mistake Escalation Lifecycle)**
+3. **Cơ chế giới hạn 3 mạng lỗi sai & Hồi sinh bù điểm (3-Mistake Limit & Revive Lifecycle)**
 
 ---
 
@@ -112,40 +112,50 @@ flowchart TD
 
 ---
 
-## 🚨 3. Cơ Chế Leo Thang Cảnh Báo Lỗi 3 Cấp (Danger Escalation)
+## 💔 3. Cơ Chế Giới Hạn 3 Lỗi Sai & Hồi Sinh Bù Điểm (3-Mistake Limit & Revive Lifecycle)
 
-Hệ thống tính toán nguy hiểm dựa trên hai tiêu chí: **Tổng số lỗi lũy kế** (`mistakes`) và **Chuỗi sai liên tiếp** (`wrongStreak`).
+Trong Sudoku tiêu chuẩn, người chơi được cung cấp tối đa **3 cơ hội sai** (`0/3` $\rightarrow$ `3/3`). Mỗi lần phạm lỗi sẽ bị trừ điểm theo độ khó (Dễ: -5đ, Trung bình: -7đ, Khó: -10đ, điểm số không âm). Khi đạt ngưỡng `3/3`, trận đấu tự động tạm dừng và mở Hộp thoại Hồi sinh.
 
 ```mermaid
-flowchart LR
+flowchart TD
     classDef safe fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
-    classDef stage1 fill:#FEF9C3,stroke:#CA8A04,stroke-width:2px,color:#854D0E;
-    classDef stage2 fill:#FFEDD5,stroke:#EA580C,stroke-width:2px,color:#9A3412;
-    classDef stage3 fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
+    classDef warn fill:#FEF9C3,stroke:#CA8A04,stroke-width:2px,color:#854D0E;
+    classDef alert fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
+    classDef modal fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#6B21A8;
     classDef finish fill:#1E293B,stroke:#0F172A,stroke-width:2px,color:#F8FAFC;
 
-    ST_SAFE["🟢 CẤP 0: AN TOÀN<br/>- Không có lỗi vi phạm<br/>- Giao diện bình thường<br/>- Không trừ điểm bổ sung"]
-    
-    ST_MILD["🟡 CẤP 1: NHẮC NHỞ<br/>- Bắt đầu có lỗi (1-4 lỗi)<br/>- Chớp viền nhẹ màn hình<br/>- Thông báo trừ điểm cơ bản"]
-    
-    ST_WARN["🟠 CẤP 2: NGUY HIỂM NHẸ<br/>- Sai 5-9 lỗi HOẶC chuỗi sai 2 lượt<br/>- Banner cảnh báo màu cam<br/>- Nhịp tim cảnh báo phát ra"]
-    
-    ST_CRIT["🔴 CẤP 3: NGUY HIỂM CẤP BÁO<br/>- Đạt ngưỡng sát giới hạn thua<br/>(Dễ/Vừa: 10-15 lỗi, Khó: 10 lỗi)<br/>- Chuỗi sai sát nút (2/3 hoặc 4/5)<br/>- Màn hình thở đỏ rực và còi báo động"]
+    M0["🟢 KHỞI ĐẦU: 0/3 LỖI<br/>- Trạng thái hoàn hảo<br/>- Chưa bị trừ điểm lỗi"]
+    M1["🟡 LỖI THỨ 1: 1/3 LỖI<br/>- Phạt điểm: Dễ -5đ, Vừa -7đ, Khó -10đ<br/>- Reset chuỗi đúng (correctStreak = 0)"]
+    M2["🟠 LỖI THỨ 2: 2/3 LỖI<br/>- Cảnh báo cận kề (warning badge)<br/>- Tiếp tục trừ điểm lượt sai"]
+    M3["🔴 ĐẠT NGƯỠNG: 3/3 LỖI<br/>- Tự động dừng tính giờ (stopTimer)<br/>- Trạng thái ván chuyển sang isPaused"]
 
-    ST_DEAD["💀 GAME OVER<br/>- Vượt quá tổng lỗi cho phép<br/>HOẶC vượt chuỗi sai tối đa<br/>- Dừng tính giờ và lưu thất bại"]
+    MODAL_REVIVE["💔 HỘP THOẠI HỒI SINH (Revive Modal)<br/>- Hiển thị điểm trận đấu hiện có<br/>- Chi phí bù điểm: k × BaseCost (50 / 100 / 150)<br/>- Hiển thị điểm trận đấu còn lại"]
 
-    ST_SAFE ==>|"Phạm lỗi đầu tiên"| ST_MILD
-    ST_MILD ==>|"Tiếp tục sai"| ST_WARN
-    ST_WARN ==>|"Tiếp tục sai hoặc chuỗi sai dài"| ST_CRIT
-    ST_CRIT ==>|"Sai thêm 1 lần nữa"| ST_DEAD
+    GAME_OVER["💀 GAME OVER (Xử Thua)<br/>- Không đủ điểm bù HOẶC chọn 'Chấp Nhận Thua'<br/>- Lưu kết quả thất bại & Xóa ván dở dang"]
 
-    ST_WARN -. "Điền đúng 1 số (Khử chuỗi sai về 0)" .-> ST_MILD
-    ST_CRIT -. "Điền đúng 1 số (Khử chuỗi sai về 0)" .-> ST_WARN
-    ST_MILD -. "Undo lượt sai" .-> ST_SAFE
+    M0 ==>|"Điền sai lần 1"| M1
+    M1 ==>|"Điền sai lần 2"| M2
+    M2 ==>|"Điền sai lần 3"| M3
+    M3 ==>|"Mở modal"| MODAL_REVIVE
 
-    class ST_SAFE safe;
-    class ST_MILD stage1;
-    class ST_WARN stage2;
-    class ST_CRIT stage3;
-    class ST_DEAD finish;
+    MODAL_REVIVE ==>|"Chọn 'Bù Điểm & Chơi Tiếp'<br/>(Nếu đủ điểm trận: score >= cost)"| M2
+    MODAL_REVIVE ==>|"Chọn 'Chấp Nhận Thua'<br/>HOẶC không đủ điểm bù"| GAME_OVER
+
+    M1 -. "Hoàn tác (Undo)" .-> M0
+    M2 -. "Hoàn tác (Undo)" .-> M1
+
+    class M0 safe;
+    class M1 warn;
+    class M2 warn;
+    class M3 alert;
+    class MODAL_REVIVE modal;
+    class GAME_OVER finish;
 ```
+
+### 📋 Bảng Phạt Lỗi & Chi Phí Hồi Sinh Từng Độ Khó:
+
+| Độ khó | Điểm trừ mỗi lỗi sai | Chi phí Hồi sinh lần 1 ($1\times$) | Chi phí Hồi sinh lần 2 ($2\times$) | Chi phí Hồi sinh lần $k$ ($k\times$) | Trạng thái sau Hồi sinh |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **Dễ (Easy)** | -5 điểm | 50 điểm | 100 điểm | $k \times 50$ điểm | Lỗi giảm về **2/3**, xóa ô số vừa điền sai |
+| **Trung bình (Medium)** | -7 điểm | 100 điểm | 200 điểm | $k \times 100$ điểm | Lỗi giảm về **2/3**, xóa ô số vừa điền sai |
+| **Khó (Hard)** | -10 điểm | 150 điểm | 300 điểm | $k \times 150$ điểm | Lỗi giảm về **2/3**, xóa ô số vừa điền sai |

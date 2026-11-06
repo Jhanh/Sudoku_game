@@ -143,6 +143,32 @@ const Storage = (() => {
     }
   }
 
+  /* ---------- Permanent Mastery Points (Hints & Ranks) ---------- */
+  function getTotalPermanentScore() {
+    const stats = getStats();
+    return (stats.easy?.totalScore || 0) + (stats.medium?.totalScore || 0) + (stats.hard?.totalScore || 0);
+  }
+
+  function deductPermanentScore(points) {
+    if (points <= 0) return true;
+    const stats = getStats();
+    const total = getTotalPermanentScore();
+    if (total < points) return false;
+
+    let left = points;
+    const diffs = ['hard', 'medium', 'easy'];
+    for (const d of diffs) {
+      if (stats[d] && stats[d].totalScore > 0) {
+        const can = Math.min(stats[d].totalScore, left);
+        stats[d].totalScore -= can;
+        left -= can;
+        if (left <= 0) break;
+      }
+    }
+    saveStats(stats);
+    return true;
+  }
+
   /* ---------- Sound Settings ---------- */
   function isSoundEnabled() {
     const val = _get(KEYS.SOUND);
@@ -401,6 +427,7 @@ const Storage = (() => {
     saveGame, loadGame, clearGame, hasActiveGame,
     getProfile, saveProfile,
     getStats, saveStats, recordGameResult,
+    getTotalPermanentScore, deductPermanentScore,
     isSoundEnabled, setSoundEnabled,
     getLanguage, setLanguage,
     getTheme, setTheme,

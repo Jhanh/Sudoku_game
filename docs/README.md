@@ -29,7 +29,7 @@ flowchart TB
     class SUB_LOGIC,LOGIC_BOX domainLogic;
 
     subgraph SUB_STATE ["🔄 3. Phân Hệ Vòng Đời và Trạng Thái (State và Lifecycle)"]
-        STATE_BOX["Quản lý Luồng Màn Hình, Chế độ Chơi (Thường, Tia chớp),<br/>Cảnh báo nguy hiểm 3 cấp và Điều kiện Thắng/Thua<br/>(State Machine, Danger Overlay)"]
+        STATE_BOX["Quản lý Luồng Màn Hình, Chế độ Chơi (Thường, Tia chớp),<br/>Giới hạn 3 mạng lỗi sai, Modal Hồi sinh và Điều kiện Thắng/Thua<br/>(State Machine, Revive Modal)"]
     end
     class SUB_STATE,STATE_BOX domainState;
 
@@ -42,7 +42,7 @@ flowchart TB
     UI_BOX ==>|"Gửi thao tác người chơi (Click ô, bấm số, đổi chế độ)"| LOGIC_BOX
     LOGIC_BOX ==>|"Cập nhật dữ liệu và thông báo render lại"| UI_BOX
 
-    LOGIC_BOX <-->|"Kích hoạt chuyển trạng thái (Pause, Danger, Finish)"| STATE_BOX
+    LOGIC_BOX <-->|"Kích hoạt chuyển trạng thái (Pause, ReviveModal, Finish)"| STATE_BOX
     STATE_BOX ==>|"Cập nhật hiệu ứng và điều hướng màn hình"| UI_BOX
 
     LOGIC_BOX ==>|"Lưu trạng thái ván, Ghi nhận điểm số và lịch sử"| SERV_BOX
@@ -59,7 +59,7 @@ flowchart TB
 | STT | Tài liệu chuyên sâu | Nội dung mô hình hóa | Liên kết |
 |:---:|:---|:---|:---:|
 | **01** | **Kiến trúc Phân tầng Module** | Phân tầng Presentation, Business Logic và Infrastructure theo chuẩn Module Pattern (IIFE), danh sách API công khai và quan hệ phụ thuộc. | [Xem sơ đồ 01](01_component_architecture.md) |
-| **02** | **Vòng đời & Máy trạng thái** | Sơ đồ chuyển đổi trạng thái (State Machine): Splash $\rightarrow$ Lobby $\rightarrow$ In-Game, các chế độ (Thường $\leftrightarrow$ Tia chớp $\leftrightarrow$ Notes) và cấp độ cảnh báo nguy hiểm (Stages 1-3). | [Xem sơ đồ 02](02_game_state_lifecycle.md) |
+| **02** | **Vòng đời & Máy trạng thái** | Sơ đồ chuyển đổi trạng thái (State Machine): Splash $\rightarrow$ Lobby $\rightarrow$ In-Game, các chế độ (Thường $\leftrightarrow$ Tia chớp $\leftrightarrow$ Notes), quy tắc giới hạn 3 mạng lỗi sai và vòng đời Hồi sinh bù điểm. | [Xem sơ đồ 02](02_game_state_lifecycle.md) |
 | **03** | **Luồng Dữ Liệu & Trình Tự** | Trình tự các bước (Sequence Diagram) khi: Điền số vào ô, Kích hoạt chế độ Tia chớp, và Thuật toán sinh đề duy nhất nghiệm có kiểm tra Backtracking. | [Xem sơ đồ 03](03_data_flow_and_sequences.md) |
 | **04** | **Mô hình Dữ liệu & Chấm điểm** | Cấu trúc Schema lưu trữ trong LocalStorage (Game state, User profile, Settings) và đường ống tính toán điểm số (Base + Streak + Time - Penalties). | [Xem sơ đồ 04](04_storage_and_scoring_models.md) |
 

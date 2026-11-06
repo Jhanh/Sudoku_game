@@ -87,22 +87,14 @@ const App = (() => {
       icon = '🏳️';
       title = typeof I18n !== 'undefined' ? I18n.t('gameover_giveup_title') : 'Đã Bỏ Cuộc';
       subtitle = typeof I18n !== 'undefined' ? I18n.t('gameover_giveup_subtitle') : 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:';
-    } else if (reason === 'consecutive_streak_over' || reason === 'streak_over') {
+    } else if (reason === 'total_mistakes_over' || reason === 'consecutive_streak_over' || reason === 'streak_over') {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
-      icon = '💀';
-      title = typeof I18n !== 'undefined' ? I18n.t('gameover_streak_title') : 'Hết Lượt Sai Liên Tiếp!';
-      const maxConsecutive = state.difficulty === 'hard' ? 3 : (state.difficulty === 'medium' ? 5 : 16);
-      subtitle = typeof I18n !== 'undefined' 
-        ? I18n.t('gameover_streak_subtitle', { maxStreak: maxConsecutive, diff: breakdown.diffLabel })
-        : `Bạn đã chọn sai ${maxConsecutive} lần liên tiếp ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
-    } else if (reason === 'total_mistakes_over') {
-      if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
-      if (modalEl) modalEl.classList.add('lose');
-      icon = '💀';
-      title = 'Vượt Quá Giới Hạn Lỗi!';
-      const maxTotal = state.difficulty === 'hard' ? 11 : 16;
-      subtitle = `Bạn đã phạm ${maxTotal} lỗi ở mức ${breakdown.diffLabel}. Ván đấu đã kết thúc!`;
+      icon = '💔';
+      title = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en' ? '3 Mistakes Reached!' : 'Hết 3 Cơ Hội Sai!';
+      subtitle = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en'
+        ? 'You reached the 3 mistakes limit and chose not to continue. Game over!'
+        : 'Bạn đã phạm tối đa 3 lỗi sai cho phép và dừng ván đấu!';
     } else {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
@@ -178,6 +170,64 @@ const App = (() => {
     showTab('home');
   }
 
+  /* ---- revive & buy hint modals ---- */
+  function showReviveModal(state) {
+    if (!state) return;
+    const cost = Game.getReviveCost();
+    const can = Game.canRevive();
+    const curScoreEl = document.getElementById('revive-current-score');
+    const costEl = document.getElementById('revive-cost-value');
+    const remScoreEl = document.getElementById('revive-remaining-score');
+    const noticeEl = document.getElementById('revive-insufficient-notice');
+    const contBtn = document.getElementById('btn-revive-continue');
+
+    if (curScoreEl) curScoreEl.textContent = (state.score || 0).toLocaleString('vi-VN');
+    if (costEl) costEl.textContent = `-${cost.toLocaleString('vi-VN')}`;
+    if (remScoreEl) remScoreEl.textContent = Math.max(0, (state.score || 0) - cost).toLocaleString('vi-VN');
+
+    if (noticeEl) {
+      noticeEl.classList.toggle('hidden', can);
+    }
+    if (contBtn) {
+      contBtn.disabled = !can;
+      contBtn.style.opacity = can ? '1' : '0.45';
+      contBtn.style.cursor = can ? 'pointer' : 'not-allowed';
+    }
+
+    openModal('modal-revive');
+  }
+
+  function showBuyHintModal() {
+    const state = Game.getState();
+    if (!state || state.isFinished) return;
+    if (!state.isPaused) Game.togglePause();
+
+    const cost = Game.getHintPermanentCost(state.difficulty);
+    const totalPermanent = Storage.getTotalPermanentScore();
+    const can = totalPermanent >= cost;
+
+    const curPointsEl = document.getElementById('buy-hint-current-points');
+    const costEl = document.getElementById('buy-hint-cost-value');
+    const remPointsEl = document.getElementById('buy-hint-remaining-points');
+    const noticeEl = document.getElementById('buy-hint-insufficient-notice');
+    const confirmBtn = document.getElementById('btn-buy-hint-confirm');
+
+    if (curPointsEl) curPointsEl.textContent = totalPermanent.toLocaleString('vi-VN');
+    if (costEl) costEl.textContent = `-${cost.toLocaleString('vi-VN')}`;
+    if (remPointsEl) remPointsEl.textContent = Math.max(0, totalPermanent - cost).toLocaleString('vi-VN');
+
+    if (noticeEl) {
+      noticeEl.classList.toggle('hidden', can);
+    }
+    if (confirmBtn) {
+      confirmBtn.disabled = !can;
+      confirmBtn.style.opacity = can ? '1' : '0.45';
+      confirmBtn.style.cursor = can ? 'pointer' : 'not-allowed';
+    }
+
+    openModal('modal-buy-hint');
+  }
+
   /* ---- start game ---- */
   function _startGame(difficulty) {
     showScreen('game');
@@ -186,7 +236,8 @@ const App = (() => {
 
     Game.setCallbacks(
       (state) => { UIBoard.render(state); UIControls.update(state); },
-      (reason, state, breakdown) => showGameOver(reason, state, breakdown)
+      (reason, state, breakdown) => showGameOver(reason, state, breakdown),
+      (state) => showReviveModal(state)
     );
 
     // Show a brief loading indicator
@@ -208,7 +259,8 @@ const App = (() => {
 
     Game.setCallbacks(
       (state) => { UIBoard.render(state); UIControls.update(state); },
-      (reason, state, breakdown) => showGameOver(reason, state, breakdown)
+      (reason, state, breakdown) => showGameOver(reason, state, breakdown),
+      (state) => showReviveModal(state)
     );
 
     Game.resume();
@@ -565,6 +617,48 @@ const App = (() => {
       if (confirmResolve) { confirmResolve(false); confirmResolve = null; }
     });
 
+    // Revive Modal buttons (3 Mistakes)
+    const reviveContBtn = document.getElementById('btn-revive-continue');
+    if (reviveContBtn) {
+      reviveContBtn.addEventListener('click', () => {
+        if (Game.canRevive()) {
+          closeModal('modal-revive');
+          Game.revive();
+          if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+          showToast(typeof I18n !== 'undefined' ? (I18n.getLanguage() === 'en' ? '❤️ Revived! Mistakes set to 2/3.' : '❤️ Tiếp tục ván đấu! Lỗi giảm về 2/3.') : '❤️ Tiếp tục ván đấu!');
+        }
+      });
+    }
+
+    const reviveGiveupBtn = document.getElementById('btn-revive-giveup');
+    if (reviveGiveupBtn) {
+      reviveGiveupBtn.addEventListener('click', () => {
+        closeModal('modal-revive');
+        Game.giveUpFromMistakes();
+      });
+    }
+
+    // Buy Hint Modal buttons (Mastery Points)
+    const buyHintConfirmBtn = document.getElementById('btn-buy-hint-confirm');
+    if (buyHintConfirmBtn) {
+      buyHintConfirmBtn.addEventListener('click', () => {
+        const ok = Game.buyExtraHint();
+        closeModal('modal-buy-hint');
+        if (Game.getState() && Game.getState().isPaused) Game.togglePause();
+        if (ok) {
+          showToast(typeof I18n !== 'undefined' ? (I18n.getLanguage() === 'en' ? '💡 Extra hint unlocked!' : '💡 Đã đổi thêm 1 gợi ý!') : '💡 Đã đổi thêm 1 gợi ý!');
+        }
+      });
+    }
+
+    const buyHintCancelBtn = document.getElementById('btn-buy-hint-cancel');
+    if (buyHintCancelBtn) {
+      buyHintCancelBtn.addEventListener('click', () => {
+        closeModal('modal-buy-hint');
+        if (Game.getState() && Game.getState().isPaused) Game.togglePause();
+      });
+    }
+
     // Modal close buttons
     document.querySelectorAll('.btn-modal-close').forEach(btn => {
       btn.addEventListener('click', () => closeModal(btn.dataset.close));
@@ -653,7 +747,9 @@ const App = (() => {
     showTab,
     showToast,
     confirm,
-    goToLobby: _goToLobby
+    goToLobby: _goToLobby,
+    showReviveModal,
+    showBuyHintModal
   };
 })();
 

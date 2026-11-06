@@ -140,8 +140,8 @@ const DevTools = (() => {
             <span id="dev-stat-score" class="dev-stat-val">0</span>
           </div>
           <div class="dev-stat-box">
-            <span class="dev-stat-label">Chuỗi Đúng/Sai</span>
-            <span id="dev-stat-streak" class="dev-stat-val">0 / 0</span>
+            <span class="dev-stat-label">Lỗi sai</span>
+            <span id="dev-stat-mistakes" class="dev-stat-val">0 / 3</span>
           </div>
         </div>
 
@@ -181,26 +181,15 @@ const DevTools = (() => {
           </div>
         </div>
 
-        <!-- Section 2: Danger Warnings & Penalties -->
+        <!-- Section 2: Match Score Cheats -->
         <div class="dev-hud-section">
-          <div class="dev-section-title">⚠️ Thử Nghiệm Cảnh Báo Nguy Hiểm</div>
-          <div class="dev-btn-grid">
-            <button id="dev-btn-stage1" class="dev-action-btn">
-              ⚠️ Cấp 1 (Sai 5 lần)
-            </button>
-            <button id="dev-btn-stage2" class="dev-action-btn">
-              🔶 Cấp 2 (Sai 6 lần)
-            </button>
-            <button id="dev-btn-stage3" class="dev-action-btn btn-danger">
-              🚨 Cấp 3 (Nhấp nháy đỏ)
-            </button>
-            <button id="dev-btn-gameover" class="dev-action-btn btn-danger">
-              💀 Test Game Over
-            </button>
+          <div class="dev-section-title">🪙 Chỉnh Sửa Điểm Trận Đấu</div>
+          <div class="dev-btn-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <button id="dev-score-add-100" class="dev-action-btn">➕ +100 điểm</button>
+            <button id="dev-score-sub-100" class="dev-action-btn">➖ -100 điểm</button>
+            <button id="dev-score-add-1000" class="dev-action-btn">➕ +1000 điểm</button>
+            <button id="dev-score-sub-1000" class="dev-action-btn">➖ -1000 điểm</button>
           </div>
-          <button id="dev-btn-reset-wrong" class="dev-action-btn" style="width:100%;">
-            🔄 Reset Chuỗi Sai Về 0 (Khử Cảnh Báo)
-          </button>
         </div>
 
         <!-- Section 3: Time Multiplier Testing -->
@@ -233,7 +222,6 @@ const DevTools = (() => {
             <button id="dev-sfx-note" class="dev-action-btn">✏️ Ghi Chú</button>
             <button id="dev-sfx-erase" class="dev-action-btn">🧹 Xóa / Hoàn Tác</button>
             <button id="dev-sfx-hint" class="dev-action-btn">💡 Dùng Gợi Ý</button>
-            <button id="dev-sfx-danger" class="dev-action-btn">🚨 Nhịp Nguy Hiểm</button>
             <button id="dev-sfx-win" class="dev-action-btn btn-win">🏆 Fanfare Thắng</button>
             <button id="dev-sfx-gameover" class="dev-action-btn btn-danger">💀 Nhạc Game Over</button>
           </div>
@@ -281,25 +269,11 @@ const DevTools = (() => {
     // Feature 4: Fill 80/81
     document.getElementById('dev-btn-fill-80').addEventListener('click', _fillExceptOne);
 
-    // Danger Stage Tests
-    document.getElementById('dev-btn-stage1').addEventListener('click', () => {
-      const state = typeof Game !== 'undefined' ? Game.getState() : null;
-      _setWrongStreak(5, 1);
-    });
-    document.getElementById('dev-btn-stage2').addEventListener('click', () => {
-      const state = typeof Game !== 'undefined' ? Game.getState() : null;
-      if (state && state.difficulty === 'hard') _setWrongStreak(6, 1);
-      else if (state && state.difficulty === 'medium') _setWrongStreak(6, 2);
-      else _setWrongStreak(6, 6);
-    });
-    document.getElementById('dev-btn-stage3').addEventListener('click', () => {
-      const state = typeof Game !== 'undefined' ? Game.getState() : null;
-      if (state && state.difficulty === 'hard') _setWrongStreak(10, 2);
-      else if (state && state.difficulty === 'medium') _setWrongStreak(15, 4);
-      else _setWrongStreak(15, 15);
-    });
-    document.getElementById('dev-btn-gameover').addEventListener('click', _triggerGameOver);
-    document.getElementById('dev-btn-reset-wrong').addEventListener('click', () => _setWrongStreak(0, 0));
+    // Feature 5: In-Match Score Cheats
+    document.getElementById('dev-score-add-100').addEventListener('click', () => _adjustMatchScore(100));
+    document.getElementById('dev-score-sub-100').addEventListener('click', () => _adjustMatchScore(-100));
+    document.getElementById('dev-score-add-1000').addEventListener('click', () => _adjustMatchScore(1000));
+    document.getElementById('dev-score-sub-1000').addEventListener('click', () => _adjustMatchScore(-1000));
 
     // Time Testing
     document.getElementById('dev-btn-time-fast').addEventListener('click', () => _setTimer(70));
@@ -329,7 +303,6 @@ const DevTools = (() => {
     bindSfx('dev-sfx-note', () => Sound.playNote());
     bindSfx('dev-sfx-erase', () => Sound.playErase());
     bindSfx('dev-sfx-hint', () => Sound.playHint());
-    bindSfx('dev-sfx-danger', () => Sound.playDanger());
     bindSfx('dev-sfx-win', () => Sound.playWin());
     bindSfx('dev-sfx-gameover', () => Sound.playGameOver());
   }
@@ -414,12 +387,12 @@ const DevTools = (() => {
       const state = Game.getState();
       const elTimer = document.getElementById('dev-stat-timer');
       const elScore = document.getElementById('dev-stat-score');
-      const elStreak = document.getElementById('dev-stat-streak');
+      const elMistakes = document.getElementById('dev-stat-mistakes');
 
       if (state) {
         if (elTimer) elTimer.textContent = Game.formatTime(state.timer || 0);
         if (elScore) elScore.textContent = (state.score || 0).toLocaleString('vi-VN');
-        if (elStreak) elStreak.textContent = `${state.correctStreak || 0} / ${state.wrongStreak || 0}`;
+        if (elMistakes) elMistakes.textContent = `${state.mistakes || 0} / 3`;
 
         // Ensure infinite hints is maintained if toggled
         if (isInfiniteHints && state.hints < 100) {
@@ -430,7 +403,7 @@ const DevTools = (() => {
       } else {
         if (elTimer) elTimer.textContent = '--:--';
         if (elScore) elScore.textContent = '0';
-        if (elStreak) elStreak.textContent = '0 / 0';
+        if (elMistakes) elMistakes.textContent = '0 / 3';
       }
     }, 400);
   }
@@ -497,9 +470,9 @@ const DevTools = (() => {
   function _hookGameCallbacks() {
     if (typeof Game === 'undefined') return;
     const originalSetCallbacks = Game.setCallbacks;
-    Game.setCallbacks = function (onUpdate, onGameOver) {
-      cachedGameOverCallback = onGameOver;
-      return originalSetCallbacks.call(this, onUpdate, onGameOver);
+    Game.setCallbacks = function (...args) {
+      if (args[1]) cachedGameOverCallback = args[1];
+      return originalSetCallbacks.apply(this, args);
     };
   }
 
@@ -585,84 +558,22 @@ const DevTools = (() => {
     }
   }
 
-  // 5. Danger Stage Simulator
-  function _setWrongStreak(mistakesCount, streakCount = 1) {
+  // 5. In-Match Score Cheat (+100, -100, +1000, -1000)
+  function _adjustMatchScore(delta) {
     if (typeof Game === 'undefined') return;
     const state = Game.getState();
-    if (!state) {
-      if (typeof App !== 'undefined' && App.showToast) App.showToast('Không có ván chơi nào! Hãy bắt đầu ván mới.');
+    if (!state || state.isFinished) {
+      if (typeof App !== 'undefined' && App.showToast) App.showToast('Không có ván chơi nào đang diễn ra!');
       return;
     }
-    if (state.isFinished) {
-      if (typeof App !== 'undefined' && App.showToast) App.showToast('Ván chơi này đã kết thúc! Hãy bắt đầu ván mới.');
-      return;
-    }
-
-    state.mistakes = mistakesCount;
-    state.wrongStreak = streakCount;
-
-    if (typeof UIControls !== 'undefined' && UIControls.update) {
-      UIControls.update(state);
-    }
+    Game.modifyScore(delta);
     if (typeof App !== 'undefined' && App.showToast) {
-      App.showToast(mistakesCount === 0 ? '🔄 Đã reset lỗi về 0' : `⚠️ Đã đặt: ${mistakesCount} lỗi (Chuỗi: ${streakCount})`);
+      const sign = delta > 0 ? `+${delta}` : `${delta}`;
+      App.showToast(`🪙 Điểm trận đấu: ${sign} (Hiện tại: ${state.score})`);
     }
   }
 
-  // 6. Realistic Game Over Trigger
-  function _triggerGameOver() {
-    if (typeof Game === 'undefined') return;
-    const state = Game.getState();
-    if (!state) {
-      if (typeof App !== 'undefined' && App.showToast) App.showToast('Không có ván chơi nào! Hãy bắt đầu ván mới.');
-      return;
-    }
-    if (state.isFinished) {
-      if (typeof App !== 'undefined' && App.showToast) App.showToast('Ván chơi này đã kết thúc! Hãy bắt đầu ván mới để kiểm tra.');
-      return;
-    }
-
-    // Find any non-given cell to place a guaranteed wrong digit
-    let targetRow = -1, targetCol = -1, wrongDigit = 1;
-    for (let r = 0; r < 9; r++) {
-      for (let c = 0; c < 9; c++) {
-        const i = r * 9 + c;
-        if (!state.given[i]) {
-          targetRow = r;
-          targetCol = c;
-          wrongDigit = (state.solution[i] % 9) + 1; // Always different from solution!
-          break;
-        }
-      }
-      if (targetRow !== -1) break;
-    }
-
-    if (targetRow !== -1) {
-      // Set streak to max allowed so this wrong placement triggers Game Over via genuine engine
-      const maxAllowed = (Game.MAX_CONSECUTIVE_WRONG && Game.MAX_CONSECUTIVE_WRONG[state.difficulty]) || 15;
-      state.wrongStreak = maxAllowed;
-      Game.selectCell(targetRow, targetCol);
-      Game.placeNumber(wrongDigit);
-      return;
-    }
-
-    // Fallback if no empty/non-given cell found
-    state.isFinished = true;
-    if (Game.stopTimer) Game.stopTimer();
-    const breakdown = Game.getScoreBreakdown ? Game.getScoreBreakdown(state) : null;
-    if (typeof Storage !== 'undefined') {
-      Storage.recordGameResult(state.difficulty, false, state.timer, state.mistakes, breakdown ? breakdown.finalScore : state.score);
-      Storage.clearGame();
-    }
-    if (cachedGameOverCallback) {
-      cachedGameOverCallback('streak_over', state, breakdown);
-    } else {
-      const modal = document.getElementById('modal-gameover');
-      if (modal) modal.classList.remove('hidden');
-    }
-  }
-
-  // 7. Set Timer
+  // 6. Set Timer
   function _setTimer(seconds) {
     if (typeof Game === 'undefined') return;
     const state = Game.getState();

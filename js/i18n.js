@@ -140,6 +140,27 @@ const I18n = (() => {
       btn_play_again: 'Ván Mới',
       btn_back_lobby: 'Về Sảnh Chính',
 
+      // Revive Modal (3 Mistakes)
+      revive_title: 'Bạn Đã Mắc 3 Lỗi!',
+      revive_desc: 'Dùng điểm trận đấu để giảm lỗi về 2/3 và tiếp tục ván cờ.',
+      revive_current_score: 'Điểm trận hiện có:',
+      revive_cost: 'Chi phí tiếp tục:',
+      revive_remaining_score: 'Điểm còn lại:',
+      revive_note: '💡 Sau khi bù điểm, lỗi sai giảm về 2/3 (thêm 1 cơ hội).',
+      revive_btn_continue: 'Bù Điểm & Chơi Tiếp',
+      revive_btn_giveup: 'Chấp Nhận Thua',
+      revive_insufficient: '⚠️ Không đủ điểm trận đấu để tiếp tục.',
+
+      // Buy Hint Modal (Mastery Points)
+      buy_hint_title: 'Đổi Thêm Gợi Ý',
+      buy_hint_desc: 'Dùng điểm tích lũy Hồ Sơ để mở thêm 1 gợi ý.',
+      buy_hint_current_points: 'Điểm Hồ Sơ hiện có:',
+      buy_hint_cost: 'Chi phí đổi:',
+      buy_hint_remaining_points: 'Điểm còn lại:',
+      buy_hint_btn_confirm: 'Đổi Gợi Ý',
+      buy_hint_btn_cancel: 'Hủy',
+      buy_hint_insufficient: '⚠️ Không đủ điểm Hồ Sơ để đổi thêm gợi ý.',
+
       // Tutorial Modal
       tut_title: 'Cách Chơi Sudoku',
       tut_step1_title: 'Quy tắc Hàng & Cột',
@@ -346,6 +367,27 @@ const I18n = (() => {
       breakdown_mistakes: 'Total Mistakes',
       btn_play_again: 'New Game',
       btn_back_lobby: 'Back to Lobby',
+
+      // Revive Modal (3 Mistakes)
+      revive_title: '3 Mistakes Reached!',
+      revive_desc: 'Spend match points to reduce mistakes to 2/3 and continue.',
+      revive_current_score: 'Current match score:',
+      revive_cost: 'Cost to continue:',
+      revive_remaining_score: 'Remaining score:',
+      revive_note: '💡 Mistakes reduced to 2/3 (giving you 1 more chance).',
+      revive_btn_continue: 'Spend & Continue',
+      revive_btn_giveup: 'Accept Defeat',
+      revive_insufficient: '⚠️ Not enough match points to continue.',
+
+      // Buy Hint Modal (Mastery Points)
+      buy_hint_title: 'Get Extra Hint',
+      buy_hint_desc: 'Spend Profile Mastery Points to reveal 1 cell.',
+      buy_hint_current_points: 'Current Profile points:',
+      buy_hint_cost: 'Cost to exchange:',
+      buy_hint_remaining_points: 'Remaining points:',
+      buy_hint_btn_confirm: 'Exchange Hint',
+      buy_hint_btn_cancel: 'Cancel',
+      buy_hint_insufficient: '⚠️ Not enough Profile points.',
 
       // Tutorial Modal
       tut_title: 'How to Play Sudoku',

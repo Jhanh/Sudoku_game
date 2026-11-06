@@ -34,7 +34,6 @@ sequenceDiagram
         
         alt Điền ĐÚNG (val == solution[i])
             Game->>Game: correctStreak = prevStreak + 1
-            Game->>Game: wrongStreak = 0 (khử chuỗi sai)
             Game->>Game: Tính điểm = Base * streakMultiplier
             Game->>Game: Tự động xóa ghi chú số n cùng hàng/cột/khối
             Game->>Game: Đẩy vào UndoStack (type: 'value', error: false)
@@ -42,18 +41,20 @@ sequenceDiagram
             Game->>Storage: Storage.saveGame(state)
         else Điền SAI (val != solution[i])
             Game->>Game: mistakes = mistakes + 1
-            Game->>Game: wrongStreak = wrongStreak + 1
             Game->>Game: correctStreak = 0 (mất chuỗi đúng)
-            Game->>Game: Tính phạt trừ điểm (-10đ / -20đ / -30đ)
+            Game->>Game: Trừ điểm phạt (Dễ: -5đ, Vừa: -7đ, Khó: -10đ, sàn 0)
             Game->>Game: Đẩy vào UndoStack (type: 'value', error: true)
             Game->>Sound: Sound.playError()
-            Game->>Game: Đánh giá Danger Stage (Cấp 1 / 2 / 3)
+            alt mistakes >= 3 (Đạt tối đa 3 lỗi)
+                Game->>Game: stopTimer() & state.isPaused = true
+                Game->>UI: onThreeMistakes() -> Mở Modal Hồi Sinh (#modal-revive)
+            end
         end
     end
 
     Game->>UI: _notify(state)
     UI->>UI: UIBoard.render() (Hiển thị số xanh/đỏ, font-weight 500)
-    UI->>UI: UIControls.update() (Cập nhật điểm, timer, lỗi, banner)
+    UI->>UI: UIControls.update() (Cập nhật điểm, timer, lỗi 0/3)
 ```
 
 ---

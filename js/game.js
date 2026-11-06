@@ -6,10 +6,16 @@ const Game = (() => {
   let timerInterval = null;
   let onUpdate = null;
   let onGameOver = null;
+  let onThreeMistakes = null;
 
   const DIFF_LABELS = { easy: 'Dễ', medium: 'Trung bình', hard: 'Khó' };
   const SCORE_PER_CELL = { easy: 10, medium: 20, hard: 40 };
   const PERFECT_BONUS = { easy: 100, medium: 200, hard: 300 };
+
+  /* ---- mistake & revive configuration ---- */
+  const MISTAKE_PENALTIES = { easy: 5, medium: 7, hard: 10 };
+  const REVIVE_BASE_COST = { easy: 50, medium: 100, hard: 150 };
+  const HINT_PERMANENT_COST = { easy: 50, medium: 100, hard: 150 };
 
   /* ---- penalties configuration ---- */
   const HINT_PENALTIES = {
@@ -18,72 +24,14 @@ const Game = (() => {
     hard: [50, 100, 150]
   };
 
-  const MAX_TOTAL_MISTAKES = {
-    easy: 15,    // 16th total mistake is game over
-    medium: 15,  // 16th total mistake is game over
-    hard: 10     // 11th total mistake is game over
-  };
-
-  const MAX_CONSECUTIVE_WRONG = {
-    easy: 15,    // 16th consecutive is game over
-    medium: 4,   // 5th consecutive is game over
-    hard: 2      // 3rd consecutive is game over
-  };
-
-  const MAX_WRONG_STREAK = MAX_CONSECUTIVE_WRONG; // backwards compatibility
-
   function getHintPenalty(difficulty, hintCountUsed) {
     const list = HINT_PENALTIES[difficulty] || [30, 50, 70];
     const idx = Math.min(Math.max(0, hintCountUsed), list.length - 1);
     return list[idx];
   }
 
-  function getWrongPenalty(difficulty, mistakesCount) {
-    const n = Math.max(1, mistakesCount || 1);
-    if (difficulty === 'easy') {
-      if (n <= 5) return 5;
-      if (n <= 10) return 15;
-      return 30;
-    }
-    if (difficulty === 'medium') {
-      if (n <= 5) return 7;
-      if (n <= 10) return 20;
-      return 40;
-    }
-    if (difficulty === 'hard') {
-      if (n <= 5) return 10;
-      return 30;
-    }
-    return 5;
-  }
-
-  function getWarningStage(difficulty, mistakes, wrongStreak) {
-    let m = mistakes;
-    let s = wrongStreak;
-    if (s === undefined) {
-      s = m;
-      m = m || 0;
-    }
-    m = m || 0;
-    s = s || 0;
-
-    // Stage 3 (Critical pulse): Dangerously close to Game Over
-    if (difficulty === 'hard') {
-      if (s >= 2 || m >= 10) return 3; // 1 more mistake is Game Over!
-      if (s >= 1 || m >= 5) return 2;  // Mild persistent red
-      return 0;
-    }
-    if (difficulty === 'medium') {
-      if (s >= 4 || m >= 15) return 3; // 1 more mistake is Game Over!
-      if (s >= 2 || m >= 6) return 2;  // Mild persistent red
-      if (s === 1 || m === 5) return 1;
-      return 0;
-    }
-    // Easy
-    if (s >= 15 || m >= 15) return 3;
-    if (s >= 6 || m >= 6) return 2;
-    if (s === 5 || m === 5) return 1;
-    return 0;
+  function getWrongPenalty(difficulty) {
+    return MISTAKE_PENALTIES[difficulty] || 5;
   }
 
   /* ---- scoring multipliers ---- */
@@ -139,7 +87,7 @@ const Game = (() => {
       rawScore: st.score || 0,
       maxStreak: st.maxStreak || 0,
       currentStreak: st.correctStreak || 0,
-      wrongStreak: st.wrongStreak || 0,
+      reviveCount: st.reviveCount || 0,
       timer: st.timer || 0,
       formattedTime: formatTime(st.timer || 0),
       timeMultiplier: timeMult,
@@ -166,8 +114,10 @@ const Game = (() => {
       notes: state.notes,
       given: state.given,
       mistakes: state.mistakes,
+      reviveCount: state.reviveCount || 0,
       hints: state.hints,
       hintsUsed: state.hintsUsed || 0,
+      hintsBought: state.hintsBought || 0,
       score: state.score,
       baseScore: state.baseScore,
       perfectBonus: state.perfectBonus || 0,
@@ -175,7 +125,6 @@ const Game = (() => {
       wrongPenalties: state.wrongPenalties || 0,
       correctCount: state.correctCount,
       correctStreak: state.correctStreak,
-      wrongStreak: state.wrongStreak || 0,
       maxStreak: state.maxStreak,
       difficulty: state.difficulty,
       timer: state.timer,
@@ -261,8 +210,10 @@ const Game = (() => {
       notes: {},
       given: puzzle.map(v => v !== 0),
       mistakes: 0,
+      reviveCount: 0,
       hints: 3,
       hintsUsed: 0,
+      hintsBought: 0,
       score: 0,
       baseScore: 0,
       perfectBonus: 0,
@@ -270,7 +221,6 @@ const Game = (() => {
       wrongPenalties: 0,
       correctCount: 0,
       correctStreak: 0,
-      wrongStreak: 0,
       maxStreak: 0,
       difficulty,
       timer: 0,
@@ -292,14 +242,15 @@ const Game = (() => {
     if (!saved || saved.isFinished) return false;
     state = {
       ...saved,
+      reviveCount: saved.reviveCount || 0,
       hintsUsed: saved.hintsUsed || 0,
+      hintsBought: saved.hintsBought || 0,
       baseScore: saved.baseScore || 0,
       perfectBonus: saved.perfectBonus || 0,
       hintPenalties: saved.hintPenalties || 0,
       wrongPenalties: saved.wrongPenalties || 0,
       correctCount: saved.correctCount || 0,
       correctStreak: saved.correctStreak || 0,
-      wrongStreak: saved.wrongStreak || 0,
       maxStreak: saved.maxStreak || 0,
       selectedCell: null,
       fastFillMode: saved.fastFillMode || false,
@@ -434,13 +385,11 @@ const Game = (() => {
 
     if (!isCorrect) {
       const prevCorrectStreak = state.correctStreak || 0;
-      const prevWrongStreak = state.wrongStreak || 0;
       state.correctStreak = 0;
-      state.wrongStreak = prevWrongStreak + 1;
       state.mistakes++;
 
-      // Penalty per mistake turn (based on cumulative mistakes n)
-      const penalty = getWrongPenalty(state.difficulty, state.mistakes);
+      // Penalty per mistake turn (Easy: -5, Medium: -7, Hard: -10)
+      const penalty = getWrongPenalty(state.difficulty);
       state.score = Math.max(0, state.score - penalty);
       state.wrongPenalties = (state.wrongPenalties || 0) + penalty;
 
@@ -450,7 +399,6 @@ const Game = (() => {
         oldValue, oldNotes,
         error: true,
         prevCorrectStreak,
-        prevWrongStreak,
         penaltyDeducted: penalty,
         pointsEarned: 0,
         basePts: 0
@@ -459,31 +407,22 @@ const Game = (() => {
       if (typeof Sound !== 'undefined' && Sound.playError) Sound.playError();
       if (onUpdate) onUpdate(state);
 
-      // Check Game Over limits:
-      // 1. Total cumulative mistakes (Easy: 16, Medium: 16, Hard: 11)
-      // 2. Consecutive wrong streak (Easy: 16, Medium: 5, Hard: 3)
-      const maxTotal = MAX_TOTAL_MISTAKES[state.difficulty] || 15;
-      const maxConsecutive = MAX_CONSECUTIVE_WRONG[state.difficulty] || 15;
-      const isTotalLimitOver = state.mistakes > maxTotal;
-      const isConsecutiveLimitOver = state.wrongStreak > maxConsecutive;
-
-      if (isTotalLimitOver || isConsecutiveLimitOver) {
-        state.isFinished = true;
+      // Check 3 mistakes limit
+      if (state.mistakes >= 3) {
         stopTimer();
-        const breakdown = getScoreBreakdown(state);
-        Storage.recordGameResult(state.difficulty, false, state.timer, state.mistakes, breakdown.finalScore);
-        Storage.clearGame();
-        const reason = isConsecutiveLimitOver ? 'consecutive_streak_over' : 'total_mistakes_over';
-        if (onGameOver) onGameOver(reason, state, breakdown);
+        state.isPaused = true;
+        if (onThreeMistakes) {
+          onThreeMistakes(state);
+        } else if (typeof App !== 'undefined' && App.showReviveModal) {
+          App.showReviveModal(state);
+        }
       }
       return;
     }
 
     // Correct placement
     const prevCorrectStreak = state.correctStreak || 0;
-    const prevWrongStreak = state.wrongStreak || 0;
     state.correctStreak = prevCorrectStreak + 1;
-    state.wrongStreak = 0; // RESET WRONG STREAK!
     state.maxStreak = Math.max(state.maxStreak || 0, state.correctStreak);
     state.correctCount = (state.correctCount || 0) + 1;
 
@@ -504,7 +443,6 @@ const Game = (() => {
       oldValue, oldNotes,
       error: false,
       prevCorrectStreak,
-      prevWrongStreak,
       pointsEarned,
       basePts
     });
@@ -558,14 +496,12 @@ const Game = (() => {
           state.score += action.penaltyDeducted;
           state.wrongPenalties = Math.max(0, (state.wrongPenalties || 0) - action.penaltyDeducted);
         }
-        state.wrongStreak = action.prevWrongStreak || 0;
       } else {
         const pts = action.pointsEarned !== undefined ? action.pointsEarned : SCORE_PER_CELL[state.difficulty];
         const basePts = action.basePts !== undefined ? action.basePts : SCORE_PER_CELL[state.difficulty];
         state.score = Math.max(0, state.score - pts);
         state.baseScore = Math.max(0, (state.baseScore || 0) - basePts);
         state.correctCount = Math.max(0, (state.correctCount || 0) - 1);
-        state.wrongStreak = action.prevWrongStreak || 0;
       }
       // Không hoàn lại lượt streak: quay về trạng thái chưa điền và reset streak về 0
       state.correctStreak = 0;
@@ -665,11 +601,8 @@ const Game = (() => {
 
   let lastHintTime = 0;
 
-  function useHint() {
-    if (!state || state.isFinished || state.isPaused || state.hints <= 0) return;
-    const now = Date.now();
-    if (now - lastHintTime < 350) return;
-    lastHintTime = now;
+  function _applyHint(isPurchased = false) {
+    if (!state || state.isFinished) return false;
 
     let row, col;
     if (state.selectedCell) {
@@ -688,7 +621,7 @@ const Game = (() => {
           empties.push(i);
         }
       }
-      if (empties.length === 0) return;
+      if (empties.length === 0) return false;
       const ri = empties[Math.floor(Math.random() * empties.length)];
       row = Math.floor(ri / 9);
       col = ri % 9;
@@ -696,16 +629,19 @@ const Game = (() => {
 
     const i = idx(row, col);
     const key = `${row},${col}`;
-    const oldValue = state.current[i];
-    const oldNotes = state.notes[key] ? [...state.notes[key]] : [];
 
-    // Deduct hint penalty
-    const hintIdx = state.hintsUsed || 0;
-    const penalty = getHintPenalty(state.difficulty, hintIdx);
-    state.hintsUsed = hintIdx + 1;
-    state.hints--;
-    state.score = Math.max(0, state.score - penalty);
-    state.hintPenalties = (state.hintPenalties || 0) + penalty;
+    if (!isPurchased) {
+      // Free hint: deduct in-match hint penalty
+      const hintIdx = state.hintsUsed || 0;
+      const penalty = getHintPenalty(state.difficulty, hintIdx);
+      state.hintsUsed = hintIdx + 1;
+      state.hints--;
+      state.score = Math.max(0, state.score - penalty);
+      state.hintPenalties = (state.hintPenalties || 0) + penalty;
+    } else {
+      // Purchased via profile points: already paid permanent score, don't deduct match score
+      state.hintsUsed = (state.hintsUsed || 0) + 1;
+    }
 
     state.current[i] = state.solution[i];
     state.notes[key] = [];
@@ -746,6 +682,94 @@ const Game = (() => {
         if (onUpdate) onUpdate(state);
       }
     }, 900);
+
+    return true;
+  }
+
+  function useHint() {
+    if (!state || state.isFinished || state.isPaused || state.hints <= 0) return;
+    const now = Date.now();
+    if (now - lastHintTime < 350) return;
+    lastHintTime = now;
+    _applyHint(false);
+  }
+
+  function getHintPermanentCost(difficulty) {
+    const diff = difficulty || (state ? state.difficulty : 'easy');
+    const base = HINT_PERMANENT_COST[diff] || 50;
+    const count = (state ? (state.hintsBought || 0) : 0) + 1;
+    return base * count;
+  }
+
+  function buyExtraHint() {
+    if (!state || state.isFinished) return false;
+    const cost = getHintPermanentCost(state.difficulty);
+    const totalPermanent = Storage.getTotalPermanentScore();
+    if (totalPermanent < cost) return false;
+
+    const ok = Storage.deductPermanentScore(cost);
+    if (!ok) return false;
+
+    state.hintsBought = (state.hintsBought || 0) + 1;
+    save();
+    _applyHint(true);
+    return true;
+  }
+
+  /* ---- mistake revival & scoring cheats ---- */
+  function getReviveCost() {
+    if (!state) return 0;
+    const base = REVIVE_BASE_COST[state.difficulty] || 50;
+    const count = (state.reviveCount || 0) + 1;
+    return base * count;
+  }
+
+  function canRevive() {
+    if (!state) return false;
+    return (state.score || 0) >= getReviveCost();
+  }
+
+  function revive() {
+    if (!state || state.isFinished) return false;
+    const cost = getReviveCost();
+    if ((state.score || 0) < cost) return false;
+
+    state.score = Math.max(0, state.score - cost);
+    state.reviveCount = (state.reviveCount || 0) + 1;
+    state.mistakes = 2; // Reduced from 3/3 to 2/3!
+
+    // Clear the error cell that caused the 3rd mistake
+    if (state.undoStack && state.undoStack.length > 0) {
+      const last = state.undoStack[state.undoStack.length - 1];
+      if (last.type === 'value' && last.error) {
+        const i = idx(last.row, last.col);
+        state.current[i] = 0;
+        state.selectedCell = { row: last.row, col: last.col };
+      }
+    }
+
+    state.isPaused = false;
+    startTimer();
+    save();
+    if (onUpdate) onUpdate(state);
+    return true;
+  }
+
+  function giveUpFromMistakes() {
+    if (!state) return;
+    state.isFinished = true;
+    stopTimer();
+    const breakdown = getScoreBreakdown(state);
+    Storage.recordGameResult(state.difficulty, false, state.timer, state.mistakes, breakdown.finalScore);
+    Storage.clearGame();
+    if (onGameOver) onGameOver('total_mistakes_over', state, breakdown);
+  }
+
+  function modifyScore(delta) {
+    if (!state || state.isFinished) return;
+    state.score = Math.max(0, (state.score || 0) + delta);
+    save();
+    if (onUpdate) onUpdate(state);
   }
 
   function togglePause() {
@@ -779,20 +803,23 @@ const Game = (() => {
   function getState() { return state; }
   function isActive() { return state !== null && !state.isFinished; }
 
-  function setCallbacks(update, gameover) {
+  function setCallbacks(update, gameover, threeMistakes) {
     onUpdate = update;
     onGameOver = gameover;
+    onThreeMistakes = threeMistakes;
   }
 
   return {
     start, resume, selectCell, placeNumber,
-    undo, erase, toggleNotes, toggleFastFill, selectFastFillDigit, useHint,
+    undo, erase, toggleNotes, toggleFastFill, selectFastFillDigit,
+    useHint, buyExtraHint, getHintPermanentCost,
+    getReviveCost, canRevive, revive, giveUpFromMistakes, modifyScore,
     togglePause, giveUp, abandonSaved, destroy,
     getState, isActive, setCallbacks,
     getRemaining, formatTime,
     getStreakMultiplier, getTimeMultiplier, getScoreBreakdown,
-    getHintPenalty, getWrongPenalty, getWarningStage,
-    HINT_PENALTIES, MAX_WRONG_STREAK, MAX_TOTAL_MISTAKES, MAX_CONSECUTIVE_WRONG,
+    getHintPenalty, getWrongPenalty,
+    HINT_PENALTIES, MISTAKE_PENALTIES, REVIVE_BASE_COST, HINT_PERMANENT_COST,
     DIFF_LABELS, SCORE_PER_CELL, PERFECT_BONUS, idx
   };
 })();

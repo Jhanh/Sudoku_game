@@ -21,9 +21,9 @@ erDiagram
         object notes "Ghi chú theo key 'row,col': [1..9]"
         int timer "Thời gian chơi tính bằng giây"
         int score "Điểm số tích lũy hiện tại"
-        int mistakes "Tổng số lỗi đã phạm"
+        int mistakes "Tổng số lỗi đã phạm (0..3)"
+        int reviveCount "Số lần đã hồi sinh bù điểm"
         int correctStreak "Chuỗi điền đúng liên tiếp"
-        int wrongStreak "Chuỗi điền sai liên tiếp"
         bool fastFillMode "Trạng thái bật/tắt Tia chớp"
         int fastFillDigit "Số đang ghim trong Tia chớp (null | 1..9)"
     }
@@ -79,15 +79,15 @@ flowchart TD
     classDef penalty fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
     classDef total fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
 
-    P_BASE["1. Điểm cơ bản từng ô đúng (Base Score):<br/>- Dễ: 10đ/ô<br/>- Vừa: 15đ/ô<br/>- Khó: 20đ/ô"]
+    P_BASE["1. Điểm cơ bản từng ô đúng (Base Score):<br/>- Dễ: 10đ/ô<br/>- Vừa: 20đ/ô<br/>- Khó: 40đ/ô"]
 
     P_STREAK["2. Hệ số chuỗi đúng (Streak Multiplier):<br/>- 11 - 20 ô liên tiếp: x1.2<br/>- 21 - 30 ô liên tiếp: x1.5<br/>- 31 - 40 ô liên tiếp: x1.7<br/>- 41+ ô liên tiếp: x2.0"]
 
-    P_PENALTY["3. Trừ điểm vi phạm và Gợi ý:<br/>- Phạt sai lũy tiến: -10đ, -20đ, -30đ...<br/>- Phạt dùng gợi ý: -50đ, -100đ, -150đ..."]
+    P_PENALTY["3. Trừ điểm vi phạm & Gợi ý miễn phí:<br/>- Phạt lỗi theo độ khó: Dễ -5đ, Vừa -7đ, Khó -10đ<br/>- Phạt 3 gợi ý miễn phí: Dễ (30,50,70), Vừa (50,70,90), Khó (50,100,150)<br/>- Hồi sinh ván đấu (khi chạm 3 lỗi): k × BaseCost (50, 100, 150)<br/>- Gợi ý từ lần 4: Đổi bằng Điểm Hồ Sơ (k × BaseCost: 50đ, 100đ, 150đ)"]
 
     P_BONUS["4. Thưởng ván hoàn hảo (Perfect Bonus):<br/>- 0 Lỗi: +100đ (Dễ), +200đ (Vừa), +300đ (Khó)"]
 
-    P_TIME["5. Hệ số tốc độ khi thắng (Time Multiplier):<br/>- Dưới 01:30: x2.0<br/>- Dưới 05:00: x1.5<br/>- Trên 05:00: x1.0"]
+    P_TIME["5. Hệ số tốc độ khi thắng (Time Multiplier):<br/>- Dễ: <1p30s x2.0, <5p x1.5<br/>- Vừa: <3p x2.0, <10p x1.5<br/>- Khó: <6p x2.0, <20p x1.5"]
 
     P_FINAL["🏁 ĐIỂM SỐ CHUNG CUỘC (Final Score)<br/>Hiển thị trên Victory Modal và lưu vào Bảng Kỷ Lục"]
 

@@ -284,8 +284,7 @@
         <div class="info-item">
           <span class="info-label" data-i18n="game_label_mistakes">Lỗi</span>
           <div class="mistake-row">
-            <span id="info-mistakes" class="info-value">0</span>
-            <span id="info-wrong-streak" class="wrong-streak-badge hidden">⚠️ 1</span>
+            <span id="info-mistakes" class="info-value">0/3</span>
           </div>
         </div>
         <div class="info-item timer-item">
@@ -302,12 +301,6 @@
         </div>
       </div>
       <button id="btn-give-up-header" class="btn-text-sm btn-danger-sm" data-i18n="game_label_give_up">Bỏ cuộc</button>
-    </div>
-
-    <div id="danger-overlay" class="danger-overlay"></div>
-    <div id="danger-banner" class="danger-banner hidden">
-      <span id="danger-banner-icon">⚠️</span>
-      <span id="danger-banner-text" data-i18n="game_streak_warning">Cảnh báo chuỗi sai</span>
     </div>
 
     <div class="game-body">
@@ -414,6 +407,86 @@
   <div id="modal-gameover" class="modal-overlay hidden">
     <div class="modal modal-gameover">
       <div id="gameover-content" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Revive Modal (3 Mistakes) -->
+  <div id="modal-revive" class="modal-overlay hidden">
+    <div class="modal modal-revive">
+      <div class="modal-body">
+        <div class="revive-icon">💔</div>
+        <h2 id="revive-modal-title" data-i18n="revive_title">Bạn Đã Mắc 3 Lỗi!</h2>
+        <p id="revive-modal-desc" class="revive-desc" data-i18n="revive_desc">
+          Dùng điểm trận đấu để giảm lỗi về 2/3 và tiếp tục ván cờ.
+        </p>
+
+        <div class="revive-cost-card">
+          <div class="revive-cost-row">
+            <span class="cost-label" data-i18n="revive_current_score">Điểm trận hiện có:</span>
+            <span id="revive-current-score" class="cost-value">0</span>
+          </div>
+          <div class="revive-cost-row cost-deduct-row">
+            <span class="cost-label" data-i18n="revive_cost">Chi phí tiếp tục:</span>
+            <span id="revive-cost-value" class="cost-value highlight-cost">-50</span>
+          </div>
+          <div class="revive-cost-divider"></div>
+          <div class="revive-cost-row">
+            <span class="cost-label" data-i18n="revive_remaining_score">Điểm còn lại:</span>
+            <span id="revive-remaining-score" class="cost-value">0</span>
+          </div>
+        </div>
+
+        <div id="revive-insufficient-notice" class="revive-insufficient-notice hidden" data-i18n="revive_insufficient">
+          ⚠️ Không đủ điểm trận đấu để tiếp tục.
+        </div>
+
+        <div class="revive-info-note" data-i18n="revive_note">
+          💡 Sau khi bù điểm, lỗi sai giảm về 2/3 (thêm 1 cơ hội).
+        </div>
+      </div>
+
+      <div class="modal-footer revive-footer">
+        <button id="btn-revive-giveup" class="btn-secondary" data-i18n="revive_btn_giveup">Chấp Nhận Thua</button>
+        <button id="btn-revive-continue" class="btn-primary" data-i18n="revive_btn_continue">Bù Điểm &amp; Chơi Tiếp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buy Extra Hint Modal (Permanent Profile Points) -->
+  <div id="modal-buy-hint" class="modal-overlay hidden">
+    <div class="modal modal-buy-hint">
+      <div class="modal-body">
+        <div class="buy-hint-icon">💡</div>
+        <h2 id="buy-hint-modal-title" data-i18n="buy_hint_title">Đổi Thêm Gợi Ý</h2>
+        <p id="buy-hint-modal-desc" class="buy-hint-desc" data-i18n="buy_hint_desc">
+          Dùng điểm tích lũy Hồ Sơ để mở thêm 1 gợi ý.
+        </p>
+
+        <div class="revive-cost-card">
+          <div class="revive-cost-row">
+            <span class="cost-label" data-i18n="buy_hint_current_points">Điểm Hồ Sơ hiện có:</span>
+            <span id="buy-hint-current-points" class="cost-value">0</span>
+          </div>
+          <div class="revive-cost-row cost-deduct-row">
+            <span class="cost-label" data-i18n="buy_hint_cost">Chi phí đổi:</span>
+            <span id="buy-hint-cost-value" class="cost-value highlight-cost">-50</span>
+          </div>
+          <div class="revive-cost-divider"></div>
+          <div class="revive-cost-row">
+            <span class="cost-label" data-i18n="buy_hint_remaining_points">Điểm còn lại:</span>
+            <span id="buy-hint-remaining-points" class="cost-value">0</span>
+          </div>
+        </div>
+
+        <div id="buy-hint-insufficient-notice" class="revive-insufficient-notice hidden" data-i18n="buy_hint_insufficient">
+          ⚠️ Không đủ điểm Hồ Sơ để đổi thêm gợi ý.
+        </div>
+      </div>
+
+      <div class="modal-footer revive-footer">
+        <button id="btn-buy-hint-cancel" class="btn-secondary" data-i18n="buy_hint_btn_cancel">Hủy</button>
+        <button id="btn-buy-hint-confirm" class="btn-primary" data-i18n="buy_hint_btn_confirm">Đổi Gợi Ý</button>
+      </div>
     </div>
   </div>
 

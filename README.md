@@ -81,8 +81,11 @@ Không giống như các trang web Sudoku thông thường sao chép giao diện
 * **🚀 v2.0 — Kỷ Nguyên Đột Phá Cốt Lõi & Trải Nghiệm Kỳ Thủ (Phiên Bản Hiện Tại):**
   * **Động cơ sinh đề Logic Grader:** Phân loại độ khó theo kỹ thuật giải đố của con người (Singles, Pairs, Box-Line, X-Wing) thay vì đếm số ô ngẫu nhiên.
   * **Chế độ Điền nhanh Chọn số trước (⚡ Digit-First Mode):** Khóa số điền liên tục, hỗ trợ phím tắt `F`, numpad mờ/sáng thông minh, tùy chọn mặc định trong Settings.
-  * **Cải tiến hệ thống phạt sai:** Phạt lũy kế theo $n$ lần sai (-5/-15/-30, -7/-20/-40, -10/-30) cùng 2 cơ chế Game Over tức thì (chạm trần tổng lỗi hoặc chạm trần chuỗi sai liên tiếp).
-  * **Tinh giản màn hình kết thúc ván:** Bãi bỏ bảng kê chi tiết rườm rà, tập trung làm nổi bật Tổng Điểm Đạt Được và các hành động thi đấu.
+  * **Hệ thống 3 mạng lỗi sai & Hồi sinh bù điểm:** Giới hạn 3 cơ hội sai chuẩn quốc tế (hiển thị 0/3). Phạt điểm trực tiếp theo độ khó (Dễ -5đ, Trung bình -7đ, Khó -10đ). Khi chạm mốc 3/3 lỗi, ván chơi tạm dừng và mở Hộp thoại Hồi Sinh (Revive Modal) cho phép bù điểm trận theo cấp số nhân ($k \times \text{BaseCost}$) để giảm lỗi về 2/3 và tiếp tục thi đấu.
+  * **Đổi gợi ý bằng Điểm Hồ Sơ tích lũy:** Cung cấp sẵn 3 gợi ý miễn phí đầu tiên; từ lượt thứ 4 trở đi, người chơi có thể đổi bằng Điểm vĩnh viễn trong Hồ Sơ (Mastery Points) theo cấp số nhân lũy tiến ($k \times \text{BaseCost}$: Dễ 50đ, TB 100đ, Khó 150đ) mà không trừ điểm trận đấu.
+  * **Không gian thi đấu thanh lịch & tĩnh lặng:** Duy trì độ tập trung tối đa với chỉ số lỗi trực quan 0/3, không hiệu ứng gây xao nhãng.
+  * **Tính năng Sao lưu & Nhập/Xuất tiến trình đa máy:** Xuất/Nhập file `.json` tiện lợi, hỗ trợ hộp thoại Windows "Save As..." ghi nhớ vị trí lưu.
+  * **Màn hình kết thúc ván tinh gọn & trang trọng:** Tập trung làm nổi bật Tổng Điểm Đạt Được và các hành động thi đấu.
   * **Tái cân bằng 9 Cấp Bậc Danh Hiệu:** Ngưỡng điểm chuẩn mực (tối đa 3.000.000 điểm cho bậc Huyền Thoại ~1.000 ván đỉnh cao).
 * **✨ v1.1 — Trợ Năng Giải Đố & Cá Nhân Hóa:**
   * Bổ sung Hộp thoại Cài Đặt hệ thống (Settings Modal) với 4 công tắc trợ năng (Tự xóa nháp, Đánh dấu số trùng, Báo lỗi ngay).
@@ -142,7 +145,7 @@ Sudoku_game/
 ├── docs/                      # Hệ thống tài liệu kiến trúc & sơ đồ Mermaid trực quan
 │   ├── README.md                       # Sơ đồ tổng thể hệ thống (Master System Map) & Chỉ mục
 │   ├── 01_component_architecture.md    # Sơ đồ kiến trúc phân tầng 3 lớp (Presentation, Logic, Infra)
-│   ├── 02_game_state_lifecycle.md      # Sơ đồ máy trạng thái (Screen flow, In-game modes, Danger stages)
+│   ├── 02_game_state_lifecycle.md      # Sơ đồ máy trạng thái (Screen flow, In-game modes, 3-Mistake life system)
 │   ├── 03_data_flow_and_sequences.md   # Sơ đồ tuần tự điền số, chế độ Tia chớp & thuật toán sinh đề
 │   └── 04_storage_and_scoring_models.md # Sơ đồ ER dữ liệu LocalStorage & công thức tính điểm
 ├── devtools/                  # Bộ công cụ Developer Tools & Cheat kiểm thử (Tách biệt độc lập)
@@ -155,7 +158,7 @@ Sudoku_game/
 │   ├── 4-variants.png         # Tab thông tin 4 biến thể Sudoku nổi tiếng
 │   ├── 5-profile.png          # Hồ sơ thành tích: Dashboard 2 cột không cuộn trang
 │   ├── 6-gameplay.png         # Bàn cờ 9x9 với tính điểm, combo, đồng hồ, phím số
-│   ├── 7-danger-warning.png   # Hiệu ứng cảnh báo nguy hiểm khi chọn sai liên tiếp
+│   ├── 7-danger-warning.png   # Màn hình giới hạn lỗi sai & hộp thoại hồi sinh
 │   ├── 8-victory-modal.png    # Hộp thoại chiến thắng với bảng tổng kết điểm chi tiết
 │   ├── 9-devtools-qa.png      # Bảng điều khiển QA Dev Console & chế độ Ghost Answers
 │   └── 10-mobile-notice.png   # Màn hình thông báo thân thiện chỉ dành cho màn hình PC
@@ -163,18 +166,18 @@ Sudoku_game/
 │   ├── main.css               # Reset CSS, hệ thống màu, chuyển màn hình, mobile notice
 │   ├── splash.css             # Giao diện & hoạt ảnh Màn hình Khởi đầu
 │   ├── lobby.css              # Giao diện Sảnh chính, Menu Dock, thẻ ván dở
-│   ├── gameplay.css           # Bảng 9x9, bàn phím số, cảnh báo nguy hiểm
-│   ├── modals.css             # Hộp thoại Hướng dẫn, Cài đặt, Game Over tối giản
+│   ├── gameplay.css           # Bảng 9x9, bàn phím số, đếm lỗi 0/3
+│   ├── modals.css             # Hộp thoại Hướng dẫn, Cài đặt, Hồi sinh, Đổi gợi ý, Game Over tối giản
 │   └── profile.css            # Hồ sơ Dashboard PC: Biểu đồ Donut & 6 thẻ thông số
 └── js/
     ├── app.js                 # Điều hướng ứng dụng, router & mobile detection
-    ├── game.js                # Quản lý ván chơi, bộ đếm giờ, lỗi, chọn số trước, điểm
+    ├── game.js                # Quản lý ván chơi, bộ đếm giờ, lỗi 0/3, hồi sinh, điểm
     ├── sudoku-engine.js       # Thuật toán sinh đề & bộ phân loại logic (Logical Grader)
     ├── ui-board.js            # Render bàn cờ, highlight hàng/cột/khối & số trùng
-    ├── ui-controls.js         # Bàn phím số, công cụ phụ trợ (5 nút công cụ), cảnh báo đỏ
+    ├── ui-controls.js         # Bàn phím số, công cụ phụ trợ (5 nút công cụ), đếm lỗi 0/3
     ├── i18n.js                # Từ điển đa ngôn ngữ (Bilingual: Tiếng Việt 🇻🇳 / English 🇬🇧)
-    ├── storage.js             # Lớp lưu trữ LocalStorage & Memory Fallback
-    ├── sound.js               # Động cơ âm thanh Web Audio procedural SFX (10 SFX)
+    ├── storage.js             # Lớp lưu trữ LocalStorage & Sao lưu JSON đa thiết bị
+    ├── sound.js               # Động cơ âm thanh Web Audio procedural SFX (Zero audio files)
     ├── tutorial.js            # Quản lý các bước hướng dẫn động
     ├── variants.js            # Danh sách thông tin 4 biến thể Sudoku
     └── profile.js             # Xử lý thống kê và vẽ biểu đồ tỉ lệ thắng
