@@ -44,15 +44,41 @@ const App = (() => {
 
   /* ---- toast ---- */
   let toastTimer = null;
-  function showToast(msg) {
+  function showToast(msg, type = 'info', duration = 2500) {
     const el = document.getElementById('toast');
-    document.getElementById('toast-message').textContent = msg;
+    const msgEl = document.getElementById('toast-message');
+    const iconEl = el ? el.querySelector('.toast-icon') : null;
+
+    if (msgEl) msgEl.textContent = msg;
+    if (iconEl) {
+      iconEl.classList.remove('success', 'error', 'warning');
+      if (type && type !== 'info') iconEl.classList.add(type);
+    }
+
     el.classList.remove('hidden', 'hiding');
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       el.classList.add('hiding');
-      setTimeout(() => { el.classList.add('hidden'); el.classList.remove('hiding'); }, 350);
-    }, 3000);
+      setTimeout(() => {
+        el.classList.add('hidden');
+        el.classList.remove('hiding');
+      }, 350);
+    }, duration);
+  }
+
+  /* ---- safe undo with warning ---- */
+  function handleUndo() {
+    const state = Game.getState();
+    if (state && !state.isPaused && !state.isFinished && state.undoStack && state.undoStack.length > 0) {
+      const lastAction = state.undoStack[state.undoStack.length - 1];
+      if (lastAction && lastAction.type === 'value' && !lastAction.error) {
+        const msg = typeof I18n !== 'undefined'
+          ? I18n.t('toast_undo_penalty')
+          : 'Hoàn tác sẽ trừ điểm combo hiện tại!';
+        showToast(msg, 'warning', 2000);
+      }
+    }
+    Game.undo();
   }
 
   /* ---- confirm dialog ---- */
@@ -234,7 +260,14 @@ const App = (() => {
     UIControls.init();
 
     Game.setCallbacks(
-      (state) => { UIBoard.render(state); UIControls.update(state); },
+      (state, source) => {
+        if (source === 'timer') {
+          UIControls.updateTimer(state);
+          return;
+        }
+        UIBoard.render(state);
+        UIControls.update(state);
+      },
       (reason, state, breakdown) => showGameOver(reason, state, breakdown),
       (state) => showReviveModal(state)
     );
@@ -268,7 +301,14 @@ const App = (() => {
     UIControls.init();
 
     Game.setCallbacks(
-      (state) => { UIBoard.render(state); UIControls.update(state); },
+      (state, source) => {
+        if (source === 'timer') {
+          UIControls.updateTimer(state);
+          return;
+        }
+        UIBoard.render(state);
+        UIControls.update(state);
+      },
       (reason, state, breakdown) => showGameOver(reason, state, breakdown),
       (state) => showReviveModal(state)
     );
@@ -717,6 +757,24 @@ const App = (() => {
 
       if (isInteractionLocked) return;
       if (!Game.isActive()) return;
+
+      // Space shortcut to toggle pause in gameplay
+      if (e.key === ' ' || e.code === 'Space') {
+        const gameScreen = document.getElementById('screen-game');
+        const isGameplay = gameScreen && gameScreen.classList.contains('active');
+        const hasActiveModal = !!document.querySelector('.modal-overlay:not(.hidden)');
+        const isTyping = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+
+        if (isGameplay && !hasActiveModal && !isTyping) {
+          e.preventDefault();
+          if (document.activeElement && document.activeElement.blur) {
+            document.activeElement.blur();
+          }
+          Game.togglePause();
+          return;
+        }
+      }
+
       const state = Game.getState();
       if (!state || state.isPaused) return;
 
@@ -732,7 +790,7 @@ const App = (() => {
         Game.erase();
       } else if (key === 'z' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
-        Game.undo();
+        handleUndo();
       } else if (key === 'n' || key === 'N') {
         Game.toggleNotes();
       } else if (key === 'a' || key === 'A') {
@@ -785,6 +843,8 @@ const App = (() => {
     showScreen,
     showTab,
     showToast,
+    toast: showToast,
+    handleUndo,
     confirm,
     goToLobby: _goToLobby,
     showReviveModal,

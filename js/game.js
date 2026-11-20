@@ -4,6 +4,7 @@
 const Game = (() => {
   let state = null;
   let timerInterval = null;
+  let conflictTimer = null;
   let onUpdate = null;
   let onGameOver = null;
   let onThreeMistakes = null;
@@ -143,6 +144,16 @@ const Game = (() => {
     };
   }
 
+  const MAX_UNDO_DEPTH = 100;
+
+  function pushUndo(action) {
+    if (!state || !state.undoStack) return;
+    state.undoStack.push(action);
+    if (state.undoStack.length > MAX_UNDO_DEPTH) {
+      state.undoStack.shift();
+    }
+  }
+
   function save() {
     if (state && !state.isFinished) {
       Storage.saveGame(serializeState());
@@ -155,8 +166,7 @@ const Game = (() => {
     timerInterval = setInterval(() => {
       if (state && !state.isPaused && !state.isFinished) {
         state.timer++;
-        save();
-        if (onUpdate) onUpdate(state);
+        if (onUpdate) onUpdate(state, 'timer');
       }
     }, 1000);
   }
@@ -366,7 +376,7 @@ const Game = (() => {
     if (ni >= 0) {
       // Removing note is always allowed
       state.notes[key].splice(ni, 1);
-      state.undoStack.push({ type: 'note', row, col, oldNotes });
+      pushUndo({ type: 'note', row, col, oldNotes });
       save();
       if (typeof Sound !== 'undefined' && Sound.playNote) Sound.playNote();
       if (onUpdate) onUpdate(state);
@@ -396,19 +406,22 @@ const Game = (() => {
 
     if (conflictSet.size > 0) {
       state.conflictCells = [...conflictSet];
+      state.conflictId = (state.conflictId || 0) + 1;
       if (typeof Sound !== 'undefined' && Sound.playError) Sound.playError();
       if (onUpdate) onUpdate(state);
-      setTimeout(() => {
-        if (state && state.conflictCells) {
+      if (conflictTimer) clearTimeout(conflictTimer);
+      conflictTimer = setTimeout(() => {
+        if (state) {
           state.conflictCells = null;
           if (onUpdate) onUpdate(state);
         }
-      }, 2000);
+        conflictTimer = null;
+      }, 1200);
       return;
     }
 
     state.notes[key].push(num);
-    state.undoStack.push({ type: 'note', row, col, oldNotes });
+    pushUndo({ type: 'note', row, col, oldNotes });
     save();
     if (typeof Sound !== 'undefined' && Sound.playNote) Sound.playNote();
     if (onUpdate) onUpdate(state);
@@ -450,7 +463,7 @@ const Game = (() => {
       state.score = Math.max(0, state.score - penalty);
       state.wrongPenalties = (state.wrongPenalties || 0) + penalty;
 
-      state.undoStack.push({
+      pushUndo({
         type: 'value',
         row, col,
         oldValue, oldNotes,
@@ -493,7 +506,7 @@ const Game = (() => {
     // Automatically remove number from related notes in row, column, and box
     removeRelatedNotes(row, col, num);
 
-    state.undoStack.push({
+    pushUndo({
       type: 'value',
       row, col,
       oldValue, oldNotes,
@@ -609,7 +622,7 @@ const Game = (() => {
 
     state.current[i] = 0;
     state.notes[key] = [];
-    state.undoStack.push({ type: 'erase', row, col, oldValue, oldNotes, wasCorrect, deductedScore, deductedBase });
+    pushUndo({ type: 'erase', row, col, oldValue, oldNotes, wasCorrect, deductedScore, deductedBase });
     save();
     if (typeof Sound !== 'undefined' && Sound.playErase) Sound.playErase();
     if (onUpdate) onUpdate(state);
@@ -888,6 +901,7 @@ const Game = (() => {
   function togglePause() {
     if (!state || state.isFinished) return;
     state.isPaused = !state.isPaused;
+    save();
     if (onUpdate) onUpdate(state);
   }
 
@@ -908,6 +922,10 @@ const Game = (() => {
   }
 
   function destroy() {
+    if (conflictTimer) {
+      clearTimeout(conflictTimer);
+      conflictTimer = null;
+    }
     save();
     stopTimer();
     state = null;

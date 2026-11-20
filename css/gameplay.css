@@ -487,34 +487,33 @@
   color: #FFFFFF !important;
 }
 
-/* Conflict flash for manual note placement collision (2s animation: 4 pulses x 0.5s) */
+/* Conflict flash for manual note placement collision (1.2s: 2 gentle blue pulses via overlay) */
 .cell.conflict-flash {
-  animation: conflictPulse 0.5s ease-in-out 4;
-  z-index: 3;
+  z-index: 2;
 }
 
-@keyframes conflictPulse {
-  0%, 100% {
-    background-color: var(--surface);
-  }
-  50% {
-    background-color: #FEE2E2 !important;
-    box-shadow: inset 0 0 0 2.5px #EF4444 !important;
-  }
+.cell.conflict-flash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #3B82F6;
+  opacity: 0;
+  pointer-events: none;
+  animation: conflictPulseOverlay 1.2s cubic-bezier(0.4, 0, 0.2, 1) 1;
+  z-index: 0;
+  will-change: opacity;
 }
 
-[data-theme="dark"] .cell.conflict-flash {
-  animation: conflictPulseDark 0.5s ease-in-out 4;
-  z-index: 3;
+[data-theme="dark"] .cell.conflict-flash::after {
+  background-color: #60A5FA;
 }
 
-@keyframes conflictPulseDark {
-  0%, 100% {
-    background-color: var(--surface);
+@keyframes conflictPulseOverlay {
+  0%, 50%, 100% {
+    opacity: 0;
   }
-  50% {
-    background-color: rgba(239, 68, 68, 0.4) !important;
-    box-shadow: inset 0 0 0 2.5px #F87171 !important;
+  25%, 75% {
+    opacity: 0.42;
   }
 }
 
@@ -551,24 +550,49 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: var(--radius-sm, 8px);
+}
+
+.pause-content {
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  z-index: 10;
-  border-radius: 4px;
+  gap: 10px;
+  text-align: center;
+  padding: 20px;
 }
 
-.pause-overlay svg {
-  width: 48px;
-  height: 48px;
-  color: var(--text-secondary);
+.pause-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.12);
+  color: #3B82F6;
+  margin-bottom: 2px;
 }
 
-.pause-overlay p {
-  font-size: 1.25rem;
-  font-weight: 600;
+.pause-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.pause-subtext {
+  font-size: 0.88rem;
   color: var(--text-secondary);
+  margin: 0 0 6px 0;
+}
+
+.info-value.timer-paused {
+  color: #F59E0B;
 }
 
 /* ========================================

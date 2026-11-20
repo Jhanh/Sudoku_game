@@ -58,7 +58,13 @@ const UIControls = (() => {
 
   /* ---- bind tool buttons ---- */
   function _bindTools() {
-    document.getElementById('btn-undo').addEventListener('click', () => Game.undo());
+    document.getElementById('btn-undo').addEventListener('click', () => {
+      if (typeof App !== 'undefined' && App.handleUndo) {
+        App.handleUndo();
+      } else {
+        Game.undo();
+      }
+    });
     document.getElementById('btn-erase').addEventListener('click', () => Game.erase());
     document.getElementById('btn-fast-fill').addEventListener('click', () => Game.toggleFastFill());
     document.getElementById('btn-notes').addEventListener('click', () => Game.toggleNotes());
@@ -185,7 +191,12 @@ const UIControls = (() => {
     }
     lastRenderedStreak = streak;
 
-    document.getElementById('info-timer').textContent = Game.formatTime(state.timer);
+    const timerEl = document.getElementById('info-timer');
+    if (timerEl) {
+      const timeStr = Game.formatTime(state.timer);
+      timerEl.textContent = state.isPaused ? `⏸ ${timeStr}` : timeStr;
+      timerEl.classList.toggle('timer-paused', !!state.isPaused);
+    }
 
     const mistakesEl = document.getElementById('info-mistakes');
     if (mistakesEl) {
@@ -199,10 +210,10 @@ const UIControls = (() => {
     if (pauseBtn) {
       if (state.isPaused) {
         pauseBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-        pauseBtn.title = (typeof I18n !== 'undefined' ? I18n.t('btn_resume') : 'Tiếp tục');
+        pauseBtn.title = (typeof I18n !== 'undefined' ? I18n.t('btn_resume_tooltip') : 'Tiếp tục [Space]');
       } else {
         pauseBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
-        pauseBtn.title = (typeof I18n !== 'undefined' && I18n.getLanguage() === 'en' ? 'Pause' : 'Tạm dừng');
+        pauseBtn.title = (typeof I18n !== 'undefined' ? I18n.t('btn_pause_tooltip') : 'Tạm dừng [Space]');
       }
     }
 
@@ -292,6 +303,17 @@ const UIControls = (() => {
     }
   }
 
-  return { init, update };
+  /* ---- lightweight timer-only update (avoids full DOM traversal on 1s tick) ---- */
+  function updateTimer(state) {
+    if (!state) return;
+    const timerEl = document.getElementById('info-timer');
+    if (timerEl) {
+      const timeStr = Game.formatTime(state.timer);
+      timerEl.textContent = state.isPaused ? `⏸ ${timeStr}` : timeStr;
+      timerEl.classList.toggle('timer-paused', !!state.isPaused);
+    }
+  }
+
+  return { init, update, updateTimer };
 })();
 

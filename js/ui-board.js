@@ -5,11 +5,13 @@ const UIBoard = (() => {
   const boardEl = () => document.getElementById('sudoku-board');
   const pauseEl = () => document.getElementById('pause-overlay');
   let cells = [];
+  let lastConflictId = 0;
 
   function init() {
     const board = boardEl();
     board.innerHTML = '';
     cells = [];
+    lastConflictId = 0;
 
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
@@ -124,6 +126,10 @@ const UIBoard = (() => {
 
         // Conflict flash (manual note collision with existing placed numbers)
         if (state.conflictCells && state.conflictCells.includes(i)) {
+          const isNewConflict = Boolean(state.conflictId && state.conflictId !== lastConflictId);
+          if (isNewConflict) {
+            void cell.offsetWidth;
+          }
           cell.classList.add('conflict-flash');
         }
 
@@ -161,6 +167,12 @@ const UIBoard = (() => {
           notesDiv.style.display = 'none';
         }
       }
+    }
+
+    if (state.conflictCells && state.conflictId) {
+      lastConflictId = state.conflictId;
+    } else if (!state.conflictCells) {
+      lastConflictId = 0;
     }
 
     // Pause overlay
