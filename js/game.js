@@ -629,7 +629,7 @@ const Game = (() => {
   }
 
   function toggleNotes() {
-    if (!state || state.isFinished) return;
+    if (!state || state.isFinished || state.isPaused) return;
     state.notesMode = !state.notesMode;
     save();
     if (onUpdate) onUpdate(state);
@@ -783,8 +783,8 @@ const Game = (() => {
   function getHintPermanentCost(difficulty) {
     const diff = difficulty || (state ? state.difficulty : 'easy');
     const base = HINT_PERMANENT_COST[diff] || 50;
-    const count = (state ? (state.hintsBought || 0) : 0) + 1;
-    return base * count;
+    const bought = state ? (state.hintsBought || 0) : 0;
+    return base * Math.pow(2, bought);
   }
 
   function buyExtraHint() {
@@ -804,7 +804,7 @@ const Game = (() => {
 
   /* ---- auto notes (fast notes) ---- */
   function fillAllCandidates() {
-    if (!state || typeof SudokuEngine === 'undefined') return;
+    if (!state || state.isFinished || state.isPaused || typeof SudokuEngine === 'undefined') return;
     const validCands = SudokuEngine.getAllValidCandidates(state.current);
     for (let i = 0; i < 81; i++) {
       if (state.current[i] === 0) {

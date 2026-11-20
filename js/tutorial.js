@@ -1,26 +1,26 @@
 /* =========================================================
-   tutorial.js - Animated step-by-step Sudoku tutorial
+   tutorial.js - Static 3-step Sudoku player tutorial
+   3 visual static steps: Basic Rules (Row/Col/Box), Lightning Mode, Auto Notes
    ========================================================= */
 const Tutorial = (() => {
   let currentStep = 0;
   const totalSteps = 3;
-  let animTimers = [];
 
   function getSteps() {
     return [
       {
-        title: typeof I18n !== 'undefined' ? I18n.t('tut_step1_title') : 'Quy tắc Hàng & Cột',
-        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step1_desc') : 'Mỗi <strong>hàng ngang</strong> và mỗi <strong>cột dọc</strong> phải chứa đầy đủ các số từ 1 đến 9 - không có số nào được lặp lại.',
+        title: typeof I18n !== 'undefined' ? I18n.t('tut_step1_title') : '1. Quy tắc cơ bản (Hàng, Cột & Khối 3×3)',
+        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step1_desc') : 'Mỗi <strong>hàng ngang</strong>, <strong>cột dọc</strong> và mỗi <strong>khối 3×3</strong> đều phải chứa đủ các chữ số từ 1 đến 9 mà <strong>không được trùng lặp</strong>.',
         buildDemo: buildStep1
       },
       {
-        title: typeof I18n !== 'undefined' ? I18n.t('tut_step2_title') : 'Quy tắc Khối 3×3',
-        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step2_desc') : 'Bảng Sudoku được chia thành 9 <strong>khối 3×3</strong>. Mỗi khối cũng phải chứa đúng các số từ 1 đến 9, không trùng lặp.',
+        title: typeof I18n !== 'undefined' ? I18n.t('tut_step2_title') : '2. Chế độ Tia chớp (Lightning / Fast-Fill)',
+        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step2_desc') : 'Phím tắt <code>F</code>. Chọn 1 chữ số trên bàn phím số để khóa số đó, sau đó nhấp chuột liên tục vào các ô trống trên bàn cờ để điền nhanh mà không cần chọn lại số nhiều lần. Khi đã điền đủ 9 số, phím số sẽ tự động ẩn đi để bạn thuận tiện chọn số tiếp theo.',
         buildDemo: buildStep2
       },
       {
-        title: typeof I18n !== 'undefined' ? I18n.t('tut_step3_title') : 'Suy luận & Ghi chú',
-        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step3_desc') : 'Dùng <strong>giao điểm</strong> giữa hàng, cột và khối để loại trừ. Bật chế độ <strong>Ghi chú</strong> (✏️) để đánh dấu các số có thể điền vào ô trống.',
+        title: typeof I18n !== 'undefined' ? I18n.t('tut_step3_title') : '3. Bút chì nhanh (Auto Notes)',
+        desc: typeof I18n !== 'undefined' ? I18n.t('tut_step3_desc') : 'Phím tắt <code>A</code>. Tự động tính toán và điền tất cả các con số khả dĩ (ứng viên) vào từng ô trống trên bàn cờ, giúp bạn nhanh chóng phát hiện các ô chỉ còn 1 khả năng duy nhất để suy luận dễ dàng hơn. Bạn có thể bấm lại nút này để tắt và xóa sạch ghi chú bất kỳ lúc nào.',
         buildDemo: buildStep3
       }
     ];
@@ -33,12 +33,10 @@ const Tutorial = (() => {
   }
 
   function hide() {
-    _clearAnims();
     document.getElementById('modal-tutorial').classList.add('hidden');
   }
 
   function _render() {
-    _clearAnims();
     const carousel = document.getElementById('tutorial-carousel');
     carousel.innerHTML = '';
 
@@ -61,19 +59,25 @@ const Tutorial = (() => {
     container.appendChild(p);
     carousel.appendChild(container);
 
-    // Dots
+    // Dots (3 dots with click support)
     const dotsDiv = document.getElementById('tutorial-dots');
     dotsDiv.innerHTML = '';
     for (let i = 0; i < totalSteps; i++) {
       const dot = document.createElement('span');
       dot.className = 'dot' + (i === currentStep ? ' active' : '');
+      dot.style.cursor = 'pointer';
+      dot.title = `Trang ${i + 1}`;
+      dot.addEventListener('click', () => {
+        currentStep = i;
+        _render();
+      });
       dotsDiv.appendChild(dot);
     }
 
     // Buttons
     document.getElementById('btn-tut-prev').disabled = currentStep === 0;
     const nextBtn = document.getElementById('btn-tut-next');
-    const finishText = typeof I18n !== 'undefined' ? I18n.t('tut_btn_start_play') : 'Hoàn tất';
+    const finishText = typeof I18n !== 'undefined' ? I18n.t('tut_btn_start_play') : 'Bắt đầu chơi!';
     const nextText = typeof I18n !== 'undefined' ? I18n.t('btn_next') : 'Tiếp theo';
     nextBtn.textContent = currentStep === totalSteps - 1 ? finishText : nextText;
   }
@@ -94,75 +98,87 @@ const Tutorial = (() => {
     }
   }
 
-  function _clearAnims() {
-    animTimers.forEach(t => clearTimeout(t));
-    animTimers = [];
-  }
-
-  function _delay(fn, ms) {
-    animTimers.push(setTimeout(fn, ms));
-  }
-
-  /* ============ STEP 1: Row & Column rule ============ */
+  /* ============ STEP 1: Basic Rules (Row, Column & 3x3 Box) ============ */
   function buildStep1(container) {
     const label = document.createElement('div');
     label.className = 'tut-label';
-    label.innerHTML = '▶ <strong>Hàng ngang</strong> &amp; <strong>Cột dọc</strong> cắt nhau trên bảng:';
+    label.innerHTML = '▶ <strong>Hàng ngang</strong>, <strong>Cột dọc</strong> &amp; <strong>Khối 3×3</strong> giao nhau:';
     container.appendChild(label);
 
     const grid = document.createElement('div');
-    grid.style.cssText = 'display:grid;grid-template-columns:repeat(9,26px);grid-template-rows:repeat(9,26px);gap:1px;background:var(--border);border:2px solid var(--text);border-radius:4px;margin:8px auto;';
-
-    // Demo data for 9x9 mini board focusing on Row 3 and Col 5
-    // Row 3: [3, 1, 6, 0, 8, 5, 2, 0, 4] (missing 7 at col 3, missing 9 at col 7)
-    // Col 5: [9, 2, 0, 5, 1, 6, 3, 0, 8] (row 3 has 5, missing 4 at row 2, missing 7 at row 7)
-    const rowValues = [3, 1, 6, 0, 8, 5, 2, 0, 4];
-    const colValues = [9, 2, 0, 5, 1, 6, 3, 0, 8];
+    grid.style.cssText = 'display:grid;grid-template-columns:repeat(9,28px);grid-template-rows:repeat(9,28px);gap:0;border:2.5px solid #1E293B;border-radius:6px;margin:8px auto;box-shadow:0 4px 12px rgba(0,0,0,0.08);background:#FFFFFF;';
 
     const targetRow = 3;
-    const targetCol = 5;
+    const targetCol = 4;
 
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
         const cell = document.createElement('div');
         cell.className = 'tut-cell';
-        cell.style.cssText = 'background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;transition:all 0.3s;';
+        cell.style.cssText = 'display:flex;align-items:center;justify-content:center;box-sizing:border-box;font-family:inherit;';
 
-        // 3x3 block visual cues
-        if (c === 2 || c === 5) cell.style.borderRight = '1.5px solid var(--text)';
-        if (r === 2 || r === 5) cell.style.borderBottom = '1.5px solid var(--text)';
+        // Outer borders for 3x3 subgrids without gaps
+        cell.style.borderRight = (c === 2 || c === 5) ? '2px solid #1E293B' : (c === 8 ? 'none' : '1px solid #CBD5E1');
+        cell.style.borderBottom = (r === 2 || r === 5) ? '2px solid #1E293B' : (r === 8 ? 'none' : '1px solid #CBD5E1');
 
         const inRow = r === targetRow;
         const inCol = c === targetCol;
+        const inBox = (r >= 3 && r <= 5) && (c >= 3 && c <= 5);
+        const isCenter = inRow && inCol;
 
-        if (inRow && inCol) {
+        if (isCenter) {
+          // Center intersection
           cell.textContent = '5';
-          cell.style.background = '#93C5FD';
-          cell.style.color = '#1E3A8A';
+          cell.style.background = '#2563EB';
+          cell.style.color = '#FFFFFF';
+          cell.style.fontWeight = '800';
+          cell.style.fontSize = '0.95rem';
+        } else if (inBox) {
+          // 3x3 Box highlight (Warm amber, high contrast)
+          cell.style.background = '#FEF08A';
+          cell.style.color = '#854D0E';
           cell.style.fontWeight = '700';
+          cell.style.fontSize = '0.82rem';
+          if (r === 3 && c === 3) cell.textContent = '1';
+          if (r === 3 && c === 5) cell.textContent = '3';
+          if (r === 4 && c === 4) cell.textContent = '4';
+          if (r === 5 && c === 3) cell.textContent = '7';
+          if (r === 5 && c === 5) cell.textContent = '9';
         } else if (inRow) {
-          const val = rowValues[c];
-          cell.style.background = '#EFF6FF';
-          if (val !== 0) {
-            cell.textContent = val;
-          } else {
-            cell.dataset.missingRow = c === 3 ? '7' : '9';
-            cell.style.background = '#DBEAFE';
-          }
+          // Row highlight (Vibrant sky blue, high contrast)
+          cell.style.background = '#BAE6FD';
+          cell.style.color = '#0369A1';
+          cell.style.fontWeight = '700';
+          cell.style.fontSize = '0.82rem';
+          if (c === 0) cell.textContent = '2';
+          if (c === 1) cell.textContent = '6';
+          if (c === 6) cell.textContent = '8';
+          if (c === 7) cell.textContent = '9';
         } else if (inCol) {
-          const val = colValues[r];
-          cell.style.background = '#F5F3FF';
-          if (val !== 0) {
-            cell.textContent = val;
-            cell.style.color = '#7C3AED';
-          } else {
-            cell.dataset.missingCol = r === 2 ? '4' : '7';
-            cell.style.background = '#EDE9FE';
-          }
+          // Col highlight (Clear violet, high contrast)
+          cell.style.background = '#DDD6FE';
+          cell.style.color = '#6D28D9';
+          cell.style.fontWeight = '700';
+          cell.style.fontSize = '0.82rem';
+          if (r === 1) cell.textContent = '2';
+          if (r === 7) cell.textContent = '8';
+          if (r === 8) cell.textContent = '1';
         } else {
-          cell.style.opacity = '0.35';
-          // Fill a few background digits for realism
-          if ((r + c) % 4 === 0) cell.textContent = ((r * 3 + c) % 9) + 1;
+          // Other cells
+          cell.style.background = '#FFFFFF';
+          cell.style.color = '#94A3B8';
+          cell.style.fontWeight = '600';
+          cell.style.fontSize = '0.75rem';
+          if (r === 0 && c === 0) cell.textContent = '1';
+          if (r === 0 && c === 8) cell.textContent = '9';
+          if (r === 1 && c === 2) cell.textContent = '7';
+          if (r === 2 && c === 7) cell.textContent = '4';
+          if (r === 4 && c === 0) cell.textContent = '4';
+          if (r === 5 && c === 8) cell.textContent = '3';
+          if (r === 6 && c === 1) cell.textContent = '3';
+          if (r === 7 && c === 6) cell.textContent = '7';
+          if (r === 8 && c === 0) cell.textContent = '7';
+          if (r === 8 && c === 8) cell.textContent = '6';
         }
 
         grid.appendChild(cell);
@@ -171,151 +187,96 @@ const Tutorial = (() => {
 
     container.appendChild(grid);
 
-    // Animate row missing numbers
-    _delay(() => {
-      const rowMissingCells = grid.querySelectorAll('[data-missing-row]');
-      rowMissingCells.forEach(cell => {
-        cell.textContent = cell.dataset.missingRow;
-        cell.classList.add('fill-anim');
-        cell.style.color = '#2563EB';
-        cell.style.fontWeight = '700';
-      });
-    }, 1200);
-
-    // Animate col missing numbers
-    _delay(() => {
-      const colMissingCells = grid.querySelectorAll('[data-missing-col]');
-      colMissingCells.forEach(cell => {
-        cell.textContent = cell.dataset.missingCol;
-        cell.classList.add('fill-anim');
-        cell.style.color = '#7C3AED';
-        cell.style.fontWeight = '700';
-      });
-    }, 2200);
+    const legend = document.createElement('div');
+    legend.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:14px;font-size:0.75rem;margin-top:8px;font-weight:600;flex-wrap:wrap;';
+    legend.innerHTML = `
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#BAE6FD;border:1px solid #7DD3FC;border-radius:2px;"></span> <span style="color:var(--text);">Hàng ngang</span></span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#DDD6FE;border:1px solid #C4B5FD;border-radius:2px;"></span> <span style="color:var(--text);">Cột dọc</span></span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#FEF08A;border:1px solid #FDE047;border-radius:2px;"></span> <span style="color:var(--text);">Khối 3×3</span></span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#2563EB;border-radius:2px;"></span> <span style="color:var(--text);">Giao điểm</span></span>
+    `;
+    container.appendChild(legend);
   }
 
-  /* ============ STEP 2: 3x3 Box rule ============ */
+  /* ============ STEP 2: Lightning Mode (Fast-Fill) ============ */
   function buildStep2(container) {
-    const label = document.createElement('div');
-    label.className = 'tut-label';
-    label.textContent = '▶ Khối 3×3:';
-    container.appendChild(label);
+    const card = document.createElement('div');
+    card.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px 16px;background:var(--highlight-row);border-radius:12px;border:1px solid var(--border);max-width:400px;margin:8px auto;width:100%;box-shadow:0 2px 8px rgba(0,0,0,0.04);';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="position:relative;width:58px;height:58px;border-radius:12px;border:2px solid #F59E0B;background:#FEF3C7;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <span style="font-size:1.4rem;color:#D97706;line-height:1;">⚡</span>
+            <span style="font-size:0.62rem;font-weight:700;color:#B45309;margin-top:2px;">Tia chớp</span>
+            <span style="position:absolute;bottom:-6px;padding:1px 5px;border-radius:4px;background:#D97706;color:#FFF;font-size:0.58rem;font-weight:700;">ON</span>
+          </div>
+          <span style="font-size:0.68rem;color:var(--text-secondary);font-weight:600;">1. Bật Tia chớp</span>
+        </div>
 
-    const grid = document.createElement('div');
-    grid.className = 'tut-grid grid-3x3';
+        <span style="color:var(--text-secondary);font-size:1.1rem;margin-bottom:14px;">➔</span>
 
-    const boxNums = [4, 1, 7, 8, 0, 3, 6, 2, 5]; // missing: 9
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:52px;height:52px;border:2px solid #2563EB;border-radius:10px;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(37,99,235,0.18);">
+            <span style="font-size:1.25rem;font-weight:800;color:#2563EB;line-height:1;">5</span>
+            <span style="font-size:0.58rem;color:#2563EB;font-weight:600;margin-top:2px;">còn 4</span>
+          </div>
+          <span style="font-size:0.68rem;color:var(--text-secondary);font-weight:600;">2. Chọn số 5</span>
+        </div>
 
-    boxNums.forEach((n, i) => {
-      const cell = document.createElement('div');
-      cell.className = 'tut-cell';
-      if (n !== 0) {
-        cell.textContent = n;
-      }
-      grid.appendChild(cell);
-    });
+        <span style="color:var(--text-secondary);font-size:1.1rem;margin-bottom:14px;">➔</span>
 
-    container.appendChild(grid);
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="display:flex;gap:6px;">
+            <div style="width:38px;height:38px;border:1.5px solid #93C5FD;background:#EFF6FF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#2563EB;font-size:1.05rem;">5</div>
+            <div style="width:38px;height:38px;border:1.5px solid #93C5FD;background:#EFF6FF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#2563EB;font-size:1.05rem;">5</div>
+          </div>
+          <span style="font-size:0.68rem;color:var(--text-secondary);font-weight:600;">3. Nhấp điền liên tục</span>
+        </div>
+      </div>
 
-    // Animate: zoom box slightly then fill the missing number
-    _delay(() => {
-      grid.style.transition = 'transform 0.5s ease';
-      grid.style.transform = 'scale(1.08)';
-    }, 600);
-
-    _delay(() => {
-      grid.style.transform = 'scale(1)';
-    }, 1200);
-
-    _delay(() => {
-      const emptyCell = grid.querySelectorAll('.tut-cell')[4]; // center cell
-      emptyCell.textContent = '9';
-      emptyCell.classList.add('fill-anim');
-      emptyCell.style.color = '#22C55E';
-      emptyCell.style.fontWeight = '700';
-      emptyCell.style.fontSize = '1.3rem';
-    }, 1500);
-
-    const desc2 = document.createElement('div');
-    desc2.className = 'tut-label';
-    desc2.style.marginTop = '12px';
-    desc2.innerHTML = 'Số <strong style="color:#22C55E">9</strong> là số còn thiếu duy nhất trong khối!';
-    container.appendChild(desc2);
+      <div style="width:100%;padding:10px 12px;border-radius:8px;background:#F0FDF4;border:1px solid #BBF7D0;color:#166534;font-size:0.78rem;text-align:left;line-height:1.45;">
+        ⚡ <strong>Tối ưu tốc độ:</strong> Giúp bạn điền nhanh toàn bộ vị trí của 1 con số trên khắp bàn cờ chỉ với một lần chọn phím, tiết kiệm tối đa thời gian thao tác.
+      </div>
+    `;
+    container.appendChild(card);
   }
 
-  /* ============ STEP 3: Deduction & Notes ============ */
+  /* ============ STEP 3: Fast Notes (Auto Candidates) ============ */
   function buildStep3(container) {
-    const label = document.createElement('div');
-    label.className = 'tut-label';
-    label.textContent = '▶ Giao điểm hàng – cột – khối:';
-    container.appendChild(label);
+    const card = document.createElement('div');
+    card.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px 16px;background:var(--highlight-row);border-radius:12px;border:1px solid var(--border);max-width:400px;margin:8px auto;width:100%;box-shadow:0 2px 8px rgba(0,0,0,0.04);';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;width:100%;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="position:relative;width:60px;height:60px;border-radius:12px;border:2px solid #10B981;background:#ECFDF5;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <span style="font-size:1.4rem;color:#059669;line-height:1;">✎</span>
+            <span style="font-size:0.62rem;font-weight:700;color:#047857;margin-top:2px;">Bút chì</span>
+            <span style="position:absolute;bottom:-6px;padding:1px 5px;border-radius:4px;background:#059669;color:#FFF;font-size:0.58rem;font-weight:700;">ON</span>
+          </div>
+          <span style="font-size:0.68rem;color:var(--text-secondary);font-weight:600;">Bật Bút chì nhanh</span>
+        </div>
 
-    // 5x5 mini grid to show intersection
-    const grid = document.createElement('div');
-    grid.className = 'tut-grid';
-    grid.style.cssText = 'display:grid;grid-template-columns:repeat(5,40px);grid-template-rows:repeat(5,40px);gap:2px;background:var(--border);border:2px solid var(--text);border-radius:4px;margin:8px auto;';
+        <span style="color:var(--text-secondary);font-size:1.2rem;">➔</span>
 
-    const data = [
-      [3, 0, 0, 7, 1],
-      [0, 0, 0, 0, 0],
-      [0, 0, '?', 0, 0],
-      [8, 0, 0, 4, 0],
-      [2, 0, 0, 0, 6]
-    ];
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:64px;height:64px;border:1.5px solid #3B82F6;background:var(--surface);border-radius:8px;display:grid;grid-template-columns:repeat(3,1fr);padding:3px;font-size:0.65rem;color:#1E40AF;font-weight:700;text-align:center;align-items:center;box-shadow:0 3px 8px rgba(59,130,246,0.15);">
+            <span>1</span><span style="opacity:0;">2</span><span>3</span>
+            <span style="opacity:0;">4</span><span>5</span><span style="opacity:0;">6</span>
+            <span>7</span><span style="opacity:0;">8</span><span>9</span>
+          </div>
+          <span style="font-size:0.68rem;color:var(--text-secondary);font-weight:600;">Tự động điền ứng viên</span>
+        </div>
+      </div>
 
-    for (let r = 0; r < 5; r++) {
-      for (let c = 0; c < 5; c++) {
-        const cell = document.createElement('div');
-        cell.className = 'tut-cell';
-        cell.style.cssText = 'background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:600;transition:all 0.4s;position:relative;';
-        const v = data[r][c];
-        if (v === '?') {
-          cell.id = 'tut-target';
-          cell.style.background = '#BFDBFE';
-        } else if (v !== 0) {
-          cell.textContent = v;
-        }
-        // Highlight row 2 and col 2
-        if (r === 2 || c === 2) {
-          cell.classList.add('highlight');
-        }
-        grid.appendChild(cell);
-      }
-    }
-    container.appendChild(grid);
+      <div style="width:100%;padding:10px 12px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF;font-size:0.78rem;text-align:left;line-height:1.45;">
+        ✎ <strong>Hỗ trợ suy luận:</strong> Tự động ghi chú các con số tiềm năng vào tất cả ô trống, giúp bạn phát hiện ngay các ô chỉ còn 1 ứng viên duy nhất.
+      </div>
 
-    // Animate: show pencil notes in target cell
-    _delay(() => {
-      const target = document.getElementById('tut-target');
-      if (!target) return;
-      target.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);font-size:0.55rem;color:#64748B;width:100%;height:100%;padding:2px;">' +
-        '<span style="display:flex;align-items:center;justify-content:center;">5</span>' +
-        '<span></span>' +
-        '<span></span>' +
-        '<span></span>' +
-        '<span style="display:flex;align-items:center;justify-content:center;">5</span>' +
-        '<span style="display:flex;align-items:center;justify-content:center;">6</span>' +
-        '<span></span>' +
-        '<span></span>' +
-        '<span style="display:flex;align-items:center;justify-content:center;">9</span>' +
-        '</div>';
-    }, 1000);
-
-    // Then resolve to the answer
-    _delay(() => {
-      const target = document.getElementById('tut-target');
-      if (!target) return;
-      target.innerHTML = '5';
-      target.style.color = '#3B82F6';
-      target.style.fontSize = '1.2rem';
-      target.classList.add('fill-anim');
-    }, 3000);
-
-    const noteLabel = document.createElement('div');
-    noteLabel.className = 'tut-label';
-    noteLabel.style.marginTop = '12px';
-    noteLabel.innerHTML = 'Bật <strong>✏️ Ghi chú</strong> để ghi nhớ các số tiềm năng, sau đó suy luận ra đáp án!';
-    container.appendChild(noteLabel);
+      <div style="font-size:0.75rem;color:var(--text-secondary);text-align:center;line-height:1.4;">
+        Bấm lại nút (hoặc phím tắt <strong style="font-family:monospace;background:var(--border);padding:2px 6px;border-radius:4px;">A</strong>) để tắt và xóa sạch ghi chú bất cứ khi nào bạn muốn bàn cờ thoáng đãng.
+      </div>
+    `;
+    container.appendChild(card);
   }
 
   /* ---- bind events ---- */
@@ -324,6 +285,12 @@ const Tutorial = (() => {
     document.getElementById('btn-tut-prev').addEventListener('click', prev);
   }
 
-  return { show, hide, bindEvents, updateLanguage: () => { if (!document.getElementById('modal-tutorial').classList.contains('hidden')) _render(); } };
+  return {
+    show,
+    hide,
+    bindEvents,
+    updateLanguage: () => {
+      if (!document.getElementById('modal-tutorial').classList.contains('hidden')) _render();
+    }
+  };
 })();
-

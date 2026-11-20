@@ -606,6 +606,14 @@
   max-width: 340px;
 }
 
+.controls-panel.controls-paused {
+  pointer-events: none;
+  opacity: 0.45;
+  user-select: none;
+  filter: grayscale(0.25);
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
 @media (max-width: 768px) {
   .controls-panel {
     min-width: auto;

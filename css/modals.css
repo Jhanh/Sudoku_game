@@ -240,23 +240,29 @@
 /* ===== Tutorial Dots & Buttons ===== */
 .tutorial-dots {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .tutorial-dots .dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--border);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   border: none;
   padding: 0;
   cursor: pointer;
 }
 
+.tutorial-dots .dot:hover {
+  background: var(--text-secondary);
+}
+
 .tutorial-dots .dot.active {
   background: var(--primary);
-  width: 20px;
+  width: 18px;
   border-radius: 4px;
 }
 

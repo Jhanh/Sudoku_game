@@ -36,7 +36,7 @@ flowchart TD
     subgraph L2 ["⚙️ TẦNG LOGIC VÀ TRẠNG THÁI (Business Logic và State Layer)"]
         direction TB
         APP_CORE["App.js (Router và Orchestrator)<br/>- Khởi tạo hệ thống<br/>- Quản lý chuyển đổi màn hình và modal<br/>- Lắng nghe sự kiện bàn phím toàn cục"]
-        GAME_CORE["Game.js (State Machine và Rules)<br/>- Quản lý Game State (81 ô, nghiệm, ô đề)<br/>- Xác thực nước đi, Tia chớp, Bút chì nhanh<br/>- Hệ thống 3 mạng lỗi, Hồi sinh & Hoàn tác nghiêm ngặt<br/>- Gợi ý thông minh & Mua gợi ý bảng cửu chương"]
+        GAME_CORE["Game.js (State Machine và Rules)<br/>- Quản lý Game State (81 ô, nghiệm, ô đề)<br/>- Xác thực nước đi, Tia chớp, Bút chì nhanh<br/>- Hệ thống 3 mạng lỗi, Hồi sinh & Hoàn tác nghiêm ngặt<br/>- Gợi ý thông minh & Đổi gợi ý cấp số nhân"]
         ENGINE["SudokuEngine.js (Algorithms)<br/>- Thuật toán Backtracking giải Sudoku<br/>- Đảm bảo duy nhất 1 nghiệm<br/>- Gợi ý thông minh & Quét ứng viên hợp lệ"]
     end
     class L2,APP_CORE,GAME_CORE,ENGINE logicLayer;

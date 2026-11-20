@@ -86,7 +86,7 @@ flowchart TD
 
     P_STREAK["2. Hệ số chuỗi đúng (Streak Multiplier):<br/>- 11 - 20 ô liên tiếp: x1.2<br/>- 21 - 30 ô liên tiếp: x1.5<br/>- 31 - 40 ô liên tiếp: x1.7<br/>- 41+ ô liên tiếp: x2.0"]
 
-    P_PENALTY["3. Trừ điểm vi phạm & Công cụ hỗ trợ:<br/>- Phạt lỗi theo độ khó: Dễ -5đ, Vừa -7đ, Khó -10đ<br/>- Phạt 3 gợi ý miễn phí: Dễ (30,50,70), Vừa (50,70,90), Khó (50,100,150)<br/>- Hồi sinh ván đấu (khi chạm 3 lỗi): k × BaseCost (50, 100, 150)<br/>- Gợi ý từ lần 4: Đổi bằng Điểm Hồ Sơ (k × BaseCost: 50đ, 100đ, 150đ)<br/>- Phạt Bút chì nhanh: Dễ -100đ, Vừa -200đ, Khó -300đ (trừ vào tổng kết trận)"]
+    P_PENALTY["3. Trừ điểm vi phạm & Công cụ hỗ trợ:<br/>- Phạt lỗi theo độ khó: Dễ -5đ, Vừa -7đ, Khó -10đ<br/>- Phạt 3 gợi ý miễn phí: Dễ (30,50,70), Vừa (50,70,90), Khó (50,100,150)<br/>- Hồi sinh ván đấu (khi chạm 3 lỗi): k × BaseCost (50, 100, 150)<br/>- Gợi ý từ lần 4: Đổi bằng Điểm Hồ Sơ (cấp số nhân BaseCost × 2^(k-1): Dễ 50, 100, 200đ...; TB 100, 200, 400đ...; Khó 150, 300, 600đ...)<br/>- Phạt Bút chì nhanh: Dễ -100đ, Vừa -200đ, Khó -300đ (trừ vào tổng kết trận)"]
 
     P_BONUS["4. Thưởng ván hoàn hảo (Perfect Bonus):<br/>- 0 Lỗi: +100đ (Dễ), +200đ (Vừa), +300đ (Khó)"]
 

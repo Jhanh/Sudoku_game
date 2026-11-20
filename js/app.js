@@ -589,6 +589,8 @@ const App = (() => {
     const inGameNewBtn = document.getElementById('btn-in-game-new');
     if (inGameNewBtn) {
       inGameNewBtn.addEventListener('click', async () => {
+        const st = Game.getState();
+        if (st && st.isPaused) return;
         const title = t('in_game_new_game_confirm_title', 'Ván Chơi Mới');
         const msg = t('in_game_new_game_confirm_msg', 'Bạn có muốn bắt đầu ván mới không? (Ván hiện tại sẽ bị hủy)');
         const ok = await confirm(title, msg);

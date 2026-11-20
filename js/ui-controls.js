@@ -46,7 +46,8 @@ const UIControls = (() => {
 
       btn.addEventListener('click', () => {
         const st = Game.getState();
-        if (st && st.fastFillMode) {
+        if (!st || st.isPaused) return;
+        if (st.fastFillMode) {
           Game.selectFastFillDigit(n);
         } else {
           Game.placeNumber(n);
@@ -59,19 +60,35 @@ const UIControls = (() => {
   /* ---- bind tool buttons ---- */
   function _bindTools() {
     document.getElementById('btn-undo').addEventListener('click', () => {
+      const st = Game.getState();
+      if (!st || st.isPaused) return;
       if (typeof App !== 'undefined' && App.handleUndo) {
         App.handleUndo();
       } else {
         Game.undo();
       }
     });
-    document.getElementById('btn-erase').addEventListener('click', () => Game.erase());
-    document.getElementById('btn-fast-fill').addEventListener('click', () => Game.toggleFastFill());
-    document.getElementById('btn-notes').addEventListener('click', () => Game.toggleNotes());
+    document.getElementById('btn-erase').addEventListener('click', () => {
+      const st = Game.getState();
+      if (!st || st.isPaused) return;
+      Game.erase();
+    });
+    document.getElementById('btn-fast-fill').addEventListener('click', () => {
+      const st = Game.getState();
+      if (!st || st.isPaused) return;
+      Game.toggleFastFill();
+    });
+    document.getElementById('btn-notes').addEventListener('click', () => {
+      const st = Game.getState();
+      if (!st || st.isPaused) return;
+      Game.toggleNotes();
+    });
 
     const autoNotesBtn = document.getElementById('btn-auto-notes');
     if (autoNotesBtn) {
       autoNotesBtn.addEventListener('click', () => {
+        const st = Game.getState();
+        if (!st || st.isPaused) return;
         const res = Game.toggleAutoNotes();
         if (res && res.penaltyJustApplied > 0) {
           const lang = typeof I18n !== 'undefined' ? I18n.getLanguage() : 'vi';
@@ -153,6 +170,12 @@ const UIControls = (() => {
   /* ---- update ---- */
   function update(state) {
     if (!state) return;
+
+    // Controls panel paused state lock
+    const controlsPanel = document.querySelector('.controls-panel');
+    if (controlsPanel) {
+      controlsPanel.classList.toggle('controls-paused', !!state.isPaused);
+    }
 
     // Info bar
     document.getElementById('info-difficulty').textContent = (typeof I18n !== 'undefined' ? I18n.t('diff_' + state.difficulty) : (Game.DIFF_LABELS[state.difficulty] || state.difficulty));
