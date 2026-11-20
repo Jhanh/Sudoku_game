@@ -3,7 +3,23 @@
    ========================================================= */
 const App = (() => {
 
+  /* ---- i18n helper ---- */
+  const t = (key, fallback = '') =>
+    typeof I18n !== 'undefined' ? I18n.t(key) : fallback;
+
+  const isEn = () =>
+    typeof I18n !== 'undefined' && I18n.getLanguage() === 'en';
+
   /* ---- screen management ---- */
+  let isInteractionLocked = false;
+  function _setInteractionLock(locked) {
+    isInteractionLocked = locked;
+    const gameScreen = document.getElementById('screen-game');
+    if (gameScreen) {
+      gameScreen.classList.toggle('interaction-locked', locked);
+    }
+  }
+
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + id).classList.add('active');
@@ -51,7 +67,7 @@ const App = (() => {
   }
 
   /* ---- game over ---- */
-    function showGameOver(reason, state, breakdown) {
+  function showGameOver(reason, state, breakdown) {
     if (!breakdown && typeof Game !== 'undefined' && Game.getScoreBreakdown) {
       breakdown = Game.getScoreBreakdown(state);
     }
@@ -80,62 +96,45 @@ const App = (() => {
       if (typeof Sound !== 'undefined' && Sound.playWin) Sound.playWin();
       if (modalEl) modalEl.classList.add('win');
       icon = '🎉';
-      title = typeof I18n !== 'undefined' ? I18n.t('gameover_win_title') : 'Chiến Thắng!';
-      subtitle = typeof I18n !== 'undefined' ? I18n.t('gameover_win_subtitle') : 'Chúc mừng bạn đã hoàn thành trọn vẹn ván cờ Sudoku!';
+      title = t('gameover_win_title', 'Chiến Thắng!');
+      subtitle = t('gameover_win_subtitle', 'Chúc mừng bạn đã hoàn thành trọn vẹn ván cờ Sudoku!');
     } else if (reason === 'give_up') {
       if (modalEl) modalEl.classList.add('give-up');
       icon = '🏳️';
-      title = typeof I18n !== 'undefined' ? I18n.t('gameover_giveup_title') : 'Đã Bỏ Cuộc';
-      subtitle = typeof I18n !== 'undefined' ? I18n.t('gameover_giveup_subtitle') : 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:';
+      title = t('gameover_giveup_title', 'Đã Bỏ Cuộc');
+      subtitle = t('gameover_giveup_subtitle', 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:');
     } else if (reason === 'total_mistakes_over' || reason === 'consecutive_streak_over' || reason === 'streak_over') {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💔';
-      title = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en' ? '3 Mistakes Reached!' : 'Hết 3 Cơ Hội Sai!';
-      subtitle = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en'
+      title = isEn() ? '3 Mistakes Reached!' : 'Hết 3 Cơ Hội Sai!';
+      subtitle = isEn()
         ? 'You reached the 3 mistakes limit and chose not to continue. Game over!'
         : 'Bạn đã phạm tối đa 3 lỗi sai cho phép và dừng ván đấu!';
     } else {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💔';
-      title = typeof I18n !== 'undefined' ? I18n.t('gameover_lose_title') : 'Kết Thúc Trận Đấu';
-      subtitle = typeof I18n !== 'undefined' ? I18n.t('gameover_lose_subtitle') : 'Ván đấu đã dừng lại. Hãy xem lại bảng điểm và thử lại nhé!';
+      title = t('gameover_lose_title', 'Kết Thúc Trận Đấu');
+      subtitle = t('gameover_lose_subtitle', 'Ván đấu đã dừng lại. Hãy xem lại bảng điểm và thử lại nhé!');
     }
 
-    const isEn = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en';
-    const speedTag = isEn 
-      ? (breakdown.timeMultiplier === 2.0 ? '× 2.0 (Super speed)' : (breakdown.timeMultiplier === 1.5 ? '× 1.5 (Speedy)' : '× 1.0 (Standard)'))
-      : (breakdown.timeMultiplier === 2.0 ? '× 2.0 (Siêu tốc)' : (breakdown.timeMultiplier === 1.5 ? '× 1.5 (Tốc độ)' : '× 1.0 (Chuẩn)'));
+    // Update static elements in modal without rebuilding HTML
+    const iconEl = document.getElementById('gameover-icon');
+    const titleEl = document.getElementById('gameover-title');
+    const subtitleEl = document.getElementById('gameover-subtitle');
+    const labelEl = document.getElementById('gameover-score-label');
+    const valEl = document.getElementById('gameover-score-val');
+    const btnNew = document.getElementById('btn-go-new');
+    const btnLobby = document.getElementById('btn-go-lobby');
 
-    const contentEl = document.getElementById('gameover-content');
-    contentEl.innerHTML = `
-      <div class="gameover-header">
-        <div class="gameover-icon">${icon}</div>
-        <h2 class="gameover-title">${title}</h2>
-        <p class="gameover-subtitle">${subtitle}</p>
-      </div>
-
-      <div class="gameover-final-score">
-        <span class="final-score-label">${typeof I18n !== 'undefined' ? I18n.t('breakdown_final_score').toUpperCase() : 'TỔNG ĐIỂM ĐẠT ĐƯỢC'}</span>
-        <span class="final-score-val">${breakdown.finalScore}</span>
-      </div>
-
-      <div class="gameover-actions">
-        <button class="btn-primary btn-large" id="btn-go-new">${typeof I18n !== 'undefined' ? I18n.t('btn_play_again') : 'Ván Chơi Mới'}</button>
-        <button class="btn-secondary btn-large" id="btn-go-lobby">${typeof I18n !== 'undefined' ? I18n.t('btn_back_lobby') : 'Về Sảnh Chính'}</button>
-      </div>
-    `;
-
-    document.getElementById('btn-go-new').addEventListener('click', () => {
-      closeModal('modal-gameover');
-      openModal('modal-difficulty');
-    });
-    document.getElementById('btn-go-lobby').addEventListener('click', () => {
-      closeModal('modal-gameover');
-      Game.destroy();
-      _goToLobby();
-    });
+    if (iconEl) iconEl.textContent = icon;
+    if (titleEl) titleEl.textContent = title;
+    if (subtitleEl) subtitleEl.textContent = subtitle;
+    if (labelEl) labelEl.textContent = t('breakdown_final_score', 'TỔNG ĐIỂM ĐẠT ĐƯỢC').toUpperCase();
+    if (valEl) valEl.textContent = breakdown.finalScore;
+    if (btnNew) btnNew.textContent = t('btn_play_again', 'Ván Chơi Mới');
+    if (btnLobby) btnLobby.textContent = t('btn_back_lobby', 'Về Sảnh Chính');
 
     openModal('modal-gameover');
   }
@@ -246,9 +245,20 @@ const App = (() => {
 
     setTimeout(() => {
       Game.start(difficulty);
+      // Stop timer immediately so intro animation time is NOT counted towards gameplay:
+      if (typeof Game.stopTimer === 'function') Game.stopTimer();
+
       UIBoard.init();
       UIBoard.render(Game.getState());
       UIControls.update(Game.getState());
+
+      // Lock user interactions on board and tools during intro animation:
+      _setInteractionLock(true);
+
+      UIBoard.playIntroAnimation(Game.getState(), () => {
+        _setInteractionLock(false);
+        if (typeof Game.startTimer === 'function') Game.startTimer();
+      });
     }, 50);
   }
 
@@ -382,15 +392,15 @@ const App = (() => {
     const resetBtn = document.getElementById('btn-settings-reset-data');
     if (resetBtn) {
       resetBtn.addEventListener('click', async () => {
-        const title = typeof I18n !== 'undefined' ? I18n.t('settings_reset_confirm_title') : 'Xóa Dữ Liệu';
-        const msg = typeof I18n !== 'undefined' ? I18n.t('settings_reset_confirm_msg') : 'Bạn có chắc chắn muốn xóa toàn bộ lịch sử đấu, thời gian chơi và đưa game về trạng thái ban đầu?';
+        const title = t('settings_reset_confirm_title', 'Xóa Dữ Liệu');
+        const msg = t('settings_reset_confirm_msg', 'Bạn có chắc chắn muốn xóa toàn bộ lịch sử đấu, thời gian chơi và đưa game về trạng thái ban đầu?');
         const ok = await confirm(title, msg);
         if (ok) {
           Storage.resetAllData();
           Profile.render();
           closeModal('modal-settings');
           _updateHomeActions();
-          showToast(typeof I18n !== 'undefined' ? I18n.t('toast_data_reset') : '🔄 Đã xóa toàn bộ dữ liệu thành công!');
+          showToast(t('toast_data_reset', '🔄 Đã xóa toàn bộ dữ liệu thành công!'));
         }
       });
     }
@@ -402,11 +412,11 @@ const App = (() => {
         if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
         const res = await Storage.exportData();
         if (res && res.success) {
-          showToast(typeof I18n !== 'undefined' ? I18n.t('toast_export_success') : '📁 Đã xuất dữ liệu sao lưu thành công!');
+          showToast(t('toast_export_success', '📁 Đã xuất dữ liệu sao lưu thành công!'));
         } else if (res && res.aborted) {
           // User cancelled Save As dialog - do nothing
         } else {
-          showToast(typeof I18n !== 'undefined' ? I18n.t('toast_export_failed') : '❌ Có lỗi khi tạo tệp sao lưu!');
+          showToast(t('toast_export_failed', '❌ Có lỗi khi tạo tệp sao lưu!'));
         }
       });
     }
@@ -425,8 +435,8 @@ const App = (() => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
 
-        const title = typeof I18n !== 'undefined' ? I18n.t('settings_import_confirm_title') : 'Khôi Phục Dữ Liệu';
-        const msg = typeof I18n !== 'undefined' ? I18n.t('settings_import_confirm_msg') : 'Nhập dữ liệu từ tệp này sẽ ghi đè toàn bộ tiến trình, lịch sử đấu và cài đặt hiện tại trên máy. Bạn có chắc chắn muốn tiếp tục?';
+        const title = t('settings_import_confirm_title', 'Khôi Phục Dữ Liệu');
+        const msg = t('settings_import_confirm_msg', 'Nhập dữ liệu từ tệp này sẽ ghi đè toàn bộ tiến trình, lịch sử đấu và cài đặt hiện tại trên máy. Bạn có chắc chắn muốn tiếp tục?');
         const ok = await confirm(title, msg);
         if (!ok) {
           importInput.value = '';
@@ -476,20 +486,20 @@ const App = (() => {
 
               // 7. Audio & Toast feedback
               if (typeof Sound !== 'undefined' && Sound.playCorrect) Sound.playCorrect();
-              showToast(typeof I18n !== 'undefined' ? I18n.t('toast_import_success') : '✨ Đã khôi phục dữ liệu thành công!');
+              showToast(t('toast_import_success', '✨ Đã khôi phục dữ liệu thành công!'));
             } else {
-              showToast(typeof I18n !== 'undefined' ? I18n.t('toast_import_invalid') : '⚠️ Tệp dữ liệu không hợp lệ hoặc bị lỗi định dạng!');
+              showToast(t('toast_import_invalid', '⚠️ Tệp dữ liệu không hợp lệ hoặc bị lỗi định dạng!'));
             }
           } catch (err) {
             console.error('Import reading error:', err);
-            showToast(typeof I18n !== 'undefined' ? I18n.t('toast_import_failed') : '❌ Lỗi khi đọc tệp sao lưu!');
+            showToast(t('toast_import_failed', '❌ Lỗi khi đọc tệp sao lưu!'));
           } finally {
             importInput.value = '';
           }
         };
 
         reader.onerror = () => {
-          showToast(typeof I18n !== 'undefined' ? I18n.t('toast_import_failed') : '❌ Lỗi khi đọc tệp sao lưu!');
+          showToast(t('toast_import_failed', '❌ Lỗi khi đọc tệp sao lưu!'));
           importInput.value = '';
         };
 
@@ -539,8 +549,8 @@ const App = (() => {
     const inGameNewBtn = document.getElementById('btn-in-game-new');
     if (inGameNewBtn) {
       inGameNewBtn.addEventListener('click', async () => {
-        const title = typeof I18n !== 'undefined' ? I18n.t('in_game_new_game_confirm_title') : 'Ván Chơi Mới';
-        const msg = typeof I18n !== 'undefined' ? I18n.t('in_game_new_game_confirm_msg') : 'Bạn có muốn bắt đầu ván mới không? (Ván hiện tại sẽ bị hủy)';
+        const title = t('in_game_new_game_confirm_title', 'Ván Chơi Mới');
+        const msg = t('in_game_new_game_confirm_msg', 'Bạn có muốn bắt đầu ván mới không? (Ván hiện tại sẽ bị hủy)');
         const ok = await confirm(title, msg);
         if (ok) {
           Game.abandonSaved();
@@ -574,8 +584,8 @@ const App = (() => {
 
     // Abandon saved game
     document.getElementById('btn-abandon').addEventListener('click', async () => {
-      const title = typeof I18n !== 'undefined' ? I18n.t('home_abandon_confirm_title') : 'Bỏ Cuộc';
-      const msg = typeof I18n !== 'undefined' ? I18n.t('home_abandon_confirm_msg') : 'Ván đang chơi sẽ bị xóa. Bạn có chắc chắn muốn bỏ cuộc?';
+      const title = t('home_abandon_confirm_title', 'Bỏ Cuộc');
+      const msg = t('home_abandon_confirm_msg', 'Ván đang chơi sẽ bị xóa. Bạn có chắc chắn muốn bỏ cuộc?');
       const ok = await confirm(title, msg);
       if (ok) {
         Game.abandonSaved();
@@ -599,8 +609,8 @@ const App = (() => {
 
     // Give up in-game
     document.getElementById('btn-give-up-header').addEventListener('click', async () => {
-      const title = typeof I18n !== 'undefined' ? I18n.t('in_game_give_up_confirm_title') : 'Bỏ Cuộc';
-      const msg = typeof I18n !== 'undefined' ? I18n.t('in_game_give_up_confirm_msg') : 'Ván này sẽ được tính là thua. Bạn có chắc chắn?';
+      const title = t('in_game_give_up_confirm_title', 'Bỏ Cuộc');
+      const msg = t('in_game_give_up_confirm_msg', 'Ván này sẽ được tính là thua. Bạn có chắc chắn?');
       const ok = await confirm(title, msg);
       if (ok) {
         Game.giveUp();
@@ -625,7 +635,7 @@ const App = (() => {
           closeModal('modal-revive');
           Game.revive();
           if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
-          showToast(typeof I18n !== 'undefined' ? (I18n.getLanguage() === 'en' ? '❤️ Revived! Mistakes set to 2/3.' : '❤️ Tiếp tục ván đấu! Lỗi giảm về 2/3.') : '❤️ Tiếp tục ván đấu!');
+          showToast(isEn() ? '❤️ Revived! Mistakes set to 2/3.' : '❤️ Tiếp tục ván đấu! Lỗi giảm về 2/3.');
         }
       });
     }
@@ -646,7 +656,7 @@ const App = (() => {
         closeModal('modal-buy-hint');
         if (Game.getState() && Game.getState().isPaused) Game.togglePause();
         if (ok) {
-          showToast(typeof I18n !== 'undefined' ? (I18n.getLanguage() === 'en' ? '💡 Extra hint unlocked!' : '💡 Đã đổi thêm 1 gợi ý!') : '💡 Đã đổi thêm 1 gợi ý!');
+          showToast(isEn() ? '💡 Extra hint unlocked!' : '💡 Đã đổi thêm 1 gợi ý!');
         }
       });
     }
@@ -656,6 +666,24 @@ const App = (() => {
       buyHintCancelBtn.addEventListener('click', () => {
         closeModal('modal-buy-hint');
         if (Game.getState() && Game.getState().isPaused) Game.togglePause();
+      });
+    }
+
+    // Game Over Modal buttons
+    const btnGoNew = document.getElementById('btn-go-new');
+    if (btnGoNew) {
+      btnGoNew.addEventListener('click', () => {
+        closeModal('modal-gameover');
+        openModal('modal-difficulty');
+      });
+    }
+
+    const btnGoLobby = document.getElementById('btn-go-lobby');
+    if (btnGoLobby) {
+      btnGoLobby.addEventListener('click', () => {
+        closeModal('modal-gameover');
+        Game.destroy();
+        _goToLobby();
       });
     }
 
@@ -687,6 +715,7 @@ const App = (() => {
         }
       }
 
+      if (isInteractionLocked) return;
       if (!Game.isActive()) return;
       const state = Game.getState();
       if (!state || state.isPaused) return;
@@ -709,8 +738,7 @@ const App = (() => {
       } else if (key === 'a' || key === 'A') {
         const res = Game.toggleAutoNotes();
         if (res && res.penaltyJustApplied > 0) {
-          const lang = typeof I18n !== 'undefined' ? I18n.getLanguage() : 'vi';
-          const msg = lang === 'en'
+          const msg = isEn()
             ? `⚡ Fast Notes: -${res.penaltyJustApplied} pts (deducted at game end)`
             : `⚡ Bút chì nhanh: -${res.penaltyJustApplied}đ (trừ vào tổng kết khi kết thúc ván)`;
           if (typeof App !== 'undefined' && App.toast) {

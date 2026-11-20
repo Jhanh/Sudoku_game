@@ -418,7 +418,23 @@
   <!-- Game Over Modal -->
   <div id="modal-gameover" class="modal-overlay hidden">
     <div class="modal modal-gameover">
-      <div id="gameover-content" class="modal-body"></div>
+      <div id="gameover-content" class="modal-body">
+        <div class="gameover-header">
+          <div id="gameover-icon" class="gameover-icon"></div>
+          <h2 id="gameover-title" class="gameover-title"></h2>
+          <p id="gameover-subtitle" class="gameover-subtitle"></p>
+        </div>
+
+        <div class="gameover-final-score">
+          <span id="gameover-score-label" class="final-score-label"></span>
+          <span id="gameover-score-val" class="final-score-val"></span>
+        </div>
+
+        <div class="gameover-actions">
+          <button class="btn-primary btn-large" id="btn-go-new"></button>
+          <button class="btn-secondary btn-large" id="btn-go-lobby"></button>
+        </div>
+      </div>
     </div>
   </div>
 

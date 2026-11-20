@@ -187,10 +187,7 @@ const Game = (() => {
   }
 
   function checkComplete() {
-    for (let i = 0; i < 81; i++) {
-      if (state.current[i] !== state.solution[i]) return false;
-    }
-    return true;
+    return state.current.every((v, i) => v === state.solution[i]);
   }
 
   /* Count correct placements of a digit */
@@ -254,22 +251,22 @@ const Game = (() => {
     if (!saved || saved.isFinished) return false;
     state = {
       ...saved,
-      reviveCount: saved.reviveCount || 0,
-      hintsUsed: saved.hintsUsed || 0,
-      hintsBought: saved.hintsBought || 0,
-      baseScore: saved.baseScore || 0,
-      perfectBonus: saved.perfectBonus || 0,
-      hintPenalties: saved.hintPenalties || 0,
-      wrongPenalties: saved.wrongPenalties || 0,
-      autoNotesPenalty: saved.autoNotesPenalty || 0,
-      autoNotesMode: saved.autoNotesMode || false,
-      autoNotesUsed: saved.autoNotesUsed || false,
-      correctCount: saved.correctCount || 0,
-      correctStreak: saved.correctStreak || 0,
-      maxStreak: saved.maxStreak || 0,
+      reviveCount: saved.reviveCount ?? 0,
+      hintsUsed: saved.hintsUsed ?? 0,
+      hintsBought: saved.hintsBought ?? 0,
+      baseScore: saved.baseScore ?? 0,
+      perfectBonus: saved.perfectBonus ?? 0,
+      hintPenalties: saved.hintPenalties ?? 0,
+      wrongPenalties: saved.wrongPenalties ?? 0,
+      autoNotesPenalty: saved.autoNotesPenalty ?? 0,
+      autoNotesMode: saved.autoNotesMode ?? false,
+      autoNotesUsed: saved.autoNotesUsed ?? false,
+      correctCount: saved.correctCount ?? 0,
+      correctStreak: saved.correctStreak ?? 0,
+      maxStreak: saved.maxStreak ?? 0,
       selectedCell: null,
-      fastFillMode: saved.fastFillMode || false,
-      fastFillDigit: saved.fastFillDigit || null,
+      fastFillMode: saved.fastFillMode ?? false,
+      fastFillDigit: saved.fastFillDigit ?? null,
       conflictCells: null,
       hintExplanation: null,
       isPaused: false
@@ -376,29 +373,29 @@ const Game = (() => {
       return;
     }
 
-    // Adding note: verify collision against existing placed numbers in row, col, and 3x3 block
-    const conflicts = [];
+    // Adding note: verify collision against existing placed numbers in row, col, and 3x3 block using Set
+    const conflictSet = new Set();
     // Check row
     for (let c = 0; c < 9; c++) {
       const ci = idx(row, c);
-      if (state.current[ci] === num) conflicts.push(ci);
+      if (state.current[ci] === num) conflictSet.add(ci);
     }
     // Check col
     for (let r = 0; r < 9; r++) {
       const ci = idx(r, col);
-      if (state.current[ci] === num && !conflicts.includes(ci)) conflicts.push(ci);
+      if (state.current[ci] === num) conflictSet.add(ci);
     }
     // Check 3x3 box
     const br = Math.floor(row / 3) * 3, bc = Math.floor(col / 3) * 3;
     for (let r = br; r < br + 3; r++) {
       for (let c = bc; c < bc + 3; c++) {
         const ci = idx(r, c);
-        if (state.current[ci] === num && !conflicts.includes(ci)) conflicts.push(ci);
+        if (state.current[ci] === num) conflictSet.add(ci);
       }
     }
 
-    if (conflicts.length > 0) {
-      state.conflictCells = conflicts;
+    if (conflictSet.size > 0) {
+      state.conflictCells = [...conflictSet];
       if (typeof Sound !== 'undefined' && Sound.playError) Sound.playError();
       if (onUpdate) onUpdate(state);
       setTimeout(() => {
@@ -931,6 +928,7 @@ const Game = (() => {
     useHint, buyExtraHint, getHintPermanentCost,
     getReviveCost, canRevive, revive, giveUpFromMistakes, modifyScore,
     togglePause, giveUp, abandonSaved, destroy,
+    startTimer, stopTimer,
     getState, isActive, setCallbacks,
     getRemaining, formatTime,
     getStreakMultiplier, getTimeMultiplier, getScoreBreakdown,

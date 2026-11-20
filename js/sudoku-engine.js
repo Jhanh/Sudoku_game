@@ -366,9 +366,8 @@ const SudokuEngine = (() => {
     return { puzzle, solution };
   }
 
-  /* ---------- get all valid candidates for empty cells ---------- */
-  function getAllValidCandidates(current) {
-    const result = new Array(81).fill(null).map(() => []);
+  /* ---------- private helper: build bitmask state from current board ---------- */
+  function _buildBitmasks(current) {
     const rows = new Uint16Array(9);
     const cols = new Uint16Array(9);
     const boxes = new Uint16Array(9);
@@ -384,6 +383,13 @@ const SudokuEngine = (() => {
         boxes[b] |= bit;
       }
     }
+    return { rows, cols, boxes };
+  }
+
+  /* ---------- get all valid candidates for empty cells ---------- */
+  function getAllValidCandidates(current) {
+    const result = new Array(81).fill(null).map(() => []);
+    const { rows, cols, boxes } = _buildBitmasks(current);
 
     for (let i = 0; i < 81; i++) {
       if (current[i] === 0) {
@@ -404,21 +410,7 @@ const SudokuEngine = (() => {
 
   /* ---------- smart hint with human logical explanation ---------- */
   function getSmartHint(current, solution) {
-    const rows = new Uint16Array(9);
-    const cols = new Uint16Array(9);
-    const boxes = new Uint16Array(9);
-
-    for (let i = 0; i < 81; i++) {
-      const val = current[i];
-      if (val > 0) {
-        const r = Math.floor(i / 9), c = i % 9;
-        const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
-        const bit = 1 << val;
-        rows[r] |= bit;
-        cols[c] |= bit;
-        boxes[b] |= bit;
-      }
-    }
+    const { rows, cols, boxes } = _buildBitmasks(current);
 
     const candidates = new Uint16Array(81);
     for (let i = 0; i < 81; i++) {

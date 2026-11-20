@@ -8,18 +8,27 @@ const Sound = (() => {
   let isMuted = false;
   let initialized = false;
 
+  // Musical note frequency constants (Hz)
+  const NOTE = {
+    C4: 261.63, Eb4: 311.13, E4: 329.63, F4: 349.23,
+    G4: 392.00, A4: 440.00, B4: 493.88,
+    C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46,
+    G5: 783.99, A5: 880.00, B5: 987.77,
+    C6: 1046.50, D6: 1174.66, E6: 1318.51, G6: 1567.98, A6: 1760.00
+  };
+
   // Pentatonic scale frequencies for combo streaks (C5 to A6)
   const COMBO_SCALE = [
-    523.25, // C5 (Streak 1-10)
-    587.33, // D5 (Streak 11-20)
-    659.25, // E5 (Streak 21-30)
-    783.99, // G5 (Streak 31-40)
-    880.00, // A5 (Streak 41+)
-    1046.50,// C6
-    1174.66,// D6
-    1318.51,// E6
-    1567.98,// G6
-    1760.00 // A6
+    NOTE.C5, // Streak 1-10
+    NOTE.D5, // Streak 11-20
+    NOTE.E5, // Streak 21-30
+    NOTE.G5, // Streak 31-40
+    NOTE.A5, // Streak 41+
+    NOTE.C6,
+    NOTE.D6,
+    NOTE.E6,
+    NOTE.G6,
+    NOTE.A6
   ];
 
   /* ---------- AudioContext Initializer & Unlocker ---------- */
@@ -142,7 +151,7 @@ const Sound = (() => {
     if (!c) return;
     const now = c.currentTime;
 
-    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    const notes = [NOTE.C5, NOTE.E5, NOTE.G5, NOTE.C6];
     notes.forEach((freq, idx) => {
       const noteTime = now + idx * 0.075;
       const osc = c.createOscillator();
@@ -270,7 +279,7 @@ const Sound = (() => {
     if (!c) return;
     const now = c.currentTime;
 
-    const chimes = [659.25, 880.00, 1174.66, 1760.00]; // E5, A5, D6, A6
+    const chimes = [NOTE.E5, NOTE.A5, NOTE.D6, NOTE.A6];
     chimes.forEach((freq, idx) => {
       const noteTime = now + idx * 0.055;
       const osc = c.createOscillator();
@@ -330,13 +339,13 @@ const Sound = (() => {
     const now = c.currentTime;
 
     const notes = [
-      { f: 523.25, t: 0.00, d: 0.12 }, // C5
-      { f: 659.25, t: 0.12, d: 0.12 }, // E5
-      { f: 783.99, t: 0.24, d: 0.14 }, // G5
-      { f: 1046.5, t: 0.38, d: 0.22 }, // C6
-      { f: 783.99, t: 0.58, d: 0.12 }, // G5
-      { f: 1046.5, t: 0.70, d: 0.55 }, // C6
-      { f: 1318.5, t: 0.70, d: 0.55 }  // E6
+      { f: NOTE.C5, t: 0.00, d: 0.12 },
+      { f: NOTE.E5, t: 0.12, d: 0.12 },
+      { f: NOTE.G5, t: 0.24, d: 0.14 },
+      { f: NOTE.C6, t: 0.38, d: 0.22 },
+      { f: NOTE.G5, t: 0.58, d: 0.12 },
+      { f: NOTE.C6, t: 0.70, d: 0.55 },
+      { f: NOTE.E6, t: 0.70, d: 0.55 }
     ];
 
     notes.forEach(n => {
@@ -369,9 +378,9 @@ const Sound = (() => {
     const now = c.currentTime;
 
     const notes = [
-      { f: 392.00, t: 0.00, d: 0.22 }, // G4
-      { f: 311.13, t: 0.20, d: 0.22 }, // Eb4
-      { f: 261.63, t: 0.40, d: 0.50 }  // C4
+      { f: NOTE.G4,  t: 0.00, d: 0.22 },
+      { f: NOTE.Eb4, t: 0.20, d: 0.22 },
+      { f: NOTE.C4,  t: 0.40, d: 0.50 }
     ];
 
     notes.forEach(n => {

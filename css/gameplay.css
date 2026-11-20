@@ -482,6 +482,31 @@
   }
 }
 
+/* Board Intro Wave Animation (Task P1-02 - Floating Ripple on Digits Only) */
+@keyframes digitRippleReveal {
+  0% {
+    transform: translateY(8px) scale(0.65);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.cell-value.reveal-anim {
+  animation: digitRippleReveal 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  will-change: transform, opacity;
+  display: inline-block;
+}
+
+/* Temporary interaction lock during intro wave animation */
+#screen-game.interaction-locked #sudoku-board,
+#screen-game.interaction-locked #numpad,
+#screen-game.interaction-locked .tools-row {
+  pointer-events: none !important;
+}
+
 /* ===== Pause Overlay ===== */
 .pause-overlay {
   position: absolute;
