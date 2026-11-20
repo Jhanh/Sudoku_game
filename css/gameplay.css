@@ -57,6 +57,7 @@
   border-radius: 8px;
   line-height: 1.2;
   transition: all 0.2s ease;
+  transform-origin: center center;
 }
 
 .streak-badge.hidden {
@@ -82,6 +83,41 @@
   background: #F3E8FF;
   color: #7C3AED;
   box-shadow: 0 0 6px rgba(124, 58, 237, 0.25);
+}
+
+/* Streak Milestone Glow & Pop (Task P1-03 Option 2) */
+.streak-badge.streak-pop-flash {
+  animation: streakBadgePop 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 2;
+  will-change: transform, box-shadow;
+}
+
+.streak-badge.tier-1.streak-pop-flash,
+.streak-badge.tier-2.streak-pop-flash,
+.streak-badge.tier-3.streak-pop-flash {
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.75), 0 0 4px rgba(234, 88, 12, 0.9);
+}
+
+.streak-badge.tier-4.streak-pop-flash {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.85), 0 0 5px rgba(109, 40, 217, 1);
+}
+
+@keyframes streakBadgePop {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.32);
+  }
+  45% {
+    transform: scale(1.15);
+  }
+  75% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .mistake-row {

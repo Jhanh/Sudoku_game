@@ -3,12 +3,23 @@
    ========================================================= */
 const UIControls = (() => {
   let toolsBound = false;
+  let lastRenderedStreak = 0;
+  let comboTimer = null;
 
   function init() {
     _buildNumpad();
     if (!toolsBound) {
       _bindTools();
       toolsBound = true;
+    }
+    lastRenderedStreak = 0;
+    if (comboTimer) {
+      clearTimeout(comboTimer);
+      comboTimer = null;
+    }
+    const streakEl = document.getElementById('info-streak');
+    if (streakEl) {
+      streakEl.classList.remove('streak-pop-flash');
     }
   }
 
@@ -94,6 +105,45 @@ const UIControls = (() => {
     document.getElementById('btn-resume').addEventListener('click', () => Game.togglePause());
   }
 
+  /* ---- streak milestone glow & pop (Task P1-03 Option 2) ---- */
+  function _triggerStreakPop(streak) {
+    const streakEl = document.getElementById('info-streak');
+    if (!streakEl) return;
+
+    let popLabel = '';
+    let normalLabel = '';
+
+    if (streak === 11) {
+      popLabel = '🔥 COMBO! x1.2';
+      normalLabel = '🔥 x1.2';
+    } else if (streak === 21) {
+      popLabel = '🔥 SUPER! x1.5';
+      normalLabel = '🔥 x1.5';
+    } else if (streak === 31) {
+      popLabel = '⚡ ULTRA! x1.7';
+      normalLabel = '⚡ x1.7';
+    } else if (streak >= 41) {
+      popLabel = '👑 MASTER! x2.0';
+      normalLabel = '👑 x2.0';
+    } else {
+      return;
+    }
+
+    streakEl.textContent = popLabel;
+
+    // Restart pop animation
+    streakEl.classList.remove('streak-pop-flash');
+    void streakEl.offsetWidth;
+    streakEl.classList.add('streak-pop-flash');
+
+    if (comboTimer) clearTimeout(comboTimer);
+    comboTimer = setTimeout(() => {
+      streakEl.classList.remove('streak-pop-flash');
+      streakEl.textContent = normalLabel;
+      comboTimer = null;
+    }, 1200);
+  }
+
   /* ---- update ---- */
   function update(state) {
     if (!state) return;
@@ -103,24 +153,38 @@ const UIControls = (() => {
     document.getElementById('info-score').textContent = state.score;
 
     const streakEl = document.getElementById('info-streak');
+    const streak = state.correctStreak || 0;
     if (streakEl) {
-      const streak = state.correctStreak || 0;
       if (streak >= 41) {
-        streakEl.textContent = '⚡ x2.0';
         streakEl.className = 'streak-badge tier-4';
+        if (!comboTimer) streakEl.textContent = '👑 x2.0';
       } else if (streak >= 31) {
-        streakEl.textContent = '🔥 x1.7';
         streakEl.className = 'streak-badge tier-3';
+        if (!comboTimer) streakEl.textContent = '⚡ x1.7';
       } else if (streak >= 21) {
-        streakEl.textContent = '🔥 x1.5';
         streakEl.className = 'streak-badge tier-2';
+        if (!comboTimer) streakEl.textContent = '🔥 x1.5';
       } else if (streak >= 11) {
-        streakEl.textContent = '🔥 x1.2';
         streakEl.className = 'streak-badge tier-1';
+        if (!comboTimer) streakEl.textContent = '🔥 x1.2';
       } else {
         streakEl.className = 'streak-badge hidden';
+        if (comboTimer) {
+          clearTimeout(comboTimer);
+          comboTimer = null;
+          streakEl.classList.remove('streak-pop-flash');
+        }
       }
     }
+
+    // Trigger visual streak pop & glow on crossing tier thresholds
+    if (!state.isPaused && streak !== lastRenderedStreak) {
+      if (streak === 11 || streak === 21 || streak === 31 || (streak === 41 && lastRenderedStreak < 41)) {
+        _triggerStreakPop(streak);
+      }
+    }
+    lastRenderedStreak = streak;
+
     document.getElementById('info-timer').textContent = Game.formatTime(state.timer);
 
     const mistakesEl = document.getElementById('info-mistakes');
