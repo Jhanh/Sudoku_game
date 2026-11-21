@@ -11,7 +11,6 @@ flowchart TD
     classDef presLayer fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
     classDef logicLayer fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
     classDef infraLayer fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
-    classDef devLayer fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
 
     subgraph L1 ["🖥️ TẦNG TRÌNH DIỄN (Presentation Layer)"]
         direction TB
@@ -49,32 +48,9 @@ flowchart TD
     end
     class L3,STORAGE,SOUND,I18N infraLayer;
 
-    subgraph L4 ["🛠️ CÔNG CỤ PHÁT TRIỂN VÀ TEST (Developer và QA Tools)"]
-        DEVTOOLS["DevTools.js và CSS<br/>- Bảng điều khiển HUD nổi<br/>- Hiện đáp án mờ (Ghost Mode)<br/>- Vô hạn gợi ý, Thắng tức thì, Cheat chỉnh điểm trận"]
-    end
-    class L4,DEVTOOLS devLayer;
-
-    %% Luồng liên kết phân tầng
-    SCR_SPLASH --> APP_CORE
-    SCR_LOBBY --> APP_CORE
-    APP_CORE ==>|"Khởi tạo và Điều phối"| GAME_CORE
-    GAME_CORE ==>|"Sinh và kiểm tra đề bài"| ENGINE
-
-    GAME_CORE -->|"_notify(state)"| UI_BOARD
-    GAME_CORE -->|"_notify(state)"| UI_CTRL
-    UI_CTRL -->|"Gọi hàm hành động (place, select, undo)"| GAME_CORE
-    UI_BOARD -->|"Gọi selectCell(r, c)"| GAME_CORE
-
-    APP_CORE -.-> MOD_TUT
-    APP_CORE -.-> MOD_PROF
-    APP_CORE -.-> MOD_VAR
-
     GAME_CORE ==>|"Lưu trạng thái và thành tích"| STORAGE
     GAME_CORE ==>|"Kích hoạt âm thanh theo tình huống"| SOUND
     APP_CORE ==>|"Áp dụng ngôn ngữ"| I18N
-
-    DEVTOOLS -. "Can thiệp và giám sát trạng thái" .-> GAME_CORE
-    DEVTOOLS -. "Hook vào hàm render bàn cờ" .-> UI_BOARD
 ```
 
 ---
@@ -84,11 +60,10 @@ flowchart TD
 | Module | File nguồn | Trách nhiệm chính | Public API tiêu biểu |
 |:---|:---|:---|:---|
 | **App** | `js/app.js` | Điều phối toàn cục, quản lý navigation màn hình (`splash`, `lobby`, `gameplay`), quản lý đóng/mở modal, thiết lập theme Sáng/Tối. | `init()`, `showToast(msg)`, `applyLanguage()` |
-| **Game** | `js/game.js` | "Single Source of Truth": Quản lý toàn bộ dữ liệu ván đấu, xác nhận nước đi, ngăn điền thừa khi đủ 9 số, xử lý chế độ Tia chớp, tính điểm combo, giới hạn 3 mạng lỗi và cơ chế Hồi sinh bù điểm, đổi gợi ý bằng Điểm Hồ Sơ. | `start()`, `resume()`, `selectCell()`, `placeNumber()`, `toggleFastFill()`, `undo()`, `erase()`, `useHint()`, `buyExtraHint()`, `revive()`, `modifyScore()` |
+| **Game** | `js/game.js` | "Single Source of Truth": Quản lý toàn bộ dữ liệu ván đấu, xác nhận nước đi, ngăn điền thừa khi đủ 9 số, xử lý chế độ Tia chớp, tính điểm combo, giới hạn 3 mạng lỗi và cơ chế Hồi sinh bù điểm, đổi gợi ý bằng Điểm Hồ Sơ. | `start()`, `resume()`, `selectCell()`, `placeNumber()`, `toggleFastFill()`, `undo()`, `erase()`, `useHint()`, `buyExtraHint()`, `revive()` |
 | **SudokuEngine** | `js/sudoku-engine.js` | Thuật toán sinh bàn cờ giải hoàn chỉnh bằng Backtracking ngẫu nhiên, thuật toán đục lỗ tạo đề bài đảm bảo duy nhất 1 nghiệm, kiểm tra tính hợp lệ của số. | `generate()`, `solve()`, `countSolutions()`, `isValid()` |
 | **UIBoard** | `js/ui-board.js` | Khởi tạo DOM 81 ô cờ, render giá trị, ghi chú, áp dụng màu sắc công thái học (số đề in đậm 600 màu đen, số điền in thường 500 màu xanh, highlight hàng/cột/khối và cùng số). | `init()`, `render(state)`, `destroy()` |
 | **UIControls** | `js/ui-controls.js` | Điều khiển bàn phím số 3x3 (giữ nguyên vị trí cố định của phím khi số đã hoàn thành), hiển thị đồng hồ bấm giờ, điểm số, badge chuỗi đúng, hiển thị lỗi 0/3. | `init()`, `update(state)` |
 | **Storage** | `js/storage.js` | Quản trị lưu trữ `localStorage`, lưu ván chơi dở dang, sao lưu/khôi phục file JSON, quản lý điểm vĩnh viễn (Mastery Points), cài đặt người dùng. | `saveGame()`, `loadGame()`, `clearGame()`, `exportData()`, `importData()`, `getTotalPermanentScore()`, `deductPermanentScore()` |
 | **Sound** | `js/sound.js` | Phát âm thanh sinh động trực tiếp từ Web Audio API (không cần tải file audio bên ngoài), âm thanh tap, combo nốt nhạc tăng dần, lỗi, xóa, gợi ý, nhạc thắng cuộc. | `playTap()`, `playCorrect(streak)`, `playError()`, `playErase()`, `playHint()`, `playWin()` |
 | **I18n** | `js/i18n.js` | Từ điển đa ngôn ngữ (Tiếng Việt & English), tự động cập nhật toàn bộ nhãn giao diện khi người dùng chuyển đổi ngôn ngữ. | `t(key)`, `getLanguage()`, `setLanguage(lang)` |
-| **DevTools** | `devtools/devtools.js` | Bộ công cụ kiểm thử dành riêng cho nhà phát triển và QA: Ghost Answers, vô hạn gợi ý, thắng nhanh, điền 80/81 ô, cheat chỉnh sửa điểm trận đấu (+100, -100, +1000, -1000). | `init()` |

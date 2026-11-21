@@ -34,7 +34,7 @@ flowchart TB
     class SUB_STATE,STATE_BOX domainState;
 
     subgraph SUB_SERV ["💾 4. Phân hệ dịch vụ nền và lưu trữ (Services và Data)"]
-        SERV_BOX["Lưu ván chơi, Hồ sơ cá nhân, Âm thanh Web Audio,<br/>Đa ngôn ngữ và Công cụ QA DevTools<br/>(Storage, Sound, I18n, DevTools)"]
+        SERV_BOX["Lưu ván chơi, Hồ sơ cá nhân, Âm thanh Web Audio<br/>và Đa ngôn ngữ<br/>(Storage, Sound, I18n)"]
     end
     class SUB_SERV,SERV_BOX domainService;
 
@@ -47,7 +47,6 @@ flowchart TB
 
     LOGIC_BOX ==>|"Lưu trạng thái ván, Ghi nhận điểm số và lịch sử"| SERV_BOX
     SERV_BOX ==>|"Phát âm thanh SFX, Cung cấp cấu hình và ngôn ngữ"| UI_BOX
-    SERV_BOX -. "Kiểm thử và can thiệp trạng thái (QA HUD)" .-> LOGIC_BOX
 ```
 
 ---

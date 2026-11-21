@@ -842,7 +842,7 @@ const Game = (() => {
     };
   }
 
-  /* ---- mistake revival & scoring cheats ---- */
+  /* ---- mistake revival & scoring ---- */
   function getReviveCost() {
     if (!state) return 0;
     const base = REVIVE_BASE_COST[state.difficulty] || 50;
