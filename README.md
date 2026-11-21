@@ -97,7 +97,6 @@ Sudoku_game/
 │   ├── 03_data_flow_and_sequences.md   # Sơ đồ tuần tự điền số, Tia chớp, Bút chì nhanh & giải thuật
 │   └── 04_storage_and_scoring_models.md # Sơ đồ ER LocalStorage & đường ống tính điểm
 ├── forDev/                    # Tài liệu kỹ thuật chi tiết dành riêng cho lập trình viên
-├── devtools/                  # Bộ công cụ QA Dev Console & Ghost Answers kiểm thử
 ├── css/
 │   ├── main.css               # Reset CSS, màu sắc, chuyển màn hình, mobile notice
 │   ├── splash.css             # Giao diện & hoạt ảnh Màn hình Khởi đầu
