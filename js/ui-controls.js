@@ -93,8 +93,8 @@ const UIControls = (() => {
         if (res && res.penaltyJustApplied > 0) {
           const lang = typeof I18n !== 'undefined' ? I18n.getLanguage() : 'vi';
           const msg = lang === 'en'
-            ? `⚡ Fast Notes: -${res.penaltyJustApplied} pts (deducted at game end)`
-            : `⚡ Bút chì nhanh: -${res.penaltyJustApplied}đ (trừ vào tổng kết khi kết thúc ván)`;
+            ? `Fast Notes: -${res.penaltyJustApplied} pts (deducted at game end)`
+            : `Bút chì nhanh: -${res.penaltyJustApplied}đ (trừ vào tổng kết khi kết thúc ván)`;
           if (typeof App !== 'undefined' && App.toast) {
             App.toast(msg, 'warning');
           }

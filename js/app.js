@@ -122,18 +122,18 @@ const App = (() => {
       if (typeof Sound !== 'undefined' && Sound.playWin) Sound.playWin();
       if (modalEl) modalEl.classList.add('win');
       icon = '🎉';
-      title = t('gameover_win_title', 'Chiến Thắng!');
+      title = t('gameover_win_title', 'Chiến thắng!');
       subtitle = t('gameover_win_subtitle', 'Chúc mừng bạn đã hoàn thành trọn vẹn ván cờ Sudoku!');
     } else if (reason === 'give_up') {
       if (modalEl) modalEl.classList.add('give-up');
       icon = '🏳️';
-      title = t('gameover_giveup_title', 'Đã Bỏ Cuộc');
+      title = t('gameover_giveup_title', 'Đã bỏ cuộc');
       subtitle = t('gameover_giveup_subtitle', 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:');
     } else if (reason === 'total_mistakes_over' || reason === 'consecutive_streak_over' || reason === 'streak_over') {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💔';
-      title = isEn() ? '3 Mistakes Reached!' : 'Hết 3 Cơ Hội Sai!';
+      title = isEn() ? '3 Mistakes Reached!' : 'Hết 3 cơ hội sai!';
       subtitle = isEn()
         ? 'You reached the 3 mistakes limit and chose not to continue. Game over!'
         : 'Bạn đã phạm tối đa 3 lỗi sai cho phép và dừng ván đấu!';
@@ -141,7 +141,7 @@ const App = (() => {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
       icon = '💔';
-      title = t('gameover_lose_title', 'Kết Thúc Trận Đấu');
+      title = t('gameover_lose_title', 'Kết thúc trận đấu');
       subtitle = t('gameover_lose_subtitle', 'Ván đấu đã dừng lại. Hãy xem lại bảng điểm và thử lại nhé!');
     }
 
@@ -159,8 +159,8 @@ const App = (() => {
     if (subtitleEl) subtitleEl.textContent = subtitle;
     if (labelEl) labelEl.textContent = t('breakdown_final_score', 'TỔNG ĐIỂM ĐẠT ĐƯỢC').toUpperCase();
     if (valEl) valEl.textContent = breakdown.finalScore;
-    if (btnNew) btnNew.textContent = t('btn_play_again', 'Ván Chơi Mới');
-    if (btnLobby) btnLobby.textContent = t('btn_back_lobby', 'Về Sảnh Chính');
+    if (btnNew) btnNew.textContent = t('btn_play_again', 'Ván mới');
+    if (btnLobby) btnLobby.textContent = t('btn_back_lobby', 'Về sảnh chính');
 
     openModal('modal-gameover');
   }
@@ -432,7 +432,7 @@ const App = (() => {
     const resetBtn = document.getElementById('btn-settings-reset-data');
     if (resetBtn) {
       resetBtn.addEventListener('click', async () => {
-        const title = t('settings_reset_confirm_title', 'Xóa Dữ Liệu');
+        const title = t('settings_reset_confirm_title', 'Xóa dữ liệu');
         const msg = t('settings_reset_confirm_msg', 'Bạn có chắc chắn muốn xóa toàn bộ lịch sử đấu, thời gian chơi và đưa game về trạng thái ban đầu?');
         const ok = await confirm(title, msg);
         if (ok) {
@@ -440,7 +440,7 @@ const App = (() => {
           Profile.render();
           closeModal('modal-settings');
           _updateHomeActions();
-          showToast(t('toast_data_reset', '🔄 Đã xóa toàn bộ dữ liệu thành công!'));
+          showToast(t('toast_data_reset', 'Đã xóa toàn bộ dữ liệu thành công!'));
         }
       });
     }
@@ -452,11 +452,11 @@ const App = (() => {
         if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
         const res = await Storage.exportData();
         if (res && res.success) {
-          showToast(t('toast_export_success', '📁 Đã xuất dữ liệu sao lưu thành công!'));
+          showToast(t('toast_export_success', 'Đã xuất dữ liệu sao lưu thành công!'));
         } else if (res && res.aborted) {
           // User cancelled Save As dialog - do nothing
         } else {
-          showToast(t('toast_export_failed', '❌ Có lỗi khi tạo tệp sao lưu!'));
+          showToast(t('toast_export_failed', 'Có lỗi khi tạo tệp sao lưu!'));
         }
       });
     }
@@ -475,7 +475,7 @@ const App = (() => {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
 
-        const title = t('settings_import_confirm_title', 'Khôi Phục Dữ Liệu');
+        const title = t('settings_import_confirm_title', 'Khôi phục dữ liệu');
         const msg = t('settings_import_confirm_msg', 'Nhập dữ liệu từ tệp này sẽ ghi đè toàn bộ tiến trình, lịch sử đấu và cài đặt hiện tại trên máy. Bạn có chắc chắn muốn tiếp tục?');
         const ok = await confirm(title, msg);
         if (!ok) {
@@ -526,20 +526,20 @@ const App = (() => {
 
               // 7. Audio & Toast feedback
               if (typeof Sound !== 'undefined' && Sound.playCorrect) Sound.playCorrect();
-              showToast(t('toast_import_success', '✨ Đã khôi phục dữ liệu thành công!'));
+              showToast(t('toast_import_success', 'Đã khôi phục dữ liệu thành công!'));
             } else {
-              showToast(t('toast_import_invalid', '⚠️ Tệp dữ liệu không hợp lệ hoặc bị lỗi định dạng!'));
+              showToast(t('toast_import_invalid', 'Tệp dữ liệu không hợp lệ hoặc bị lỗi định dạng!'));
             }
           } catch (err) {
             console.error('Import reading error:', err);
-            showToast(t('toast_import_failed', '❌ Lỗi khi đọc tệp sao lưu!'));
+            showToast(t('toast_import_failed', 'Lỗi khi đọc tệp sao lưu!'));
           } finally {
             importInput.value = '';
           }
         };
 
         reader.onerror = () => {
-          showToast(t('toast_import_failed', '❌ Lỗi khi đọc tệp sao lưu!'));
+          showToast(t('toast_import_failed', 'Lỗi khi đọc tệp sao lưu!'));
           importInput.value = '';
         };
 
@@ -591,7 +591,7 @@ const App = (() => {
       inGameNewBtn.addEventListener('click', async () => {
         const st = Game.getState();
         if (st && st.isPaused) return;
-        const title = t('in_game_new_game_confirm_title', 'Ván Chơi Mới');
+        const title = t('in_game_new_game_confirm_title', 'Ván chơi mới');
         const msg = t('in_game_new_game_confirm_msg', 'Bạn có muốn bắt đầu ván mới không? (Ván hiện tại sẽ bị hủy)');
         const ok = await confirm(title, msg);
         if (ok) {
@@ -626,7 +626,7 @@ const App = (() => {
 
     // Abandon saved game
     document.getElementById('btn-abandon').addEventListener('click', async () => {
-      const title = t('home_abandon_confirm_title', 'Bỏ Cuộc');
+      const title = t('home_abandon_confirm_title', 'Bỏ cuộc');
       const msg = t('home_abandon_confirm_msg', 'Ván đang chơi sẽ bị xóa. Bạn có chắc chắn muốn bỏ cuộc?');
       const ok = await confirm(title, msg);
       if (ok) {
@@ -651,7 +651,7 @@ const App = (() => {
 
     // Give up in-game
     document.getElementById('btn-give-up-header').addEventListener('click', async () => {
-      const title = t('in_game_give_up_confirm_title', 'Bỏ Cuộc');
+      const title = t('in_game_give_up_confirm_title', 'Bỏ cuộc');
       const msg = t('in_game_give_up_confirm_msg', 'Ván này sẽ được tính là thua. Bạn có chắc chắn?');
       const ok = await confirm(title, msg);
       if (ok) {
@@ -677,7 +677,7 @@ const App = (() => {
           closeModal('modal-revive');
           Game.revive();
           if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
-          showToast(isEn() ? '❤️ Revived! Mistakes set to 2/3.' : '❤️ Tiếp tục ván đấu! Lỗi giảm về 2/3.');
+          showToast(isEn() ? 'Revived! Mistakes set to 2/3.' : 'Tiếp tục ván đấu! Lỗi giảm về 2/3.');
         }
       });
     }
@@ -698,7 +698,7 @@ const App = (() => {
         closeModal('modal-buy-hint');
         if (Game.getState() && Game.getState().isPaused) Game.togglePause();
         if (ok) {
-          showToast(isEn() ? '💡 Extra hint unlocked!' : '💡 Đã đổi thêm 1 gợi ý!');
+          showToast(isEn() ? 'Extra hint unlocked!' : 'Đã đổi thêm 1 gợi ý!');
         }
       });
     }
@@ -799,8 +799,8 @@ const App = (() => {
         const res = Game.toggleAutoNotes();
         if (res && res.penaltyJustApplied > 0) {
           const msg = isEn()
-            ? `⚡ Fast Notes: -${res.penaltyJustApplied} pts (deducted at game end)`
-            : `⚡ Bút chì nhanh: -${res.penaltyJustApplied}đ (trừ vào tổng kết khi kết thúc ván)`;
+            ? `Fast Notes: -${res.penaltyJustApplied} pts (deducted at game end)`
+            : `Bút chì nhanh: -${res.penaltyJustApplied}đ (trừ vào tổng kết khi kết thúc ván)`;
           if (typeof App !== 'undefined' && App.toast) {
             App.toast(msg, 'warning');
           }

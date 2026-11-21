@@ -62,7 +62,7 @@ const Profile = (() => {
 
     if (rankIconEl) rankIconEl.textContent = currentRank.icon;
     if (rankNameEl) {
-      rankNameEl.textContent = typeof I18n !== 'undefined' ? I18n.t(currentRank.key) : 'Nhập Môn';
+      rankNameEl.textContent = typeof I18n !== 'undefined' ? I18n.t(currentRank.key) : 'Nhập môn';
     }
 
     const scoreFormatted = totalScore.toLocaleString();
@@ -77,7 +77,7 @@ const Profile = (() => {
       if (rankCardEl) rankCardEl.classList.add('rank-max');
       if (rankExpEl) rankExpEl.textContent = `${scoreFormatted} ${ptsLabel}`;
       if (rankNextEl) {
-        rankNextEl.textContent = typeof I18n !== 'undefined' ? I18n.t('profile_rank_max') : 'Đỉnh Cao Danh Vọng • Đạt Cấp Tối Đa';
+        rankNextEl.textContent = typeof I18n !== 'undefined' ? I18n.t('profile_rank_max') : 'Đỉnh cao danh vọng • Đạt cấp tối đa';
       }
     } else {
       if (rankCardEl) rankCardEl.classList.remove('rank-max');
@@ -234,7 +234,7 @@ const Profile = (() => {
           Storage.saveProfile(p);
           document.getElementById('profile-name').textContent = name;
           if (typeof App !== 'undefined' && App.showToast) {
-            App.showToast(typeof I18n !== 'undefined' ? I18n.t('toast_name_saved') : '✨ Đổi tên thành công!');
+            App.showToast(typeof I18n !== 'undefined' ? I18n.t('toast_name_saved') : 'Đổi tên thành công!');
           }
         }
         document.getElementById('name-edit-section').classList.add('hidden');

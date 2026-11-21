@@ -105,8 +105,8 @@ const Variants = (() => {
       `;
       card.addEventListener('click', () => {
         const msg = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en'
-          ? 'This variant mode is coming soon in an upcoming update! 🚀'
-          : 'Chế độ này đang được cập nhật, xin hãy đợi thêm trong phiên bản tới! 🚀';
+          ? 'This variant mode is coming soon in an upcoming update!'
+          : 'Chế độ này đang được cập nhật, xin hãy đợi thêm trong phiên bản tới!';
         if (typeof App !== 'undefined' && App.showToast) App.showToast(msg);
       });
       grid.appendChild(card);

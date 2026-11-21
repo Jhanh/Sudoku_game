@@ -433,11 +433,11 @@ const Sound = (() => {
     if (!isMuted) {
       playTap();
       if (typeof App !== 'undefined' && App.showToast) {
-        App.showToast(typeof I18n !== 'undefined' ? I18n.t('toast_sound_on') : '🔊 Đã bật âm thanh');
+        App.showToast(typeof I18n !== 'undefined' ? I18n.t('toast_sound_on') : 'Đã bật âm thanh');
       }
     } else {
       if (typeof App !== 'undefined' && App.showToast) {
-        App.showToast(typeof I18n !== 'undefined' ? I18n.t('toast_sound_off') : '🔇 Đã tắt âm thanh');
+        App.showToast(typeof I18n !== 'undefined' ? I18n.t('toast_sound_off') : 'Đã tắt âm thanh');
       }
     }
     return !isMuted;
