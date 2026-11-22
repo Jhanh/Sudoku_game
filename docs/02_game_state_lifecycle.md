@@ -141,8 +141,7 @@ flowchart TD
     MODAL_REVIVE ==>|"Chọn 'Bù Điểm & Chơi Tiếp'<br/>(Nếu đủ điểm trận: score >= cost)"| M2
     MODAL_REVIVE ==>|"Chọn 'Chấp Nhận Thua'<br/>HOẶC không đủ điểm bù"| GAME_OVER
 
-    M1 -. "Hoàn tác (Undo)" .-> M0
-    M2 -. "Hoàn tác (Undo)" .-> M1
+    %% Lưu ý chống gian lận: Thao tác Hoàn tác (Undo) chỉ xóa nước đi sai trên ô cờ và phục hồi ghi chú cũ. Số lỗi vi phạm (1/3 hoặc 2/3) và điểm phạt đã trừ là bất khả đảo ngược.
 
     class M0 safe;
     class M1 warn;

@@ -113,7 +113,7 @@ flowchart TD
     
     GEN_FULL["1. Sinh bàn cờ giải hoàn chỉnh (Full Solution)<br/>- Khởi tạo mảng 81 ô = 0<br/>- Dùng Backtracking kết hợp xáo trộn mảng ngẫu nhiên 1..9"]
     
-    GEN_TARGET["2. Xác định số ô cần đục theo độ khó:<br/>- Dễ: 36 - 40 ô gợi ý (đục ~41-45 ô)<br/>- Vừa: 30 - 34 ô gợi ý (đục ~47-51 ô)<br/>- Khó: 24 - 28 ô gợi ý (đục ~53-57 ô)"]
+    GEN_TARGET["2. Xác định số ô cần đục theo độ khó:<br/>- Dễ: 38 - 45 ô gợi ý (đục ~36-43 ô)<br/>- Vừa: 30 - 35 ô gợi ý (đục ~46-51 ô)<br/>- Khó: 24 - 28 ô gợi ý (đục ~53-57 ô)"]
 
     GEN_DIG["3. Đục lỗ đối xứng (Symmetric Digging):<br/>- Chọn cặp ô đối xứng tâm (r, c) và (8-r, 8-c)<br/>- Tạm gỡ số ở 2 ô này"]
 

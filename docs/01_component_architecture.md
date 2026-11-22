@@ -45,12 +45,14 @@ flowchart TD
         STORAGE["Storage.js<br/>- Lưu ván đấu dở dang & sao lưu/khôi phục file<br/>- Lưu thống kê hồ sơ cá nhân & Điểm vĩnh viễn<br/>- Lưu cấu hình cài đặt"]
         SOUND["Sound.js<br/>- Bộ tổng hợp âm Web Audio API<br/>- SFX: Tap, Correct Combo, Victory, Error, Erase, Hint"]
         I18N["I18n.js<br/>- Hỗ trợ đa ngôn ngữ (vi / en)<br/>- Cập nhật chuỗi giao diện tức thì"]
+        ICONS["Icons.js<br/>- Động cơ vector interface icons tập trung<br/>- 56 icon Lucide chuẩn hóa 24x24<br/>- Bộ nhớ đệm SVG tự động & an toàn"]
     end
-    class L3,STORAGE,SOUND,I18N infraLayer;
+    class L3,STORAGE,SOUND,I18N,ICONS infraLayer;
 
     GAME_CORE ==>|"Lưu trạng thái và thành tích"| STORAGE
     GAME_CORE ==>|"Kích hoạt âm thanh theo tình huống"| SOUND
     APP_CORE ==>|"Áp dụng ngôn ngữ"| I18N
+    APP_CORE ==>|"Nạp biểu tượng vector Lucide"| ICONS
 ```
 
 ---
@@ -67,3 +69,4 @@ flowchart TD
 | **Storage** | `js/storage.js` | Quản trị lưu trữ `localStorage`, lưu ván chơi dở dang, sao lưu/khôi phục file JSON, quản lý điểm vĩnh viễn (Mastery Points), cài đặt người dùng. | `saveGame()`, `loadGame()`, `clearGame()`, `exportData()`, `importData()`, `getTotalPermanentScore()`, `deductPermanentScore()` |
 | **Sound** | `js/sound.js` | Phát âm thanh sinh động trực tiếp từ Web Audio API (không cần tải file audio bên ngoài), âm thanh tap, combo nốt nhạc tăng dần, lỗi, xóa, gợi ý, nhạc thắng cuộc. | `playTap()`, `playCorrect(streak)`, `playError()`, `playErase()`, `playHint()`, `playWin()` |
 | **I18n** | `js/i18n.js` | Từ điển đa ngôn ngữ (Tiếng Việt & English), tự động cập nhật toàn bộ nhãn giao diện khi người dùng chuyển đổi ngôn ngữ. | `t(key)`, `getLanguage()`, `setLanguage(lang)` |
+| **Icons** | `js/icons.js` | Động cơ biểu tượng vector giao diện tập trung (56 icon Lucide), cung cấp hàm render SVG chuẩn hóa 24x24, bộ nhớ đệm tự động tránh lặp phân tích DOM. | `render(name, size, className, strokeWidth)`, `get(name)` |
