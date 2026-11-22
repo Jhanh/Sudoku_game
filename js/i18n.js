@@ -236,7 +236,7 @@ const I18n = (() => {
       sound_unmute: 'Bật âm thanh',
 
       // Mobile Notice
-      mobile_notice_badge: '🖥️ Tối ưu hóa 100% cho PC',
+      mobile_notice_badge: 'Tối ưu hóa 100% cho PC',
       mobile_notice_title: 'Trải nghiệm tốt nhất trên máy tính',
       mobile_notice_desc: 'Trò chơi được tối ưu hóa cho màn hình máy tính (PC / Laptop) với thao tác chuột và bàn phím.',
       mobile_notice_note: 'Giao diện chưa hỗ trợ tốt trên điện thoại. Vui lòng mở game trên máy tính để có trải nghiệm tốt nhất.',
@@ -475,7 +475,7 @@ const I18n = (() => {
       sound_unmute: 'Unmute sound',
 
       // Mobile Notice
-      mobile_notice_badge: '🖥️ 100% PC Desktop Optimized',
+      mobile_notice_badge: '100% PC Desktop Optimized',
       mobile_notice_title: 'Best Experienced on Desktop PC',
       mobile_notice_desc: 'Optimized for desktop computers (PC / Laptop) with mouse and keyboard controls.',
       mobile_notice_note: 'Mobile layouts are not yet supported. Please open the game on a computer for the best experience.',

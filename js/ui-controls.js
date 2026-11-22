@@ -133,26 +133,32 @@ const UIControls = (() => {
     const streakEl = document.getElementById('info-streak');
     if (!streakEl) return;
 
-    let popLabel = '';
-    let normalLabel = '';
+    let iconName = '';
+    let popText = '';
+    let normalText = '';
 
     if (streak === 11) {
-      popLabel = '🔥 COMBO! x1.2';
-      normalLabel = '🔥 x1.2';
+      iconName = 'flame-kindling';
+      popText = 'COMBO! x1.2';
+      normalText = 'x1.2';
     } else if (streak === 21) {
-      popLabel = '🔥 SUPER! x1.5';
-      normalLabel = '🔥 x1.5';
+      iconName = 'flame';
+      popText = 'SUPER! x1.5';
+      normalText = 'x1.5';
     } else if (streak === 31) {
-      popLabel = '⚡ ULTRA! x1.7';
-      normalLabel = '⚡ x1.7';
+      iconName = 'biceps-flexed';
+      popText = 'ULTRA! x1.7';
+      normalText = 'x1.7';
     } else if (streak >= 41) {
-      popLabel = '👑 MASTER! x2.0';
-      normalLabel = '👑 x2.0';
+      iconName = 'crown';
+      popText = 'MASTER! x2.0';
+      normalText = 'x2.0';
     } else {
       return;
     }
 
-    streakEl.textContent = popLabel;
+    const iconSvg = typeof Icons !== 'undefined' ? Icons.get(iconName, { size: 13 }) : '';
+    streakEl.innerHTML = `${iconSvg}<span>${popText}</span>`;
 
     // Restart pop animation
     streakEl.classList.remove('streak-pop-flash');
@@ -162,7 +168,7 @@ const UIControls = (() => {
     if (comboTimer) clearTimeout(comboTimer);
     comboTimer = setTimeout(() => {
       streakEl.classList.remove('streak-pop-flash');
-      streakEl.textContent = normalLabel;
+      streakEl.innerHTML = `${iconSvg}<span>${normalText}</span>`;
       comboTimer = null;
     }, 1200);
   }
@@ -186,16 +192,28 @@ const UIControls = (() => {
     if (streakEl) {
       if (streak >= 41) {
         streakEl.className = 'streak-badge tier-4';
-        if (!comboTimer) streakEl.textContent = '👑 x2.0';
+        if (!comboTimer) {
+          const icon = typeof Icons !== 'undefined' ? Icons.get('crown', { size: 13 }) : '';
+          streakEl.innerHTML = `${icon}<span>x2.0</span>`;
+        }
       } else if (streak >= 31) {
         streakEl.className = 'streak-badge tier-3';
-        if (!comboTimer) streakEl.textContent = '⚡ x1.7';
+        if (!comboTimer) {
+          const icon = typeof Icons !== 'undefined' ? Icons.get('biceps-flexed', { size: 13 }) : '';
+          streakEl.innerHTML = `${icon}<span>x1.7</span>`;
+        }
       } else if (streak >= 21) {
         streakEl.className = 'streak-badge tier-2';
-        if (!comboTimer) streakEl.textContent = '🔥 x1.5';
+        if (!comboTimer) {
+          const icon = typeof Icons !== 'undefined' ? Icons.get('flame', { size: 13 }) : '';
+          streakEl.innerHTML = `${icon}<span>x1.5</span>`;
+        }
       } else if (streak >= 11) {
         streakEl.className = 'streak-badge tier-1';
-        if (!comboTimer) streakEl.textContent = '🔥 x1.2';
+        if (!comboTimer) {
+          const icon = typeof Icons !== 'undefined' ? Icons.get('flame-kindling', { size: 13 }) : '';
+          streakEl.innerHTML = `${icon}<span>x1.2</span>`;
+        }
       } else {
         streakEl.className = 'streak-badge hidden';
         if (comboTimer) {
@@ -232,10 +250,10 @@ const UIControls = (() => {
     const pauseBtn = document.getElementById('btn-pause');
     if (pauseBtn) {
       if (state.isPaused) {
-        pauseBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+        pauseBtn.innerHTML = typeof Icons !== 'undefined' ? Icons.get('circle-play', { size: 18 }) : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>';
         pauseBtn.title = (typeof I18n !== 'undefined' ? I18n.t('btn_resume_tooltip') : 'Tiếp tục [Space]');
       } else {
-        pauseBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+        pauseBtn.innerHTML = typeof Icons !== 'undefined' ? Icons.get('circle-pause', { size: 18 }) : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>';
         pauseBtn.title = (typeof I18n !== 'undefined' ? I18n.t('btn_pause_tooltip') : 'Tạm dừng [Space]');
       }
     }

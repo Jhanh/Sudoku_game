@@ -139,8 +139,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  color: var(--primary);
   flex-shrink: 0;
+}
+
+.rank-icon-wrapper svg {
+  width: 26px;
+  height: 26px;
 }
 
 .rank-info {
@@ -318,8 +323,10 @@
 }
 
 .overview-stat-icon {
-  font-size: 1.15rem;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
 }
 
 .overview-stat-label {
@@ -359,9 +366,11 @@
 }
 
 .stat-card .stat-icon {
-  font-size: 1.15rem;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
   margin-bottom: 2px;
+  color: var(--primary);
 }
 
 .stat-card .stat-value {

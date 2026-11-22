@@ -405,13 +405,18 @@ const Sound = (() => {
 
   /* ---------- Sound State & UI Controls ---------- */
 
-  const ICON_SOUND_ON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
-  const ICON_SOUND_OFF = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+  function _getSoundOnIcon() {
+    return typeof Icons !== 'undefined' && Icons.has('volume-2') ? Icons.get('volume-2', { size: 18 }) : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg>`;
+  }
+
+  function _getSoundOffIcon() {
+    return typeof Icons !== 'undefined' && Icons.has('volume-x') ? Icons.get('volume-x', { size: 18 }) : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`;
+  }
 
   function updateToggleButtons() {
     const buttons = document.querySelectorAll('.btn-sound-toggle');
     buttons.forEach(btn => {
-      btn.innerHTML = isMuted ? ICON_SOUND_OFF : ICON_SOUND_ON;
+      btn.innerHTML = isMuted ? _getSoundOffIcon() : _getSoundOnIcon();
       btn.title = isMuted ? (typeof I18n !== 'undefined' ? I18n.t('sound_unmute') : 'Bật âm thanh') : (typeof I18n !== 'undefined' ? I18n.t('sound_mute') : 'Tắt âm thanh');
       btn.setAttribute('aria-label', btn.title);
       btn.classList.toggle('muted', isMuted);

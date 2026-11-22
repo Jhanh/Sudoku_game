@@ -323,8 +323,16 @@
 }
 
 .diff-stars {
-  font-size: 1.5rem;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #F59E0B;
+}
+
+.diff-stars svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* ========================================
@@ -341,9 +349,26 @@
 }
 
 .gameover-icon {
-  font-size: 3.5rem;
-  margin-bottom: 6px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+#modal-gameover.win .gameover-icon,
+.modal-gameover.win .gameover-icon {
+  color: #10B981;
+}
+
+#modal-gameover.give-up .gameover-icon,
+.modal-gameover.give-up .gameover-icon {
+  color: #64748B;
+}
+
+#modal-gameover.lose .gameover-icon,
+.modal-gameover.lose .gameover-icon {
+  color: #EF4444;
 }
 
 .gameover-title {
@@ -822,10 +847,19 @@
 
 .revive-icon,
 .buy-hint-icon {
-  font-size: 2.8rem;
-  line-height: 1;
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
   animation: modalScaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.revive-icon {
+  color: #EF4444;
+}
+
+.buy-hint-icon {
+  color: #F59E0B;
 }
 
 .revive-desc,

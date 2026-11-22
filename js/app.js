@@ -115,24 +115,29 @@ const App = (() => {
     }
 
     const modalEl = document.getElementById('modal-gameover');
+    const innerModal = modalEl ? modalEl.querySelector('.modal-gameover') : null;
     if (modalEl) modalEl.classList.remove('win', 'lose', 'give-up');
+    if (innerModal) innerModal.classList.remove('win', 'lose', 'give-up');
 
     let icon, title, subtitle;
     if (reason === 'win' || reason === true) {
       if (typeof Sound !== 'undefined' && Sound.playWin) Sound.playWin();
       if (modalEl) modalEl.classList.add('win');
-      icon = '🎉';
+      if (innerModal) innerModal.classList.add('win');
+      icon = 'party-popper';
       title = t('gameover_win_title', 'Chiến thắng!');
       subtitle = t('gameover_win_subtitle', 'Chúc mừng bạn đã hoàn thành trọn vẹn ván cờ Sudoku!');
     } else if (reason === 'give_up') {
       if (modalEl) modalEl.classList.add('give-up');
-      icon = '🏳️';
+      if (innerModal) innerModal.classList.add('give-up');
+      icon = 'flag';
       title = t('gameover_giveup_title', 'Đã bỏ cuộc');
       subtitle = t('gameover_giveup_subtitle', 'Ván đấu đã kết thúc. Dưới đây là bảng điểm chi tiết bạn đã tích lũy:');
     } else if (reason === 'total_mistakes_over' || reason === 'consecutive_streak_over' || reason === 'streak_over') {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
-      icon = '💔';
+      if (innerModal) innerModal.classList.add('lose');
+      icon = 'heart-crack';
       title = isEn() ? '3 Mistakes Reached!' : 'Hết 3 cơ hội sai!';
       subtitle = isEn()
         ? 'You reached the 3 mistakes limit and chose not to continue. Game over!'
@@ -140,7 +145,8 @@ const App = (() => {
     } else {
       if (typeof Sound !== 'undefined' && Sound.playGameOver) Sound.playGameOver();
       if (modalEl) modalEl.classList.add('lose');
-      icon = '💔';
+      if (innerModal) innerModal.classList.add('lose');
+      icon = 'heart-crack';
       title = t('gameover_lose_title', 'Kết thúc trận đấu');
       subtitle = t('gameover_lose_subtitle', 'Ván đấu đã dừng lại. Hãy xem lại bảng điểm và thử lại nhé!');
     }
@@ -154,7 +160,10 @@ const App = (() => {
     const btnNew = document.getElementById('btn-go-new');
     const btnLobby = document.getElementById('btn-go-lobby');
 
-    if (iconEl) iconEl.textContent = icon;
+    if (iconEl) {
+      const iconColor = (reason === 'win' || reason === true) ? '#10B981' : (reason === 'give_up' ? '#64748B' : '#EF4444');
+      iconEl.innerHTML = typeof Icons !== 'undefined' ? Icons.get(icon, { size: 56, color: iconColor }) : icon;
+    }
     if (titleEl) titleEl.textContent = title;
     if (subtitleEl) subtitleEl.textContent = subtitle;
     if (labelEl) labelEl.textContent = t('breakdown_final_score', 'TỔNG ĐIỂM ĐẠT ĐƯỢC').toUpperCase();

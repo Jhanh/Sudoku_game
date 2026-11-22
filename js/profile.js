@@ -24,15 +24,15 @@ const Profile = (() => {
   }
 
   const RANKS = [
-    { level: 1, key: 'profile_rank_1', icon: '🥋', minScore: 0, nextScore: 5000 },
-    { level: 2, key: 'profile_rank_2', icon: '🥉', minScore: 5000, nextScore: 15000 },
-    { level: 3, key: 'profile_rank_3', icon: '🥈', minScore: 15000, nextScore: 40000 },
-    { level: 4, key: 'profile_rank_4', icon: '🥇', minScore: 40000, nextScore: 100000 },
-    { level: 5, key: 'profile_rank_5', icon: '🎖️', minScore: 100000, nextScore: 250000 },
-    { level: 6, key: 'profile_rank_6', icon: '💠', minScore: 250000, nextScore: 650000 },
-    { level: 7, key: 'profile_rank_7', icon: '🔮', minScore: 650000, nextScore: 1500000 },
-    { level: 8, key: 'profile_rank_8', icon: '👑', minScore: 1500000, nextScore: 3000000 },
-    { level: 9, key: 'profile_rank_9', icon: '🌟', minScore: 3000000, nextScore: null }
+    { level: 1, key: 'profile_rank_1', icon: 'sprout', minScore: 0, nextScore: 5000 },
+    { level: 2, key: 'profile_rank_2', icon: 'clover', minScore: 5000, nextScore: 15000 },
+    { level: 3, key: 'profile_rank_3', icon: 'pickaxe', minScore: 15000, nextScore: 40000 },
+    { level: 4, key: 'profile_rank_4', icon: 'galaxy', minScore: 40000, nextScore: 100000 },
+    { level: 5, key: 'profile_rank_5', icon: 'rocket', minScore: 100000, nextScore: 250000 },
+    { level: 6, key: 'profile_rank_6', icon: 'sparkles', minScore: 250000, nextScore: 650000 },
+    { level: 7, key: 'profile_rank_7', icon: 'brain', minScore: 650000, nextScore: 1500000 },
+    { level: 8, key: 'profile_rank_8', icon: 'crown', minScore: 1500000, nextScore: 3000000 },
+    { level: 9, key: 'profile_rank_9', icon: 'chess-queen', minScore: 3000000, nextScore: null }
   ];
 
   function _renderRank() {
@@ -60,7 +60,9 @@ const Profile = (() => {
     const rankNextEl = document.getElementById('profile-rank-next');
     const rankCardEl = document.querySelector('.profile-rank-card');
 
-    if (rankIconEl) rankIconEl.textContent = currentRank.icon;
+    if (rankIconEl) {
+      rankIconEl.innerHTML = typeof Icons !== 'undefined' ? Icons.get(currentRank.icon, { size: 28 }) : currentRank.icon;
+    }
     if (rankNameEl) {
       rankNameEl.textContent = typeof I18n !== 'undefined' ? I18n.t(currentRank.key) : 'Nhập môn';
     }
@@ -130,6 +132,15 @@ const Profile = (() => {
     if (overviewWon) overviewWon.textContent = s.won;
     if (overviewPlayed) overviewPlayed.textContent = s.played;
 
+    const wonIconEl = document.getElementById('overview-won-icon');
+    const playedIconEl = document.getElementById('overview-played-icon');
+    if (wonIconEl && typeof Icons !== 'undefined') {
+      wonIconEl.innerHTML = Icons.get('award', { size: 18 });
+    }
+    if (playedIconEl && typeof Icons !== 'undefined') {
+      playedIconEl.innerHTML = Icons.get('gamepad-2', { size: 18 });
+    }
+
     // Stat cards in grid (6 cards, neatly paired)
     const avgTime = s.won > 0 ? Math.round(s.totalWinTime / s.won) : 0;
     const grid = document.getElementById('stats-grid');
@@ -141,35 +152,35 @@ const Profile = (() => {
 
     const cards = [
       {
-        icon: '👑',
+        icon: 'podium',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_best_score') : 'Điểm cao nhất',
         value: s.bestScore ? s.bestScore.toLocaleString(loc) : 0,
         highlight: true
       },
       {
-        icon: '💎',
+        icon: 'gem',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_perfect_wins') : 'Thắng hoàn hảo',
         value: s.perfectWins || 0,
         highlight: true
       },
       {
-        icon: '🔥',
+        icon: 'target',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_current_streak') : 'Chuỗi thắng hiện tại',
         value: s.currentStreak || 0
       },
       {
-        icon: '⚡',
+        icon: 'goal',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_best_streak') : 'Chuỗi thắng tốt nhất',
         value: s.bestStreak || 0,
         highlight: true
       },
       {
-        icon: '⏱️',
+        icon: 'alarm-clock-check',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_best_time') : 'Thời gian nhanh nhất',
         value: s.bestTime > 0 ? (typeof Game !== 'undefined' ? Game.formatTime(s.bestTime) : s.bestTime) : '-'
       },
       {
-        icon: '📈',
+        icon: 'clock',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_avg_time') : 'Thời gian trung bình',
         value: avgTime > 0 ? (typeof Game !== 'undefined' ? Game.formatTime(avgTime) : avgTime) : '-'
       }
@@ -178,8 +189,9 @@ const Profile = (() => {
     cards.forEach(c => {
       const card = document.createElement('div');
       card.className = 'stat-card' + (c.highlight ? ' highlight' : '');
+      const iconHtml = typeof Icons !== 'undefined' ? Icons.get(c.icon, { size: 22 }) : c.icon;
       card.innerHTML = `
-        <span class="stat-icon">${c.icon}</span>
+        <span class="stat-icon">${iconHtml}</span>
         <span class="stat-value">${c.value}</span>
         <span class="stat-label">${c.label}</span>
       `;

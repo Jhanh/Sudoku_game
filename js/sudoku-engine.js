@@ -2,8 +2,8 @@
    sudoku-engine.js - Puzzle generator & logical grader
    Guarantees unique solution, international givens standards,
    and human-solving logical grading:
-   - Easy: Solvable purely by Naked & Hidden Singles (givens ~36-40)
-   - Medium: Solvable with Singles + Pointing/Box-Line & Naked Pairs (givens ~30-34)
+   - Easy: Solvable purely by Naked & Hidden Singles (givens ~38-45)
+   - Medium: Solvable with Singles + Pointing/Box-Line & Naked Pairs (givens ~30-35)
    - Hard: Requires advanced subsets/intersections/deep deduction (givens ~24-28)
    ========================================================= */
 const SudokuEngine = (() => {
@@ -299,8 +299,8 @@ const SudokuEngine = (() => {
   /* ---------- generate puzzle ---------- */
   function generate(difficulty) {
     const givensRanges = {
-      easy:   [36, 40],
-      medium: [30, 34],
+      easy:   [38, 45],
+      medium: [30, 35],
       hard:   [24, 28]
     };
     const [minG, maxG] = givensRanges[difficulty] || [32, 36];
