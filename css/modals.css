@@ -1,18 +1,22 @@
 /* ========================================
-   MODAL OVERLAY
+   MODAL OVERLAY - SERENE FROSTED BACKDROP
    ======================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.44);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
-  animation: fadeOverlay 0.25s ease;
+  animation: fadeOverlay 0.24s ease;
+}
+
+[data-theme="dark"] .modal-overlay {
+  background: rgba(2, 6, 23, 0.65);
 }
 
 @keyframes fadeOverlay {
@@ -24,22 +28,58 @@
   }
 }
 
-/* ===== Modal Container ===== */
-.modal {
-  background: var(--surface);
-  border-radius: 16px;
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.84);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== Modal Container - Porcelain Glass Depth ===== */
+.modal,
+.modal-box {
+  background: var(--surface-porcelain);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
   width: 100%;
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
-  animation: modalSlideUp 0.3s ease;
+  box-shadow:
+    0 24px 60px -12px rgba(15, 23, 42, 0.22),
+    0 4px 16px rgba(15, 23, 42, 0.08),
+    var(--inset-highlight);
+  animation: modalSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .modal,
+[data-theme="dark"] .modal-box {
+  box-shadow:
+    0 26px 64px -12px rgba(2, 6, 23, 0.72),
+    0 6px 20px rgba(2, 6, 23, 0.45),
+    var(--inset-highlight);
 }
 
 @keyframes modalSlideUp {
   from {
     opacity: 0;
-    transform: translateY(24px) scale(0.95);
+    transform: translateY(18px) scale(0.96);
   }
   to {
     opacity: 1;
@@ -57,7 +97,7 @@
 }
 
 .modal-header h2 {
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 700;
   color: var(--text);
 }
@@ -66,25 +106,28 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: none;
-  border: none;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   flex-shrink: 0;
+  box-shadow: var(--inset-highlight);
 }
 
 .btn-modal-close:hover {
   background: var(--highlight-row);
+  border-color: var(--primary-light);
   color: var(--text);
+  transform: scale(1.05);
 }
 
 .btn-modal-close svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 /* ===== Modal Body ===== */
@@ -96,6 +139,7 @@
 .modal-footer {
   padding: 16px 24px;
   border-top: 1px solid var(--border);
+  background: rgba(148, 163, 184, 0.04);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -521,37 +565,144 @@
 }
 
 /* ========================================
-   CONFIRM MODAL
+   CONFIRM & INFO RULES MODAL (.info-mode)
    ======================================== */
 .modal-confirm {
-  max-width: 360px;
+  max-width: 390px;
   text-align: center;
 }
 
 .modal-confirm .modal-body {
-  padding: 32px 24px;
+  padding: 28px 24px 22px;
 }
 
 .confirm-icon {
-  margin-bottom: 8px;
-  font-size: 3rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1.5px solid rgba(245, 158, 11, 0.28);
+  color: var(--warning);
   line-height: 1;
+  box-shadow: var(--inset-highlight);
 }
 
 .confirm-icon svg {
-  width: 48px;
-  height: 48px;
+  width: 30px;
+  height: 30px;
   margin: 0 auto;
-  color: var(--warning);
+  color: inherit;
 }
 
-.confirm-footer {
+#confirm-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+#confirm-message {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.58;
+  white-space: pre-line;
+}
+
+#confirm-message.is-list {
+  text-align: left;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 16px;
+  margin-top: 12px;
+  line-height: 1.72;
+  color: var(--text);
+}
+
+.confirm-footer,
+.confirm-actions {
   justify-content: center;
   gap: 12px;
 }
 
+/* Info-Mode (Single-button calm rules dialog for Daily & Variants) */
+#modal-confirm.info-mode .modal-confirm,
+.modal.info-mode,
+.modal-box.info-mode {
+  max-width: 440px;
+}
+
+#modal-confirm.info-mode #btn-confirm-cancel,
+.modal.info-mode #btn-confirm-cancel,
+.modal-box.info-mode #btn-confirm-cancel {
+  display: none;
+}
+
+#modal-confirm.info-mode .confirm-footer,
+#modal-confirm.info-mode .confirm-actions,
+.modal.info-mode .confirm-footer,
+.modal.info-mode .confirm-actions,
+.modal-box.info-mode .confirm-footer,
+.modal-box.info-mode .confirm-actions {
+  justify-content: center;
+}
+
+#modal-confirm.info-mode #btn-confirm-ok,
+.modal.info-mode #btn-confirm-ok,
+.modal-box.info-mode #btn-confirm-ok {
+  min-width: 160px;
+  background: linear-gradient(180deg, #5294FA 0%, #3B82F6 100%);
+  background-color: var(--primary);
+  border-color: rgba(59, 130, 246, 0.55);
+  color: #FFFFFF;
+  box-shadow: 0 3px 0 #2563EB, 0 6px 14px rgba(59, 130, 246, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+#modal-confirm.info-mode #btn-confirm-ok:hover,
+.modal.info-mode #btn-confirm-ok:hover,
+.modal-box.info-mode #btn-confirm-ok:hover {
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+  box-shadow: 0 4px 0 #2563EB, 0 8px 18px rgba(59, 130, 246, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+#modal-confirm.info-mode #btn-confirm-ok:active,
+.modal.info-mode #btn-confirm-ok:active,
+.modal-box.info-mode #btn-confirm-ok:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #2563EB, 0 3px 8px rgba(59, 130, 246, 0.2);
+}
+
+#modal-confirm.info-mode .confirm-icon,
+.modal.info-mode .confirm-icon,
+.modal-box.info-mode .confirm-icon {
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--primary, #3B82F6);
+  border-color: rgba(59, 130, 246, 0.24);
+}
+
+[data-theme="dark"] #modal-confirm.info-mode .confirm-icon,
+[data-theme="dark"] .modal.info-mode .confirm-icon,
+[data-theme="dark"] .modal-box.info-mode .confirm-icon {
+  background: rgba(96, 165, 250, 0.16);
+  color: #60A5FA;
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+#modal-confirm.info-mode .confirm-icon svg,
+.modal.info-mode .confirm-icon svg,
+.modal-box.info-mode .confirm-icon svg {
+  width: 28px;
+  height: 28px;
+  color: inherit;
+  stroke: currentColor;
+}
+
 /* ========================================
-   TOAST NOTIFICATIONS
+   TOAST NOTIFICATIONS - PORCELAIN PILL
    ======================================== */
 .toast {
   position: fixed;
@@ -559,28 +710,28 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 2000;
-  animation: toastIn 0.4s ease;
+  animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes toastIn {
   from {
     opacity: 0;
-    transform: translate(-50%, -20px);
+    transform: translate(-50%, -18px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, 0) scale(1);
   }
 }
 
 .toast.hiding {
-  animation: toastOut 0.3s ease forwards;
+  animation: toastOut 0.28s ease forwards;
 }
 
 @keyframes toastOut {
   to {
     opacity: 0;
-    transform: translate(-50%, -20px);
+    transform: translate(-50%, -18px) scale(0.96);
   }
 }
 
@@ -588,15 +739,26 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 24px;
-  background: var(--surface);
+  padding: 12px 22px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
   border-radius: 50px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  font-size: 0.95rem;
-  font-weight: 500;
+  box-shadow:
+    0 12px 32px -4px rgba(15, 23, 42, 0.14),
+    0 2px 6px rgba(15, 23, 42, 0.05),
+    var(--inset-highlight);
+  font-size: 0.92rem;
+  font-weight: 600;
   color: var(--text);
   border: 1px solid var(--border);
   white-space: nowrap;
+}
+
+[data-theme="dark"] .toast-content {
+  box-shadow:
+    0 14px 36px -4px rgba(2, 6, 23, 0.65),
+    var(--inset-highlight);
 }
 
 .toast-icon {
@@ -871,12 +1033,13 @@
 }
 
 .revive-cost-card {
-  background: var(--bg-primary);
+  background: var(--surface-subtle);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
+  border-radius: var(--radius-md, 12px);
+  padding: 13px 16px;
   margin-bottom: 14px;
   text-align: left;
+  box-shadow: var(--inset-highlight);
 }
 
 .revive-cost-row {
@@ -894,8 +1057,9 @@
 
 .revive-cost-row .cost-value {
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text);
   font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .revive-cost-row .highlight-cost {
