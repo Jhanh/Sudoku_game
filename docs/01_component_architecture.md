@@ -1,6 +1,6 @@
-# 🏛️ Sơ đồ 01: Kiến trúc phân tầng module (Component Architecture)
+# 🏛️ Sơ đồ 01: Kiến trúc phân tầng 12 module (Component architecture)
 
-Tài liệu này mô tả chi tiết kiến trúc 3 tầng (**3-Tier Architecture**) của game Sudoku, danh sách các module theo chuẩn **Module Pattern (IIFE)**, trách nhiệm và mối quan hệ phụ thuộc giữa chúng.
+Tài liệu này mô tả kiến trúc 3 tầng (**3-Tier Architecture**) của trò chơi Sudoku Web, danh sách **12 module JavaScript** theo chuẩn **Module Pattern (IIFE)** cùng hệ thống **7 tệp CSS** định hình phong cách thị giác *Serene Sky & Tactile Porcelain*.
 
 ---
 
@@ -12,61 +12,83 @@ flowchart TD
     classDef logicLayer fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
     classDef infraLayer fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
 
-    subgraph L1 ["🖥️ TẦNG TRÌNH DIỄN (Presentation Layer)"]
+    subgraph L1 ["🖥️ Tầng trình diễn (Presentation Layer - 7 tệp CSS & các module UI)"]
         direction TB
-        subgraph L1_Screens ["Màn hình chính"]
-            SCR_SPLASH["Splash Screen<br/>(Intro và Khám phá)"]
-            SCR_LOBBY["Lobby Screen<br/>(Chọn độ khó, Biến thể, Tiếp tục)"]
-            SCR_GAME["Game Play Screen<br/>(Bàn cờ, Thanh trạng thái, Bàn phím)"]
+        subgraph L1_Lobbies ["4 sảnh điều hướng chính trên thanh Dock"]
+            TAB_HOME["Sảnh Trang chủ<br/>(Bàn cờ 3D Isometric, chơi nhanh & ván dở)"]
+            TAB_DAILY["Sảnh Thử thách ngày<br/>(Lịch tháng, 5 cúp tiến hóa & 4 dấu ấn mùa)"]
+            TAB_VAR["Variants.js - Sảnh Biến thể<br/>(4 thẻ biến thể & tra cứu luật chơi)"]
+            TAB_PROF["Profile.js - Sảnh Hồ sơ<br/>(9 bậc danh hiệu, biểu đồ tròn & kỷ lục)"]
         end
-        subgraph L1_UI ["Module Giao diện Bàn cờ và Điều khiển"]
-            UI_BOARD["UIBoard<br/>- Render 81 ô cờ<br/>- Highlight hàng/cột/khối & ứng viên trùng<br/>- Cảnh báo xung đột ghi chú 2s"]
-            UI_CTRL["UIControls<br/>- Bàn phím số 3x3<br/>- Giữ vị trí ô hoàn thành<br/>- Thanh trạng thái và bộ đếm lỗi 0/3<br/>- Banner gợi ý logic & 6 nút công cụ"]
+        subgraph L1_Gameplay ["Giao diện thi đấu trực tiếp"]
+            UI_BOARD["UIBoard.js<br/>- Render 81 ô bàn cờ sứ có bộ nhớ đệm DOM<br/>- Tô sáng hàng/cột/khối, cùng số & ứng viên<br/>- Cảnh báo xung đột ghi chú 1.2s & sóng mở màn"]
+            UI_CTRL["UIControls.js<br/>- Bàn phím số 3x3 xúc giác giữ cố định vị trí<br/>- Đồng hồ, điểm số, bộ đếm lỗi 0/3 & huy hiệu combo<br/>- 6 nút công cụ 3x2 & banner giải thích gợi ý"]
         end
-        subgraph L1_Modals ["Hộp thoại chức năng (Modals)"]
-            MOD_TUT["Tutorial.js<br/>(Hướng dẫn luật chơi)"]
-            MOD_PROF["Profile.js<br/>(Hồ sơ và Thành tích)"]
-            MOD_VAR["Variants.js<br/>(Biến thể Sudoku)"]
-            MOD_RES["Victory / Game Over / Pause<br/>(Kết quả và Tạm dừng)"]
+        subgraph L1_Modals ["Hộp thoại chức năng"]
+            MOD_TUT["Tutorial.js<br/>(Hướng dẫn 3 bước trực quan)"]
+            MOD_SYS["Cài đặt, Hồi sinh, Đổi gợi ý,<br/>Luật chơi (info-mode) & Tổng kết ván"]
         end
     end
-    class L1,SCR_SPLASH,SCR_LOBBY,SCR_GAME,UI_BOARD,UI_CTRL,MOD_TUT,MOD_PROF,MOD_VAR,MOD_RES presLayer;
+    class L1,TAB_HOME,TAB_DAILY,TAB_VAR,TAB_PROF,UI_BOARD,UI_CTRL,MOD_TUT,MOD_SYS presLayer;
 
-    subgraph L2 ["⚙️ TẦNG LOGIC VÀ TRẠNG THÁI (Business Logic và State Layer)"]
+    subgraph L2 ["⚙️ Tầng điều phối, logic & thuật toán (Business Logic Layer)"]
         direction TB
-        APP_CORE["App.js (Router và Orchestrator)<br/>- Khởi tạo hệ thống<br/>- Quản lý chuyển đổi màn hình và modal<br/>- Lắng nghe sự kiện bàn phím toàn cục"]
-        GAME_CORE["Game.js (State Machine và Rules)<br/>- Quản lý Game State (81 ô, nghiệm, ô đề)<br/>- Xác thực nước đi, Tia chớp, Bút chì nhanh<br/>- Hệ thống 3 mạng lỗi, Hồi sinh & Hoàn tác nghiêm ngặt<br/>- Gợi ý thông minh & Đổi gợi ý cấp số nhân"]
-        ENGINE["SudokuEngine.js (Algorithms)<br/>- Thuật toán Backtracking giải Sudoku<br/>- Đảm bảo duy nhất 1 nghiệm<br/>- Gợi ý thông minh & Quét ứng viên hợp lệ"]
+        APP_CORE["App.js (Router & Orchestrator)<br/>- Điều hướng màn hình Splash / 4 tab Lobby / Gameplay<br/>- Quản lý lịch Thử thách ngày, hộp thoại & phím tắt toàn cục<br/>- Khóa bảo vệ an toàn các hộp thoại Hồi sinh, Đổi gợi ý & Kết quả"]
+        GAME_CORE["Game.js (Single Source of Truth)<br/>- Quản lý trạng thái 81 ô, điểm số, chuỗi combo & hoàn tác<br/>- Chế độ Tia chớp, Ghi chú, Bút chì nhanh & bảo vệ ô đúng khi Xóa<br/>- Giới hạn 3 mạng lỗi, Hồi sinh bù điểm & Đổi gợi ý cấp số nhân"]
+        ENGINE["SudokuEngine.js (Algorithms)<br/>- Sinh đề duy nhất 1 nghiệm có chấm độ khó logic 3 cấp<br/>- Sinh đề theo hạt giống ngày bằng Mulberry32 PRNG<br/>- Phân tích Gợi ý thông minh & quét ứng viên bằng bitmask"]
     end
     class L2,APP_CORE,GAME_CORE,ENGINE logicLayer;
 
-    subgraph L3 ["💾 TẦNG DỊCH VỤ VÀ HẠ TẦNG (Infrastructure và Services)"]
+    subgraph L3 ["💾 Tầng dịch vụ nền & hạ tầng (Infrastructure & Services Layer)"]
         direction TB
-        STORAGE["Storage.js<br/>- Lưu ván đấu dở dang & sao lưu/khôi phục file<br/>- Lưu thống kê hồ sơ cá nhân & Điểm vĩnh viễn<br/>- Lưu cấu hình cài đặt"]
-        SOUND["Sound.js<br/>- Bộ tổng hợp âm Web Audio API<br/>- SFX: Tap, Correct Combo, Victory, Error, Erase, Hint"]
-        I18N["I18n.js<br/>- Hỗ trợ đa ngôn ngữ (vi / en)<br/>- Cập nhật chuỗi giao diện tức thì"]
-        ICONS["Icons.js<br/>- Động cơ vector interface icons tập trung<br/>- 56 icon Lucide chuẩn hóa 24x24<br/>- Bộ nhớ đệm SVG tự động & an toàn"]
+        STORAGE["Storage.js<br/>- Quản trị 8 khóa LocalStorage kèm bộ nhớ dự phòng<br/>- Lưu ván dở, điểm Hồ sơ vĩnh viễn & lịch sử Thử thách ngày<br/>- Xuất / nhập tệp sao lưu JSON chuẩn File System Access API"]
+        SOUND["Sound.js<br/>- Tổng hợp âm thanh thời gian thực Web Audio API<br/>- 10 hiệu ứng SFX không dùng tệp âm thanh ngoài"]
+        I18N["I18n.js<br/>- Bản địa hóa song ngữ tức thì (Tiếng Việt / English)<br/>- Tự động đồng bộ nhãn DOM & các thành phần động"]
+        ICONS["Icons.js<br/>- Động cơ biểu tượng vector chuẩn Lucide 24x24<br/>- Tự động thích ứng màu sắc theo chủ đề Sáng / Tối"]
     end
     class L3,STORAGE,SOUND,I18N,ICONS infraLayer;
 
-    GAME_CORE ==>|"Lưu trạng thái và thành tích"| STORAGE
-    GAME_CORE ==>|"Kích hoạt âm thanh theo tình huống"| SOUND
-    APP_CORE ==>|"Áp dụng ngôn ngữ"| I18N
-    APP_CORE ==>|"Nạp biểu tượng vector Lucide"| ICONS
+    APP_CORE ==>|"Khởi tạo ván thường hoặc ván ngày"| GAME_CORE
+    GAME_CORE ==>|"Gọi thuật toán sinh đề & gợi ý"| ENGINE
+    GAME_CORE ==>|"Đồng bộ trạng thái ván đấu"| UI_BOARD
+    GAME_CORE ==>|"Cập nhật bảng điều khiển & đồng hồ"| UI_CTRL
+    GAME_CORE ==>|"Lưu tiến trình, thành tích & cúp ngày"| STORAGE
+    GAME_CORE ==>|"Phát hiệu ứng âm thanh tương tác"| SOUND
+    APP_CORE ==>|"Chuyển đổi ngôn ngữ phản ứng"| I18N
+    APP_CORE ==>|"Kết xuất biểu tượng SVG sắc nét"| ICONS
 ```
 
 ---
 
-## 📋 2. Trách nhiệm chi tiết của từng module
+## 📋 2. Trách nhiệm chi tiết của 12 module JavaScript
 
-| Module | File nguồn | Trách nhiệm chính | Public API tiêu biểu |
-|:---|:---|:---|:---|
-| **App** | `js/app.js` | Điều phối toàn cục, quản lý navigation màn hình (`splash`, `lobby`, `gameplay`), quản lý đóng/mở modal, thiết lập theme Sáng/Tối. | `init()`, `showToast(msg)`, `applyLanguage()` |
-| **Game** | `js/game.js` | "Single Source of Truth": Quản lý toàn bộ dữ liệu ván đấu, xác nhận nước đi, ngăn điền thừa khi đủ 9 số, xử lý chế độ Tia chớp, tính điểm combo, giới hạn 3 mạng lỗi và cơ chế Hồi sinh bù điểm, đổi gợi ý bằng Điểm Hồ Sơ. | `start()`, `resume()`, `selectCell()`, `placeNumber()`, `toggleFastFill()`, `undo()`, `erase()`, `useHint()`, `buyExtraHint()`, `revive()` |
-| **SudokuEngine** | `js/sudoku-engine.js` | Thuật toán sinh bàn cờ giải hoàn chỉnh bằng Backtracking ngẫu nhiên, thuật toán đục lỗ tạo đề bài đảm bảo duy nhất 1 nghiệm, kiểm tra tính hợp lệ của số. | `generate()`, `solve()`, `countSolutions()`, `isValid()` |
-| **UIBoard** | `js/ui-board.js` | Khởi tạo DOM 81 ô cờ, render giá trị, ghi chú, áp dụng màu sắc công thái học (số đề in đậm 600 màu đen, số điền in thường 500 màu xanh, highlight hàng/cột/khối và cùng số). | `init()`, `render(state)`, `destroy()` |
-| **UIControls** | `js/ui-controls.js` | Điều khiển bàn phím số 3x3 (giữ nguyên vị trí cố định của phím khi số đã hoàn thành), hiển thị đồng hồ bấm giờ, điểm số, badge chuỗi đúng, hiển thị lỗi 0/3. | `init()`, `update(state)` |
-| **Storage** | `js/storage.js` | Quản trị lưu trữ `localStorage`, lưu ván chơi dở dang, sao lưu/khôi phục file JSON, quản lý điểm vĩnh viễn (Mastery Points), cài đặt người dùng. | `saveGame()`, `loadGame()`, `clearGame()`, `exportData()`, `importData()`, `getTotalPermanentScore()`, `deductPermanentScore()` |
-| **Sound** | `js/sound.js` | Phát âm thanh sinh động trực tiếp từ Web Audio API (không cần tải file audio bên ngoài), âm thanh tap, combo nốt nhạc tăng dần, lỗi, xóa, gợi ý, nhạc thắng cuộc. | `playTap()`, `playCorrect(streak)`, `playError()`, `playErase()`, `playHint()`, `playWin()` |
-| **I18n** | `js/i18n.js` | Từ điển đa ngôn ngữ (Tiếng Việt & English), tự động cập nhật toàn bộ nhãn giao diện khi người dùng chuyển đổi ngôn ngữ. | `t(key)`, `getLanguage()`, `setLanguage(lang)` |
-| **Icons** | `js/icons.js` | Động cơ biểu tượng vector giao diện tập trung (56 icon Lucide), cung cấp hàm render SVG chuẩn hóa 24x24, bộ nhớ đệm tự động tránh lặp phân tích DOM. | `render(name, size, className, strokeWidth)`, `get(name)` |
+| STT | Module | Tệp nguồn | Trách nhiệm cốt lõi | API công khai tiêu biểu |
+|:---:|:---|:---|:---|:---|
+| 1 | **Icons** | `js/icons.js` | Quản lý tập trung hơn 60 biểu tượng SVG chuẩn Lucide 24x24, tự động thích ứng `currentColor` theo giao diện Sáng / Tối. | `get(name, opts)`, `has(name)`, `list()` |
+| 2 | **SudokuEngine** | `js/sudoku-engine.js` | Sinh bàn cờ duy nhất 1 nghiệm, phân loại độ khó theo kỹ thuật giải của con người, sinh đề cố định theo ngày (Mulberry32 PRNG) và phân tích Gợi ý thông minh. | `generate()`, `generateFromSeed()`, `getDailyDifficulty()`, `getSmartHint()`, `getAllValidCandidates()` |
+| 3 | **Game** | `js/game.js` | Trung tâm trạng thái duy nhất của ván đấu: kiểm tra nước đi, bảo vệ ô đúng khi Xóa, tính điểm combo, quản lý Tia chớp, Bút chì nhanh, 3 mạng lỗi, Hồi sinh và Đổi gợi ý. | `start()`, `startFromPuzzle()`, `resume()`, `selectCell()`, `placeNumber()`, `erase()`, `undo()`, `useHint()`, `buyExtraHint()`, `revive()` |
+| 4 | **Storage** | `js/storage.js` | Lưu trữ bền vững trên 8 khóa `localStorage` (có fallback bộ nhớ RAM), quản lý điểm Hồ sơ vĩnh viễn, tổng kết cúp tháng động (28-31 ngày) và sao lưu / khôi phục JSON. | `saveGame()`, `loadGame()`, `getStats()`, `getTotalPermanentScore()`, `saveDailyResult()`, `getDailyMonthSummary()`, `exportData()`, `importData()` |
+| 5 | **Sound** | `js/sound.js` | Bộ tổng hợp sóng âm thời gian thực bằng Web Audio API với bảng tần số chuẩn âm nhạc, cung cấp 10 hiệu ứng âm thanh không tốn dung lượng tải. | `playTap()`, `playCorrect()`, `playDigitComplete()`, `playError()`, `playErase()`, `playHint()`, `playWin()`, `syncWithStorage()` |
+| 6 | **I18n** | `js/i18n.js` | Động cơ đa ngôn ngữ song ngữ Việt - Anh, quét thuộc tính `data-i18n*` và kích hoạt làm mới tức thì toàn bộ sảnh chơi khi đổi ngôn ngữ. | `init()`, `t(key, params)`, `getLanguage()`, `setLanguage(lang)` |
+| 7 | **UIBoard** | `js/ui-board.js` | Quản lý 81 ô DOM đã lưu đệm, phân cấp nét chữ số đề (600) và số điền (500), tô sáng vùng liên đới, ứng viên trùng, nhấp nháy xung đột ghi chú và sóng mở màn. | `init()`, `render(state)`, `playIntroAnimation(state)`, `destroy()` |
+| 8 | **UIControls** | `js/ui-controls.js` | Vận hành bàn phím số 3x3 (ẩn phím hoàn thành nhưng giữ nguyên vị trí vật lý), đồng hồ nhịp 1 giây siêu nhẹ, bộ đếm lỗi `0/3`, huy hiệu combo và 6 nút công cụ. | `init()`, `update(state)`, `updateTimer(state)` |
+| 9 | **Profile** | `js/profile.js` | Kết xuất bảng điều khiển Hồ sơ PC 1 màn hình: thẻ kỳ thủ phủ gradient, 9 bậc danh hiệu động, biểu đồ tròn tỉ lệ thắng và 2 nhóm thẻ thông số thành tích. | `render()`, `bindEvents()`, `setDifficulty(diff)` |
+| 10 | **Tutorial** | `js/tutorial.js` | Hiển thị cẩm nang hướng dẫn trực quan 3 bước tĩnh (Quy tắc hàng/cột/khối, chế độ Tia chớp `F` và Bút chì nhanh `A`). | `show()`, `hide()`, `next()`, `prev()` |
+| 11 | **Variants** | `js/variants.js` | Hiển thị lưới 2x2 giới thiệu 4 biến thể Sudoku (Killer, Đường chéo, Samurai, Jigsaw) với màu nhận diện riêng và hộp thoại xem luật chơi. | `init()` |
+| 12 | **App** | `js/app.js` | Nhạc trưởng điều phối toàn cục: chuyển đổi màn hình và 4 tab sảnh, dựng lịch Thử thách ngày cùng 5 cúp tháng SVG, quản lý hộp thoại `showInfoModal` / `confirm` và phím tắt. | `init()`, `confirm()`, `showInfoModal()`, `toast()`, `handleUndo()`, `onLanguageChange()` |
+
+---
+
+## 🎨 3. Kiến trúc 7 tệp định dạng giao diện CSS
+
+Hệ thống giao diện được module hóa thành 7 tệp CSS độc lập trong thư mục `css/`:
+
+| Tệp CSS | Phạm vi định dạng chính |
+|:---|:---|
+| `css/main.css` | Biến thiết kế `:root` và `[data-theme="dark"]`, nền bầu trời dịu nhẹ & hoàng hôn sâu lắng, độ nổi sứ (`--surface-porcelain`), nút bấm xúc giác và thông báo màn hình PC. |
+| `css/splash.css` | Màn hình chào mừng toàn khung hình với chữ số bay lơ lửng và biểu tượng lưới 3x3 chuyển động nhịp nhàng. |
+| `css/lobby.css` | Sảnh Trang chủ (bàn cờ 3D Isometric, 3 thẻ chơi nhanh, thẻ tiếp tục ván dở gọn 350px), lưới 2x2 sảnh Biến thể và thanh Dock kính mờ đáy màn hình. |
+| `css/daily.css` | Bố cục ngang 2 cột của sảnh Thử thách ngày, sân khấu trưng bày 5 hình thái cúp tháng theo hạng, thanh 4 mốc thưởng và lưới lịch đồng xu sao vàng vừa khít 6 hàng tuần. |
+| `css/gameplay.css` | Khung bàn cờ sứ 9x9, hệ màu tô sáng công thái học, bàn phím Numpad 3x3 và 6 nút công cụ dập nổi 3D như phím cơ sứ, huy hiệu nảy combo và banner gợi ý. |
+| `css/profile.css` | Bố cục Dashboard 2 cột vừa trọn 1 màn hình PC, thẻ kỳ thủ phủ gradient toàn diện, huy hiệu cấp bậc ánh kim và 2 thẻ nhóm thống kê. |
+| `css/modals.css` | Toàn bộ hộp thoại phủ kính mờ, chế độ xem thông tin một nút bấm (`.modal-box.info-mode`), thanh gạt cài đặt và thông báo nổi Toast. |

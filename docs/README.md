@@ -1,72 +1,70 @@
-# 📐 Tài liệu kiến trúc & sơ đồ hệ thống (Sudoku Game)
+# 📐 Tài liệu kiến trúc & sơ đồ hệ thống (Sudoku Web)
 
-Chào mừng bạn đến với tài liệu kiến trúc toàn diện của dự án **Sudoku Game Web** (Vanilla JavaScript). 
+Chào mừng bạn đến với tài liệu kiến trúc của dự án **Sudoku Web** (Pure Vanilla JavaScript).
 
-Thư mục này cung cấp hệ thống sơ đồ trực quan được chuẩn hóa bằng **Mermaid.js**, giúp các lập trình viên, cộng tác viên và nhà phát triển nhanh chóng nắm bắt bức tranh toàn cảnh cũng như các luồng xử lý chi tiết bên trong trò chơi.
+Thư mục này cung cấp hệ thống sơ đồ trực quan chuẩn **Mermaid.js**, giúp các nhà phát triển và cộng tác viên nắm bắt nhanh bức tranh tổng thể cũng như luồng xử lý chi tiết bên trong trò chơi.
 
 ---
 
-## 🗺️ 1. Sơ đồ tổng thể hệ thống (Master System Map)
+## 🗺️ 1. Sơ đồ tổng thể hệ thống (Master system map)
 
-Sơ đồ tổng quan dưới đây mô phỏng sự tương tác giữa **4 phân hệ chính** của trò chơi mà không đi sâu vào chi tiết nội bộ. Bạn có thể bấm vào từng phân hệ để xem sơ đồ chuyên sâu tương ứng.
+Sơ đồ dưới đây mô phỏng sự tương tác giữa **4 phân hệ cốt lõi** của ứng dụng. Bạn có thể mở từng tài liệu chuyên đề ở mục 2 để xem sơ đồ chi tiết của từng phân hệ.
 
 ```mermaid
 flowchart TB
-    %% Định nghĩa màu sắc phân hệ
     classDef domainUI fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
     classDef domainLogic fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
     classDef domainState fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#6B21A8;
     classDef domainService fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
 
-    subgraph SUB_UI ["🖥️ 1. Phân hệ giao diện và tương tác (UI / UX)"]
-        UI_BOX["Hiển thị Bảng 9x9, Bàn Phím Số, Thanh Công Cụ và Modal<br/>(UIBoard, UIControls, Screen Navigation)"]
+    subgraph SUB_UI ["🖥️ 1. Phân hệ giao diện & tương tác (Serene Porcelain UI)"]
+        UI_BOX["4 tab sảnh chính (Trang chủ, Thử thách ngày, Biến thể, Hồ sơ),<br/>Bàn cờ sứ 9x9, Numpad 3x3, 6 công cụ & hệ thống hộp thoại<br/>(UIBoard, UIControls, Profile, Tutorial, Variants, Icons)"]
     end
     class SUB_UI,UI_BOX domainUI;
 
-    subgraph SUB_LOGIC ["⚙️ 2. Phân hệ logic cốt lõi và sinh đề (Game Logic và Engine)"]
-        LOGIC_BOX["Quy tắc Sudoku, Thuật toán Sinh đề duy nhất nghiệm,<br/>Kiểm tra đúng/sai và Tính điểm Combo<br/>(Game.js, SudokuEngine.js)"]
+    subgraph SUB_LOGIC ["⚙️ 2. Phân hệ logic cốt lõi & thuật toán (Core Logic & Engine)"]
+        LOGIC_BOX["Luật Sudoku, sinh đề ngẫu nhiên & theo hạt giống ngày (PRNG),<br/>chấm độ khó logic, Gợi ý thông minh, tính điểm & chống gian lận<br/>(Game, SudokuEngine)"]
     end
     class SUB_LOGIC,LOGIC_BOX domainLogic;
 
-    subgraph SUB_STATE ["🔄 3. Phân hệ vòng đời và trạng thái (State và Lifecycle)"]
-        STATE_BOX["Quản lý Luồng Màn Hình, Chế độ Chơi (Thường, Tia chớp),<br/>Giới hạn 3 mạng lỗi sai, Modal Hồi sinh và Điều kiện Thắng/Thua<br/>(State Machine, Revive Modal)"]
+    subgraph SUB_STATE ["🔄 3. Phân hệ điều phối vòng đời & trạng thái (Navigation & Lifecycle)"]
+        STATE_BOX["Điều hướng SPA, chế độ Thường / Tia chớp / Ghi chú / Bút chì nhanh,<br/>giới hạn 3 mạng lỗi sai, hộp thoại Hồi sinh, Đổi gợi ý & Tạm dừng<br/>(App, Modal Guards, Keyboard Controller)"]
     end
     class SUB_STATE,STATE_BOX domainState;
 
-    subgraph SUB_SERV ["💾 4. Phân hệ dịch vụ nền và lưu trữ (Services và Data)"]
-        SERV_BOX["Lưu ván chơi, Hồ sơ cá nhân, Âm thanh Web Audio<br/>và Đa ngôn ngữ<br/>(Storage, Sound, I18n)"]
+    subgraph SUB_SERV ["💾 4. Phân hệ dịch vụ nền & lưu trữ (Infrastructure & Services)"]
+        SERV_BOX["Lưu ván dở, lịch sử Thử thách ngày trọn đời, điểm Hồ sơ vĩnh viễn,<br/>sao lưu/khôi phục JSON, âm thanh Web Audio & đa ngôn ngữ<br/>(Storage, Sound, I18n)"]
     end
     class SUB_SERV,SERV_BOX domainService;
 
-    %% Luồng liên kết giữa các phân hệ
-    UI_BOX ==>|"Gửi thao tác người chơi (Click ô, bấm số, đổi chế độ)"| LOGIC_BOX
-    LOGIC_BOX ==>|"Cập nhật dữ liệu và thông báo render lại"| UI_BOX
+    UI_BOX ==>|"Gửi thao tác người chơi (chọn ô, điền số, chuyển tab, phím tắt)"| LOGIC_BOX
+    LOGIC_BOX ==>|"Phát tín hiệu cập nhật trạng thái để hiển thị tức thì"| UI_BOX
 
-    LOGIC_BOX <-->|"Kích hoạt chuyển trạng thái (Pause, ReviveModal, Finish)"| STATE_BOX
-    STATE_BOX ==>|"Cập nhật hiệu ứng và điều hướng màn hình"| UI_BOX
+    LOGIC_BOX <-->|"Kích hoạt chuyển trạng thái (Tạm dừng, Hồi sinh, Kết thúc ván)"| STATE_BOX
+    STATE_BOX ==>|"Điều hướng màn hình, khóa tương tác an toàn & mở hộp thoại"| UI_BOX
 
-    LOGIC_BOX ==>|"Lưu trạng thái ván, Ghi nhận điểm số và lịch sử"| SERV_BOX
-    SERV_BOX ==>|"Phát âm thanh SFX, Cung cấp cấu hình và ngôn ngữ"| UI_BOX
+    LOGIC_BOX ==>|"Lưu ván dở, ghi nhận kỷ lục, cúp tháng & điểm Hồ sơ"| SERV_BOX
+    SERV_BOX ==>|"Phát âm thanh SFX, đồng bộ cài đặt, chủ đề & ngôn ngữ"| UI_BOX
 ```
 
 ---
 
-## 📚 2. Danh mục các sơ đồ chi tiết (Detailed Diagrams)
+## 📚 2. Danh mục các sơ đồ chuyên sâu
 
-Để tránh các đường nét bị chồng chéo và đảm bảo tính mạch lạc, toàn bộ chi tiết nội bộ được chia tách vào 4 tài liệu chuyên đề dưới đây:
+Toàn bộ kiến trúc nội bộ được phân tách mạch lạc thành 4 tài liệu chuyên đề:
 
 | STT | Tài liệu chuyên sâu | Nội dung mô hình hóa | Liên kết |
 |:---:|:---|:---|:---:|
-| **01** | **Kiến trúc phân tầng module** | Phân tầng Presentation, Business Logic và Infrastructure theo chuẩn Module Pattern (IIFE), danh sách API công khai và quan hệ phụ thuộc. | [Xem sơ đồ 01](01_component_architecture.md) |
-| **02** | **Vòng đời & máy trạng thái** | Sơ đồ chuyển đổi trạng thái (State Machine): Splash $\rightarrow$ Lobby $\rightarrow$ In-Game, các chế độ (Thường $\leftrightarrow$ Tia chớp $\leftrightarrow$ Notes), quy tắc giới hạn 3 mạng lỗi sai và vòng đời Hồi sinh bù điểm. | [Xem sơ đồ 02](02_game_state_lifecycle.md) |
-| **03** | **Luồng dữ liệu & trình tự** | Trình tự các bước (Sequence Diagram) khi: Điền số vào ô, Kích hoạt chế độ Tia chớp, và Thuật toán sinh đề duy nhất nghiệm có kiểm tra Backtracking. | [Xem sơ đồ 03](03_data_flow_and_sequences.md) |
-| **04** | **Mô hình dữ liệu & tính điểm** | Cấu trúc Schema lưu trữ trong LocalStorage (Game state, User profile, Settings) và đường ống tính toán điểm số (Base + Streak + Time - Penalties). | [Xem sơ đồ 04](04_storage_and_scoring_models.md) |
+| **01** | **Kiến trúc phân tầng 12 module** | Phân tầng Presentation, Business Logic và Infrastructure theo chuẩn Module Pattern (IIFE), trách nhiệm 12 module JS, 7 tệp CSS và danh mục API công khai. | [Xem sơ đồ 01](01_component_architecture.md) |
+| **02** | **Vòng đời & máy trạng thái** | Luồng điều hướng 4 sảnh chính, hộp thoại thông tin một nút bấm, chuyển đổi chế độ chơi (Thường, Tia chớp, Ghi chú, Bút chì nhanh) và vòng đời 3 mạng lỗi / Hồi sinh. | [Xem sơ đồ 02](02_game_state_lifecycle.md) |
+| **03** | **Luồng dữ liệu & trình tự tương tác** | Biểu đồ tuần tự khi điền số (kèm tự xóa ghi chú theo cài đặt), bảo vệ ô đúng khi Xóa, vòng lặp Tia chớp và thuật toán sinh đề ngẫu nhiên / theo ngày. | [Xem sơ đồ 03](03_data_flow_and_sequences.md) |
+| **04** | **Mô hình dữ liệu & hệ thống tính điểm** | Cấu trúc 8 khóa LocalStorage (bao gồm lịch sử Thử thách ngày và điểm Hồ sơ), đường ống tính điểm cuối ván và quy trình sao lưu / khôi phục JSON. | [Xem sơ đồ 04](04_storage_and_scoring_models.md) |
 
 ---
 
-## 🛠️ 3. Quy ước thiết kế hệ thống (Key Design Principles)
+## 🛠️ 3. Nguyên tắc thiết kế cốt lõi
 
-1. **Pure Vanilla JS (No Frameworks):** Toàn bộ ứng dụng chạy trực tiếp trên trình duyệt mà không cần webpack, npm build hay framework phụ thuộc nào.
-2. **Module Pattern & Encapsulation:** Mỗi module đóng gói trong một IIFE closure, bảo vệ biến nội bộ và chỉ xuất ra các phương thức public cần thiết.
-3. **Single Source of Truth:** `Game.js` đóng vai trò trung tâm lưu giữ trạng thái ván chơi (`state`), mọi thay đổi đều thông qua hàm tác vụ của `Game` và thông báo tới `UIBoard` / `UIControls` qua cơ chế Observer (`_notify`).
-4. **Resilient Data Persistence:** Tự động lưu tiến trình sau mỗi nước đi vào `localStorage`, khôi phục nguyên vẹn khi tải lại trang hoặc đổi thiết bị.
+1. **Pure Vanilla JS (Zero Dependencies):** Toàn bộ ứng dụng vận hành trực tiếp trên trình duyệt từ tệp `index.html` mà không cần công cụ đóng gói hay thư viện ngoài.
+2. **Module Pattern & đóng gói độc lập:** Cả 12 tệp JavaScript đều được đóng gói trong closure IIFE riêng biệt, bảo vệ trạng thái nội bộ và giao tiếp qua API rõ ràng.
+3. **Single Source of Truth:** Module `Game` giữ vai trò nguồn trạng thái duy nhất cho ván đấu đang diễn ra, đồng bộ ra `UIBoard` và `UIControls` thông qua cơ chế callback phản ứng.
+4. **Lưu trữ bền vững & di động:** Tự động lưu sau mỗi nước đi vào `localStorage` kèm bộ nhớ đệm dự phòng và cơ chế xuất/nhập tệp `.json` đầy đủ giữa các thiết bị.

@@ -1,106 +1,112 @@
-# ⚡ Sơ đồ 03: Luồng dữ liệu & trình tự tương tác (Data Flow & Sequences)
+# ⚡ Sơ đồ 03: Luồng dữ liệu & trình tự tương tác (Data flow & sequences)
 
-Tài liệu này mô hình hóa chi tiết các luồng dữ liệu tương tác theo thời gian thực (Sequence Diagrams) cho 3 tác vụ quan trọng nhất của trò chơi.
+Tài liệu này mô hình hóa trình tự tương tác thời gian thực (**Sequence Diagrams**) và đường ống thuật toán cho các nghiệp vụ cốt lõi của trò chơi.
 
 ---
 
-## 🔢 1. Trình tự điền số & kiểm tra kết quả (Cell Placement Flow)
+## 🔢 1. Trình tự điền số, xóa an toàn & kiểm tra kết quả
 
-Quy trình tuần tự từ lúc người chơi chọn ô, bấm số trên bàn phím, kiểm tra tính đúng/sai, cộng điểm streak, phát âm thanh và lưu trạng thái:
+Quy trình tuần tự khi người chơi chọn ô, điền chữ số, tự động dọn ghi chú theo cài đặt `autoClearNotes`, xử lý lỗi sai hoặc bảo vệ ô đã giải đúng khi bấm `Xóa`:
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Player as 👤 Người chơi
     participant UI as 🖥️ UI (UIBoard / UIControls)
-    participant Game as ⚙️ Game (Game.js)
-    participant Engine as 🧮 SudokuEngine
-    participant Sound as 🔊 Sound.js
+    participant Game as ⚙️ Game.js
     participant Storage as 💾 Storage.js
+    participant Sound as 🔊 Sound.js
 
-    Player->>UI: Click vào một ô trống (Row r, Col c)
+    Player->>UI: Nhấp chọn ô (hàng r, cột c)
     UI->>Game: Game.selectCell(r, c)
-    Game-->>UI: _notify() -> Cập nhật highlight hàng/cột/khối và cùng số
+    Game-->>UI: onUpdate(state) -> Tô sáng hàng, cột, khối, cùng số & ứng viên
 
-    Player->>UI: Bấm số n trên Numpad (ví dụ: số 4)
+    Player->>UI: Bấm chữ số n (1 - 9)
     UI->>Game: Game.placeNumber(n)
-    
-    Note over Game, Engine: Xác thực tính hợp lệ của số
-    Game->>Game: Kiểm tra ô có phải ô đề bài (given) không?
-    alt Ô là đề bài
-        Game-->>UI: Bỏ qua (không cho phép sửa ô đề bài)
-    else Ô trống hợp lệ
-        Game->>Engine: So sánh n với solution[i]
-        
-        alt Điền ĐÚNG (val == solution[i])
-            Game->>Game: correctStreak = prevStreak + 1
-            Game->>Game: Tính điểm = Base * streakMultiplier
-            Game->>Game: Tự động xóa ghi chú số n cùng hàng/cột/khối
-            Game->>Game: Đẩy vào UndoStack (type: 'value', error: false)
-            Game->>Sound: Sound.playCorrect(correctStreak)
-            Game->>Storage: Storage.saveGame(state)
-        else Điền SAI (val != solution[i])
-            Game->>Game: mistakes = mistakes + 1
-            Game->>Game: correctStreak = 0 (mất chuỗi đúng)
-            Game->>Game: Trừ điểm phạt (Dễ: -5đ, Vừa: -7đ, Khó: -10đ, sàn 0)
-            Game->>Game: Đẩy vào UndoStack (type: 'value', error: true)
-            Game->>Sound: Sound.playError()
-            alt mistakes >= 3 (Đạt tối đa 3 lỗi)
-                Game->>Game: stopTimer() & state.isPaused = true
-                Game->>UI: onThreeMistakes() -> Mở Modal Hồi Sinh (#modal-revive)
+
+    alt Ô đề bài (given) hoặc đã giải đúng (current[i] == solution[i])
+        Game-->>UI: Giữ nguyên giá trị an toàn, không ghi đè
+    else Ô trống hoặc đang chứa số sai
+        alt Điền đúng (n == solution[i])
+            Game->>Game: Tăng correctStreak, cộng Base * streakMultiplier
+            Game->>Storage: Đọc getSettings().autoClearNotes
+            opt autoClearNotes !== false
+                Game->>Game: removeRelatedNotes(r, c, n) trong hàng, cột & khối 3x3
+            end
+            Game->>Game: pushUndo({ type: 'value', error: false, pointsEarned })
+            Game->>Sound: playCorrect(streak) hoặc playDigitComplete()
+            Game->>Storage: saveGame(serializeState())
+        else Điền sai (n != solution[i])
+            Game->>Game: Tăng mistakes (+1), đặt correctStreak = 0
+            Game->>Game: Trừ điểm phạt (-5 / -7 / -10đ, sàn 0)
+            Game->>Game: pushUndo({ type: 'value', error: true })
+            Game->>Sound: playError()
+            Game->>Storage: saveGame(serializeState())
+            opt mistakes >= 3
+                Game->>Game: stopTimer() & isPaused = true
+                Game-->>UI: onThreeMistakes(state) -> Mở hộp thoại Hồi sinh
             end
         end
+        Game-->>UI: onUpdate(state) -> Cập nhật bàn cờ sứ & thanh thông số
     end
 
-    Game->>UI: _notify(state)
-    UI->>UI: UIBoard.render() (Hiển thị số xanh/đỏ, font-weight 500)
-    UI->>UI: UIControls.update() (Cập nhật điểm, timer, lỗi 0/3)
+    opt Người chơi bấm nút Xóa / phím Backspace
+        Player->>UI: Yêu cầu xóa ô đang chọn
+        UI->>Game: Game.erase()
+        alt Ô đề bài HOẶC ô đã điền đúng (current[i] == solution[i])
+            Game-->>UI: Trả về false (bảo vệ ô đúng, chống mất điểm hoặc cày lại combo)
+        else Ô đang chứa số sai HOẶC ghi chú nháp
+            Game->>Game: Xóa số sai / xóa mảng ghi chú & đẩy vào undoStack
+            Game->>Sound: playErase()
+            Game-->>UI: onUpdate(state)
+        end
+    end
 ```
 
 ---
 
-## ⚡ 2. Vòng lặp chế độ Tia chớp (Lightning / Fast-Fill Mode Loop)
+## ⚡ 2. Vòng lặp chế độ Tia chớp (Lightning / Fast-Fill mode)
 
-Quy trình người chơi kích hoạt chế độ Tia chớp, ghim 1 số và điền liên tục cho đến khi hoàn tất đủ 9 ô:
+Quy trình người chơi bật chế độ Tia chớp (`F`), khóa một chữ số và nhấp liên tục lên các ô trống cho tới khi hoàn tất trọn vẹn 9 ô của chữ số đó:
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Player as 👤 Người chơi
-    participant UI as 🖥️ UIControls / Numpad
+    participant UI as 🖥️ UIControls / UIBoard
     participant Game as ⚙️ Game.js
     participant Sound as 🔊 Sound.js
 
-    Player->>UI: Bấm nút "Tia chớp"
+    Player->>UI: Bấm nút "Tia chớp" hoặc phím F
     UI->>Game: Game.toggleFastFill()
     Game->>Game: state.fastFillMode = true
-    Game-->>UI: Cập nhật Badge Tia Chớp = "ON"
+    Game-->>UI: Bật huy hiệu Tia chớp = "ON"
 
-    Player->>UI: Chọn số n (ví dụ: số 6)
-    UI->>Game: Game.selectFastFillDigit(6)
-    Game->>Game: state.fastFillDigit = 6
-    Game-->>UI: Khóa phím số 6 (.locked-digit), làm mờ nhẹ các phím khác (.dimmed)
+    Player->>UI: Chọn chữ số n trên Numpad (hoặc nhấp ô đã có số n trên bàn cờ)
+    UI->>Game: Game.selectFastFillDigit(n) / selectCell(r, c)
+    Game->>Game: state.fastFillDigit = n
+    Game-->>UI: Viền sáng phím số n (.locked-digit), làm dịu nhẹ các phím khác (.dimmed),<br/>tô sáng toàn bộ ứng viên ghi chú số n trên bàn cờ (.note-highlighted)
 
-    loop Điền liên tục các ô trống
-        Player->>UI: Click ô trống cờ
-        UI->>Game: Game.selectCell(r, c) -> Tự động placeNumber(6)
-        Game->>Game: getRemaining(6)
-        
-        alt Chưa đủ 9 ô (Remaining > 0)
-            Game-->>UI: Tiếp tục giữ trạng thái khóa số 6
-        else ĐÃ ĐỦ 9 Ô (Remaining == 0)
-            Game->>Game: state.fastFillDigit = null (Tự động tạm thoát)
+    loop Điền liên tiếp các ô trống
+        Player->>UI: Nhấp vào một ô trống (r, c)
+        UI->>Game: Game.selectCell(r, c) -> tự động gọi _placeValue / _placeNote
+        Game->>Game: Kiểm tra số lượng còn lại getRemaining(n)
+
+        alt Còn ô chưa điền (Remaining > 0)
+            Game-->>UI: Duy trì khóa số n để nhấp ô tiếp theo ngay lập tức
+        else Đã hoàn thành đủ 9/9 ô (Remaining == 0)
+            Game->>Game: Đặt fastFillDigit = null & selectedCell = null
             Game->>Sound: Sound.playDigitComplete()
-            Game-->>UI: Ẩn phím số 6 trên Numpad (visibility: hidden)<br/>Giữ nguyên vị trí 8 phím còn lại!
+            Game-->>UI: Ẩn phím số n (visibility: hidden; opacity: 0)<br/>nhưng giữ nguyên ô lưới vật lý cho 8 phím còn lại
         end
     end
 ```
 
 ---
 
-## 🧮 3. Thuật toán sinh đề duy nhất nghiệm (Sudoku Engine Pipeline)
+## 🧮 3. Đường ống sinh đề duy nhất nghiệm & Thử thách ngày (SudokuEngine pipeline)
 
-Thuật toán sinh bàn cờ giải hoàn chỉnh và đục lỗ đảm bảo **duy nhất 1 nghiệm (Unique Solution)**:
+Module `SudokuEngine` hỗ trợ đồng thời hai luồng khởi tạo câu đố: **ngẫu nhiên thời gian thực** cho ván cổ điển (`generate`) và **tất định theo hạt giống ngày** bằng bộ sinh số giả ngẫu nhiên **Mulberry32 PRNG** cho sảnh Thử thách ngày (`generateFromSeed`):
 
 ```mermaid
 flowchart TD
@@ -109,32 +115,32 @@ flowchart TD
     classDef decision fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#6B21A8;
     classDef success fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#15803D;
 
-    GEN_START["Bắt đầu sinh đề bài mới<br/>(Tham số: difficulty)"]
-    
-    GEN_FULL["1. Sinh bàn cờ giải hoàn chỉnh (Full Solution)<br/>- Khởi tạo mảng 81 ô = 0<br/>- Dùng Backtracking kết hợp xáo trộn mảng ngẫu nhiên 1..9"]
-    
-    GEN_TARGET["2. Xác định số ô cần đục theo độ khó:<br/>- Dễ: 38 - 45 ô gợi ý (đục ~36-43 ô)<br/>- Vừa: 30 - 35 ô gợi ý (đục ~46-51 ô)<br/>- Khó: 24 - 28 ô gợi ý (đục ~53-57 ô)"]
+    START_CLASSIC["Ván chơi cổ điển<br/>generate(difficulty)"]
+    START_DAILY["Thử thách hàng ngày<br/>generateFromSeed(dateStr)<br/>- Băm chuỗi YYYY-MM-DD -> độ khó (30% Dễ, 50% TB, 20% Khó)<br/>- Khởi tạo bộ sinh số Mulberry32 PRNG cố định"]
+    class START_CLASSIC,START_DAILY start;
 
-    GEN_DIG["3. Đục lỗ đối xứng (Symmetric Digging):<br/>- Chọn cặp ô đối xứng tâm (r, c) và (8-r, 8-c)<br/>- Tạm gỡ số ở 2 ô này"]
+    GEN_FULL["1. Sinh bàn cờ nghiệm chuẩn 81 ô (Full Solution)<br/>- Đệ quy quay lui (Backtracking) kết hợp xáo trộn dãy 1..9"]
 
-    GEN_TEST{"4. Kiểm tra tính duy nhất nghiệm<br/>(Duy nhất 1 nghiệm?)"}
+    GEN_TARGET["2. Xác định ngưỡng ô đề cho trước:<br/>- Dễ: 38 - 45 ô cho trước<br/>- Trung bình: 30 - 35 ô cho trước<br/>- Khó: 24 - 28 ô cho trước"]
 
-    GEN_REVERT["Hoàn lại số cũ<br/>(Vì nếu xóa sẽ xuất hiện đa nghiệm)"]
-    GEN_KEEP["Chấp nhận đục lỗ<br/>(Nghiệm vẫn là duy nhất)"]
+    GEN_DIG["3. Đục lỗ từng vị trí theo thứ tự xáo trộn:<br/>- Tạm đặt puzzle[pos] = 0<br/>- Kiểm tra countSolutions(puzzle, 2) bằng bitmask Uint16Array"]
 
-    GEN_CHECK{"Đã đạt đủ số ô đục mong muốn?"}
+    GEN_UNIQUE{"Đảm bảo duy nhất 1 nghiệm?"}
+    GEN_REVERT["Khôi phục số vừa gỡ<br/>(tránh phát sinh đa nghiệm)"]
+    GEN_GRADE["4. Chấm độ khó bằng bộ giải tư duy con người solveLogical(puzzle):<br/>- Cấp 1 (Dễ): giải trọn 100% bằng Naked & Hidden Singles<br/>- Cấp 2 (TB): cần Pointing Pairs / Box-Line hoặc Naked Pairs<br/>- Cấp 3 (Khó): đòi hỏi phân tích tập con nâng cao"]
 
-    GEN_DONE["Hoàn tất tạo đề:<br/>Trả về object { puzzle, solution, difficulty }"]
+    GEN_MATCH{"Đạt chuẩn độ khó mục tiêu?"}
+    GEN_DONE["Hoàn tất dưới 50ms:<br/>Trả về { puzzle, solution, difficulty }"]
 
-    GEN_START --> GEN_FULL --> GEN_TARGET --> GEN_DIG --> GEN_TEST
-    GEN_TEST -->|"Có từ 2 nghiệm trở lên"| GEN_REVERT --> GEN_DIG
-    GEN_TEST -->|"Chính xác 1 nghiệm"| GEN_KEEP --> GEN_CHECK
-    GEN_CHECK -->|"Chưa đủ"| GEN_DIG
-    GEN_CHECK -->|"Đã đạt ngưỡng"| GEN_DONE
+    START_CLASSIC --> GEN_FULL
+    START_DAILY --> GEN_FULL
+    GEN_FULL --> GEN_TARGET --> GEN_DIG --> GEN_UNIQUE
+    GEN_UNIQUE -->|"Từ 2 nghiệm trở lên"| GEN_REVERT --> GEN_DIG
+    GEN_UNIQUE -->|"Đúng 1 nghiệm duy nhất"| GEN_GRADE --> GEN_MATCH
+    GEN_MATCH -->|"Chưa khớp (thử lại tối đa 30 vòng)"| GEN_FULL
+    GEN_MATCH -->|"Khớp tiêu chuẩn"| GEN_DONE
 
-    class GEN_START start;
-    class GEN_FULL,GEN_TARGET,GEN_DIG,GEN_REVERT,GEN_KEEP process;
-    class GEN_TEST,GEN_CHECK decision;
+    class GEN_FULL,GEN_TARGET,GEN_DIG,GEN_REVERT,GEN_GRADE process;
+    class GEN_UNIQUE,GEN_MATCH decision;
     class GEN_DONE success;
 ```
-
