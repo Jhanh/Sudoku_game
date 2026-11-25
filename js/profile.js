@@ -85,16 +85,17 @@ const Profile = (() => {
       if (rankCardEl) rankCardEl.classList.remove('rank-max');
       if (rankFillEl) rankFillEl.classList.remove('rank-max');
       const range = currentRank.nextScore - currentRank.minScore;
-      const progress = totalScore - currentRank.minScore;
-      const pct = Math.min(100, Math.max(5, Math.round((progress / range) * 100)));
-      if (rankFillEl) rankFillEl.style.width = pct + '%';
+      const progress = Math.max(0, totalScore - currentRank.minScore);
+      const exactPct = range > 0 ? Math.min(100, (progress / range) * 100) : 0;
+      const displayPct = exactPct >= 100 ? 100 : Math.floor(exactPct);
+      if (rankFillEl) rankFillEl.style.width = exactPct.toFixed(2) + '%';
 
       const nextFormatted = currentRank.nextScore.toLocaleString();
       if (rankExpEl) {
         rankExpEl.textContent = `${scoreFormatted} / ${nextFormatted} ${ptsLabel}`;
       }
       if (rankNextEl) {
-        rankNextEl.textContent = `${pct}%`;
+        rankNextEl.textContent = `${displayPct}%`;
       }
     }
   }
@@ -141,7 +142,7 @@ const Profile = (() => {
       playedIconEl.innerHTML = Icons.get('gamepad-2', { size: 18 });
     }
 
-    // Stat cards in grid (6 cards, neatly paired)
+    // Stat cards grouped into 2 distinct visual cards ('Chiến tích thi đấu' and 'Kỷ lục thời gian')
     const avgTime = s.won > 0 ? Math.round(s.totalWinTime / s.won) : 0;
     const grid = document.getElementById('stats-grid');
     if (!grid) return;
@@ -150,7 +151,10 @@ const Profile = (() => {
     const lang = typeof I18n !== 'undefined' ? I18n.getLanguage() : 'vi';
     const loc = lang === 'en' ? 'en-US' : 'vi-VN';
 
-    const cards = [
+    const titleAchievements = typeof I18n !== 'undefined' ? I18n.t('profile_group_achievements') : 'Chiến tích thi đấu';
+    const titleTime = typeof I18n !== 'undefined' ? I18n.t('profile_group_time') : 'Kỷ lục thời gian';
+
+    const achievementCards = [
       {
         icon: 'podium',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_best_score') : 'Điểm cao nhất',
@@ -173,7 +177,10 @@ const Profile = (() => {
         label: typeof I18n !== 'undefined' ? I18n.t('stat_best_streak') : 'Chuỗi thắng tốt nhất',
         value: s.bestStreak || 0,
         highlight: true
-      },
+      }
+    ];
+
+    const timeCards = [
       {
         icon: 'alarm-clock-check',
         label: typeof I18n !== 'undefined' ? I18n.t('stat_best_time') : 'Thời gian nhanh nhất',
@@ -186,17 +193,55 @@ const Profile = (() => {
       }
     ];
 
-    cards.forEach(c => {
+    // Card 1: Chiến tích thi đấu
+    const cardAchievements = document.createElement('div');
+    cardAchievements.className = 'stats-group-card';
+    const iconTrophy = typeof Icons !== 'undefined' ? Icons.get('award', { size: 18 }) : '';
+    cardAchievements.innerHTML = `
+      <div class="stats-group-header">
+        <span class="stats-group-icon">${iconTrophy}</span>
+        <h3 class="stats-group-title">${titleAchievements}</h3>
+      </div>
+      <div class="stats-group-grid stats-grid-achievements"></div>
+    `;
+    const achGrid = cardAchievements.querySelector('.stats-grid-achievements');
+    achievementCards.forEach(c => {
       const card = document.createElement('div');
       card.className = 'stat-card' + (c.highlight ? ' highlight' : '');
-      const iconHtml = typeof Icons !== 'undefined' ? Icons.get(c.icon, { size: 22 }) : c.icon;
+      const iconHtml = typeof Icons !== 'undefined' ? Icons.get(c.icon, { size: 20 }) : c.icon;
       card.innerHTML = `
         <span class="stat-icon">${iconHtml}</span>
         <span class="stat-value">${c.value}</span>
         <span class="stat-label">${c.label}</span>
       `;
-      grid.appendChild(card);
+      achGrid.appendChild(card);
     });
+    grid.appendChild(cardAchievements);
+
+    // Card 2: Kỷ lục thời gian
+    const cardTime = document.createElement('div');
+    cardTime.className = 'stats-group-card';
+    const iconClock = typeof Icons !== 'undefined' ? Icons.get('clock', { size: 18 }) : '';
+    cardTime.innerHTML = `
+      <div class="stats-group-header">
+        <span class="stats-group-icon">${iconClock}</span>
+        <h3 class="stats-group-title">${titleTime}</h3>
+      </div>
+      <div class="stats-group-grid stats-grid-time"></div>
+    `;
+    const timeGrid = cardTime.querySelector('.stats-grid-time');
+    timeCards.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'stat-card';
+      const iconHtml = typeof Icons !== 'undefined' ? Icons.get(c.icon, { size: 20 }) : c.icon;
+      card.innerHTML = `
+        <span class="stat-icon">${iconHtml}</span>
+        <span class="stat-value">${c.value}</span>
+        <span class="stat-label">${c.label}</span>
+      `;
+      timeGrid.appendChild(card);
+    });
+    grid.appendChild(cardTime);
   }
 
   function setDifficulty(diff) {

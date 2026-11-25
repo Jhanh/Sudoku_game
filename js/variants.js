@@ -89,11 +89,13 @@ const Variants = (() => {
     grid.innerHTML = '';
 
     const badgeText = typeof I18n !== 'undefined' ? I18n.t('variants_badge_coming_soon') : 'Sắp ra mắt';
+    const rulesBtnText = typeof I18n !== 'undefined' ? I18n.t('variant_btn_rules') : 'Xem luật chơi';
     const items = getVariants();
 
     items.forEach(v => {
       const card = document.createElement('div');
-      card.className = 'variant-card';
+      card.className = `variant-card variant-${v.id}`;
+      card.setAttribute('data-variant', v.id);
       const name = typeof I18n !== 'undefined' ? I18n.t(v.nameKey) : v.nameKey;
       const desc = typeof I18n !== 'undefined' ? I18n.t(v.descKey) : v.descKey;
 
@@ -102,8 +104,31 @@ const Variants = (() => {
         <div class="variant-img">${v.svg}</div>
         <h3>${name}</h3>
         <p>${desc}</p>
+        <button class="variant-rules-btn btn-variant-rules" type="button" title="${rulesBtnText}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <span>${rulesBtnText}</span>
+        </button>
       `;
-      card.addEventListener('click', () => {
+
+      card.addEventListener('click', (e) => {
+        const rulesBtn = e.target.closest('.variant-rules-btn, .btn-variant-rules');
+        if (rulesBtn) {
+          e.stopPropagation();
+          if (typeof Sound !== 'undefined' && Sound.playTap) Sound.playTap();
+          const rulesKey = `variant_${v.id}_full_rules`;
+          const rulesTitleKey = 'variant_rules_title';
+          const title = typeof I18n !== 'undefined' ? `${I18n.t(rulesTitleKey)}: ${name}` : `Luật chơi: ${name}`;
+          const rulesText = typeof I18n !== 'undefined' ? I18n.t(rulesKey) : desc;
+          if (typeof App !== 'undefined' && typeof App.showInfoModal === 'function') {
+            App.showInfoModal(title, rulesText);
+          } else if (typeof App !== 'undefined' && App.confirm) {
+            App.confirm(title, rulesText);
+          } else if (typeof App !== 'undefined' && App.showToast) {
+            App.showToast(rulesText);
+          }
+          return;
+        }
+
         const msg = typeof I18n !== 'undefined' && I18n.getLanguage() === 'en'
           ? 'This variant mode is coming soon in an upcoming update!'
           : 'Chế độ này đang được cập nhật, xin hãy đợi thêm trong phiên bản tới!';
