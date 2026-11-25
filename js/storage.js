@@ -9,7 +9,8 @@ const Storage = (() => {
     SOUND: 'sudoku_sound_enabled',
     LANG: 'sudoku_language',
     THEME: 'sudoku_theme',
-    SETTINGS: 'sudoku_gameplay_settings'
+    SETTINGS: 'sudoku_gameplay_settings',
+    DAILY: 'sudoku_daily'
   };
 
   // In-memory fallback if localStorage is blocked by browser security
@@ -227,15 +228,136 @@ const Storage = (() => {
   }
 
   /* ---------- Reset All Data ---------- */
+  /* ---------- Daily Puzzle Persistent Layer (Lifetime Storage) ---------- */
+  function getDailyResult(dateStr) {
+    const daily = _get(KEYS.DAILY) || {};
+    return daily[dateStr] || null;
+  }
+
+  function saveDailyResult(dateStr, result) {
+    if (!dateStr || !result || typeof result !== 'object') return null;
+    const daily = _get(KEYS.DAILY) || {};
+    const existing = daily[dateStr] || null;
+
+    const existingStatus = existing ? (existing.result || existing.status) : null;
+    const incomingStatus = result.result || result.status || null;
+
+    // Never overwrite an existing 'win' entry with 'lose'
+    if (existingStatus === 'win' && incomingStatus !== 'win') {
+      return existing;
+    }
+
+    if (existingStatus === 'win' && incomingStatus === 'win') {
+      const bestScore = Math.max(existing.score || 0, result.score || 0);
+      const bestTime = (existing.time > 0 && result.time > 0)
+        ? Math.min(existing.time, result.time)
+        : (result.time || existing.time || 0);
+      const bestMistakes = (typeof existing.mistakes === 'number' && typeof result.mistakes === 'number')
+        ? Math.min(existing.mistakes, result.mistakes)
+        : (result.mistakes ?? existing.mistakes ?? 0);
+
+      daily[dateStr] = {
+        ...existing,
+        ...result,
+        result: 'win',
+        status: 'win',
+        score: bestScore,
+        time: bestTime,
+        mistakes: bestMistakes,
+        dateStr,
+        savedAt: Date.now()
+      };
+      _set(KEYS.DAILY, daily);
+      return daily[dateStr];
+    }
+
+    const finalStatus = incomingStatus || existingStatus || 'lose';
+    daily[dateStr] = {
+      ...(existing || {}),
+      ...result,
+      result: finalStatus,
+      status: finalStatus,
+      dateStr,
+      savedAt: Date.now()
+    };
+    _set(KEYS.DAILY, daily);
+    return daily[dateStr];
+  }
+
+  function getAllDailyResults() {
+    return _get(KEYS.DAILY) || {};
+  }
+
+  /**
+   * Get summary for a specific calendar month.
+   * Milestones: 7 days (Bronze), 14 days (Silver), 21 days (Gold), full month (Platinum).
+   * @param {number} year - e.g. 2026
+   * @param {number} month - 1..12
+   */
+  function getDailyMonthSummary(year, month) {
+    const daily = _get(KEYS.DAILY) || {};
+    const y = Number(year);
+    const m = Number(month);
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const prefix = `${y}-${String(m).padStart(2, '0')}`;
+    const results = {};
+    let wonCount = 0;
+    let playedCount = 0;
+
+    Object.keys(daily).forEach(d => {
+      if (d.startsWith(prefix)) {
+        const item = daily[d];
+        if (item && typeof item === 'object') {
+          results[d] = item;
+          playedCount++;
+          if (item.result === 'win' || item.status === 'win') wonCount++;
+        }
+      }
+    });
+
+    const bronze = wonCount >= 7;
+    const silver = wonCount >= 14;
+    const gold = wonCount >= 21;
+    const platinum = wonCount >= daysInMonth;
+
+    let highestTier = 'none';
+    if (platinum) highestTier = 'platinum';
+    else if (gold) highestTier = 'gold';
+    else if (silver) highestTier = 'silver';
+    else if (bronze) highestTier = 'bronze';
+
+    return {
+      year: y,
+      month: m,
+      daysInMonth,
+      results,
+      wonCount,
+      playedCount,
+      bronze,
+      silver,
+      gold,
+      platinum,
+      highestTier,
+      milestones: {
+        bronze,
+        silver,
+        gold,
+        platinum
+      }
+    };
+  }
+
   function resetAllData() {
     clearGame();
     _remove(KEYS.PROFILE);
     _remove(KEYS.STATS);
+    _remove(KEYS.DAILY);
     try {
       if (isLocalStorageAvailable) {
         window.localStorage.removeItem(KEYS.GAME);
         window.localStorage.removeItem(KEYS.PROFILE);
         window.localStorage.removeItem(KEYS.STATS);
+        window.localStorage.removeItem(KEYS.DAILY);
       }
     } catch (_) {}
   }
@@ -251,6 +373,7 @@ const Storage = (() => {
           game: loadGame(),
           profile: getProfile(),
           stats: getStats(),
+          daily: getAllDailyResults(),
           settings: getSettings(),
           sound: isSoundEnabled(),
           language: getLanguage(),
@@ -348,11 +471,15 @@ const Storage = (() => {
         if (payload.sudoku_theme) {
           setTheme(payload.sudoku_theme);
         }
+        if (payload.sudoku_daily) {
+          const d = typeof payload.sudoku_daily === 'string' ? JSON.parse(payload.sudoku_daily) : payload.sudoku_daily;
+          _set(KEYS.DAILY, d);
+        }
         return { success: true };
       }
 
       // Check standard keys
-      const hasAnyValidKey = payload.stats || payload.profile || payload.game !== undefined || payload.settings;
+      const hasAnyValidKey = payload.stats || payload.profile || payload.game !== undefined || payload.settings || payload.daily;
       if (!hasAnyValidKey) {
         throw new Error('Không tìm thấy dữ liệu game hợp lệ trong tệp');
       }
@@ -409,10 +536,21 @@ const Storage = (() => {
       }
 
       // 7. Active game state
-      if (payload.game && typeof payload.game === 'object' && Array.isArray(payload.game.board)) {
+      if (
+        payload.game &&
+        typeof payload.game === 'object' &&
+        Array.isArray(payload.game.current) &&
+        Array.isArray(payload.game.solution)
+      ) {
         saveGame(payload.game);
       } else if (payload.game === null) {
         clearGame();
+      }
+
+      // 8. Daily Challenge records (Lifetime storage)
+      if (payload.daily && typeof payload.daily === 'object') {
+        const existing = getAllDailyResults();
+        _set(KEYS.DAILY, { ...existing, ...payload.daily });
       }
 
       return { success: true };
@@ -428,6 +566,7 @@ const Storage = (() => {
     getProfile, saveProfile,
     getStats, saveStats, recordGameResult,
     getTotalPermanentScore, deductPermanentScore,
+    getDailyResult, saveDailyResult, getAllDailyResults, getDailyMonthSummary,
     isSoundEnabled, setSoundEnabled,
     getLanguage, setLanguage,
     getTheme, setTheme,

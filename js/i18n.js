@@ -11,6 +11,7 @@ const I18n = (() => {
       brand_name: 'Sudoku Web',
       btn_cancel: 'Hủy',
       btn_confirm: 'Xác nhận',
+      btn_got_it: 'Đã hiểu',
       btn_close: 'Đóng',
       btn_save: 'Lưu',
       btn_back: 'Quay lại',
@@ -35,9 +36,57 @@ const I18n = (() => {
       home_btn_abandon: 'Bỏ cuộc / hủy ván',
       home_abandon_confirm_title: 'Bỏ cuộc',
       home_abandon_confirm_msg: 'Ván đang chơi sẽ bị xóa. Bạn có chắc chắn muốn bỏ cuộc?',
+      home_quick_play_title: 'Ván chơi nhanh',
+      home_quick_easy_desc: 'Khởi động thư giãn',
+      home_quick_medium_desc: 'Rèn luyện logic',
+      home_quick_hard_desc: 'Thử thách đỉnh cao',
+      home_daily_title: 'Thử thách mỗi ngày',
+      home_daily_subtitle_unplayed: 'Chưa hoàn thành hôm nay',
+      home_daily_subtitle_completed: 'Đã hoàn thành xuất sắc',
+      home_daily_cta: 'Chơi ngay',
+
+      // Daily Challenge
+      daily_title: 'Thử thách hàng ngày',
+      daily_desc: 'Mỗi ngày một thử thách mới - thu thập sao vàng và nâng cấp cúp tháng',
+      daily_btn_play: 'Chơi',
+      daily_share_btn: 'Chia sẻ kết quả',
+      daily_not_unlocked: 'Chưa mở',
+      daily_day_sun: 'CN',
+      daily_day_mon: 'HAI',
+      daily_day_tue: 'BA',
+      daily_day_wed: 'TƯ',
+      daily_day_thu: 'NĂM',
+      daily_day_fri: 'SÁU',
+      daily_day_sat: 'BẢY',
+      daily_month_prefix: 'Tháng ',
+      daily_status_completed: 'Đã hoàn thành',
+      daily_status_unplayed: 'Chưa giải',
+      daily_countdown_prefix: 'Còn ',
+      daily_toast_copied: 'Đã sao chép kết quả thử thách vào bộ nhớ tạm!',
+      daily_info_title: 'Luật thử thách hàng ngày',
+      daily_rules_title: 'Luật thử thách hàng ngày',
+      daily_info_content: '• Mỗi ngày mở khóa 1 thử thách Sudoku mới.\n• Chọn bất kỳ ngày nào trên lịch để giải và nhận sao vàng.\n• Đạt mốc 7, 14, 21 ngày và trọn tháng để nâng cấp cúp.',
+      daily_rules_body: '• Mỗi ngày mở khóa 1 thử thách Sudoku mới.\n• Chọn bất kỳ ngày nào trên lịch để giải và nhận sao vàng.\n• Đạt mốc 7, 14, 21 ngày và trọn tháng để nâng cấp cúp.',
+      daily_milestone_week1: 'Tuần 1: Cúp đồng (7 ngày)',
+      daily_milestone_week2: 'Tuần 2: Cúp bạc (14 ngày)',
+      daily_milestone_week3: 'Tuần 3: Cúp vàng (21 ngày)',
+      daily_milestone_week4: 'Trọn tháng: Vương miện bạch kim',
+      daily_trophy_tier_none: 'Tinh thể chờ đánh thức',
+      daily_trophy_tier_bronze: 'Cúp khiên đồng nguyệt quế',
+      daily_trophy_tier_silver: 'Bình bạc đôi cánh tinh anh',
+      daily_trophy_tier_gold: 'Tháp ba ngôi sao hoàng kim',
+      daily_trophy_tier_platinum: 'Vương miện pha lê bạch kim',
+      daily_season_spring: 'Dấu ấn mùa xuân',
+      daily_season_summer: 'Dấu ấn mùa hạ',
+      daily_season_autumn: 'Dấu ấn mùa thu',
+      daily_season_winter: 'Dấu ấn mùa đông',
+      btn_back_to_daily: 'Về lịch thử thách',
+      btn_retry_daily: 'Thử lại ngày này',
+      daily_continue_prefix: 'Thử thách',
 
       // Navigation Dock
       nav_home: 'Trang chủ',
+      nav_daily: 'Thử thách ngày',
       nav_variants: 'Biến thể',
       nav_profile: 'Hồ sơ',
 
@@ -53,6 +102,12 @@ const I18n = (() => {
       variant_samurai_desc: '5 bảng Sudoku chồng lên nhau tạo hình chữ thập khổng lồ.',
       variant_jigsaw_name: 'Jigsaw Sudoku',
       variant_jigsaw_desc: 'Các vùng có hình dạng bất quy tắc thay vì khối 3×3 tiêu chuẩn.',
+      variant_btn_rules: 'Xem luật chơi',
+      variant_rules_title: 'Luật chơi biến thể',
+      variant_killer_full_rules: 'Điền số không trùng lặp vào từng lồng nét đứt sao cho tổng các ô bằng con số ở góc.',
+      variant_diagonal_full_rules: 'Điền số 1-9 không trùng lặp trên từng hàng, cột, khối 3×3 và cả hai đường chéo chính.',
+      variant_samurai_full_rules: 'Giải 5 bảng Sudoku 9×9 ghép thành hình chữ thập, trong đó 4 bảng góc giao nhau với bảng giữa.',
+      variant_jigsaw_full_rules: 'Điền số 1-9 không trùng lặp vào từng hàng, cột và các vùng 9 ô bất quy tắc.',
 
       // Profile Tab
       profile_default_name: 'Kỳ thủ Sudoku',
@@ -87,18 +142,20 @@ const I18n = (() => {
       stat_best_streak: 'Chuỗi thắng tốt nhất',
       stat_best_time: 'Thời gian nhanh nhất',
       stat_avg_time: 'Thời gian trung bình',
+      profile_group_achievements: 'Chiến tích thi đấu',
+      profile_group_time: 'Kỷ lục thời gian',
 
       // Difficulties
       diff_easy: 'Dễ',
       diff_medium: 'Trung bình',
       diff_hard: 'Khó',
       diff_modal_title: 'Chọn độ khó',
-      diff_easy_clues: '38 - 45 ô cho trước',
+      diff_easy_clues: 'Khởi động thư giãn',
       diff_easy_sub: 'Phù hợp người mới bắt đầu',
-      diff_medium_clues: '30 - 35 ô cho trước',
+      diff_medium_clues: 'Rèn luyện logic',
       diff_medium_sub: 'Thử thách vừa phải',
-      diff_hard_clues: '24 - 28 ô cho trước',
-      diff_hard_sub: 'Độ khó cao, ít ô cho trước',
+      diff_hard_clues: 'Thử thách đỉnh cao',
+      diff_hard_sub: 'Độ khó cao, đòi hỏi tư duy sâu',
 
       // Gameplay Screen
       game_label_difficulty: 'Độ khó',
@@ -175,10 +232,10 @@ const I18n = (() => {
       tut_title: 'Cách chơi Sudoku',
       tut_step1_title: '1. Quy tắc cơ bản (Hàng, Cột & Khối 3×3)',
       tut_step1_desc: 'Mỗi <strong>hàng ngang</strong>, <strong>cột dọc</strong> và mỗi <strong>khối 3×3</strong> đều phải chứa đủ các chữ số từ 1 đến 9 mà <strong>không được trùng lặp</strong>.',
-      tut_step2_title: '2. Chế độ Tia chớp (Lightning / Fast-Fill)',
-      tut_step2_desc: 'Phím tắt <code>F</code>. Chọn 1 chữ số trên bàn phím số để khóa số đó, sau đó nhấp chuột liên tục vào các ô trống trên bàn cờ để điền nhanh mà không cần chọn lại số nhiều lần. Khi đã điền đủ 9 số, phím số sẽ tự động ẩn đi để bạn thuận tiện chọn số tiếp theo.',
+      tut_step2_title: '2. Chế độ Tia chớp (Lightning)',
+      tut_step2_desc: 'Phím tắt <code>F</code>. Chọn 1 số để khóa, rồi nhấn liên tiếp vào các ô trống để điền nhanh.',
       tut_step3_title: '3. Bút chì nhanh (Auto Notes)',
-      tut_step3_desc: 'Phím tắt <code>A</code>. Tự động tính toán và điền tất cả các con số khả dĩ (ứng viên) vào từng ô trống trên bàn cờ, giúp bạn nhanh chóng phát hiện các ô chỉ còn 1 khả năng duy nhất để suy luận dễ dàng hơn. Bạn có thể bấm lại nút này để tắt và xóa sạch ghi chú bất kỳ lúc nào.',
+      tut_step3_desc: 'Phím tắt <code>A</code>. Tự điền toàn bộ số khả dĩ vào các ô trống. Nhấn lại bất kỳ lúc nào để tắt và xóa ghi chú.',
       tut_btn_start_play: 'Bắt đầu chơi!',
 
       // Settings Modal
@@ -236,10 +293,10 @@ const I18n = (() => {
       sound_unmute: 'Bật âm thanh',
 
       // Mobile Notice
-      mobile_notice_badge: 'Tối ưu hóa 100% cho PC',
+      mobile_notice_badge: 'Tối ưu cho máy tính',
       mobile_notice_title: 'Trải nghiệm tốt nhất trên máy tính',
-      mobile_notice_desc: 'Trò chơi được tối ưu hóa cho màn hình máy tính (PC / Laptop) với thao tác chuột và bàn phím.',
-      mobile_notice_note: 'Giao diện chưa hỗ trợ tốt trên điện thoại. Vui lòng mở game trên máy tính để có trải nghiệm tốt nhất.',
+      mobile_notice_desc: 'Trò chơi được thiết kế cho màn hình máy tính (PC / Laptop) với thao tác chuột và bàn phím.',
+      mobile_notice_note: 'Hãy mở trên máy tính để có trải nghiệm thoải mái nhất.',
       mobile_notice_spec: 'Độ phân giải khuyến nghị: 1280 × 720 trở lên',
       mobile_notice_dismiss: 'Tôi hiểu rồi, vẫn tiếp tục xem'
     },
@@ -250,6 +307,7 @@ const I18n = (() => {
       brand_name: 'Sudoku Web',
       btn_cancel: 'Cancel',
       btn_confirm: 'Confirm',
+      btn_got_it: 'Got it',
       btn_close: 'Close',
       btn_save: 'Save',
       btn_back: 'Back',
@@ -274,9 +332,57 @@ const I18n = (() => {
       home_btn_abandon: 'Abandon Game',
       home_abandon_confirm_title: 'Abandon Game',
       home_abandon_confirm_msg: 'The current game will be lost. Are you sure you want to abandon?',
+      home_quick_play_title: 'Quick play',
+      home_quick_easy_desc: 'Relaxing warmup',
+      home_quick_medium_desc: 'Logic training',
+      home_quick_hard_desc: 'Ultimate challenge',
+      home_daily_title: 'Daily challenge',
+      home_daily_subtitle_unplayed: 'Today puzzle ready',
+      home_daily_subtitle_completed: 'Completed today',
+      home_daily_cta: 'Play now',
+
+      // Daily Challenge
+      daily_title: 'Daily Challenge',
+      daily_desc: 'A new challenge every day - collect stars and upgrade your monthly trophy',
+      daily_btn_play: 'Play',
+      daily_share_btn: 'Share Result',
+      daily_not_unlocked: 'Locked',
+      daily_day_sun: 'SUN',
+      daily_day_mon: 'MON',
+      daily_day_tue: 'TUE',
+      daily_day_wed: 'WED',
+      daily_day_thu: 'THU',
+      daily_day_fri: 'FRI',
+      daily_day_sat: 'SAT',
+      daily_month_prefix: 'Month ',
+      daily_status_completed: 'Completed',
+      daily_status_unplayed: 'Unsolved',
+      daily_countdown_prefix: 'Left: ',
+      daily_toast_copied: 'Challenge result copied to clipboard!',
+      daily_info_title: 'Daily Challenge Rules',
+      daily_rules_title: 'Daily Challenge Rules',
+      daily_info_content: '• Unlock a new Sudoku puzzle every day.\n• Pick any unlocked day on the calendar to play and earn stars.\n• Reach 7, 14, 21 days, and the full month to upgrade your trophy.',
+      daily_rules_body: '• Unlock a new Sudoku puzzle every day.\n• Pick any unlocked day on the calendar to play and earn stars.\n• Reach 7, 14, 21 days, and the full month to upgrade your trophy.',
+      daily_milestone_week1: 'Week 1: Bronze Trophy (7 days)',
+      daily_milestone_week2: 'Week 2: Silver Trophy (14 days)',
+      daily_milestone_week3: 'Week 3: Gold Trophy (21 days)',
+      daily_milestone_week4: 'Full month: Platinum Crown',
+      daily_trophy_tier_none: 'Dormant crystal',
+      daily_trophy_tier_bronze: 'Bronze laurel chalice',
+      daily_trophy_tier_silver: 'Silver winged amphora',
+      daily_trophy_tier_gold: 'Golden triple-star spire',
+      daily_trophy_tier_platinum: 'Platinum crystal crown',
+      daily_season_spring: 'Spring blossom crest',
+      daily_season_summer: 'Summer sun crest',
+      daily_season_autumn: 'Autumn leaf crest',
+      daily_season_winter: 'Winter crystal crest',
+      btn_back_to_daily: 'Back to calendar',
+      btn_retry_daily: 'Retry this day',
+      daily_continue_prefix: 'Daily',
 
       // Navigation Dock
       nav_home: 'Home',
+      nav_daily: 'Daily Challenge',
       nav_variants: 'Variants',
       nav_profile: 'Profile',
 
@@ -292,6 +398,12 @@ const I18n = (() => {
       variant_samurai_desc: '5 overlapping Sudoku grids forming a giant cross puzzle.',
       variant_jigsaw_name: 'Jigsaw Sudoku',
       variant_jigsaw_desc: 'Irregular nonomino shapes instead of standard 3×3 blocks.',
+      variant_btn_rules: 'View rules',
+      variant_rules_title: 'Variant rules',
+      variant_killer_full_rules: 'Fill each dotted cage with non-repeating digits that add up to the corner total.',
+      variant_diagonal_full_rules: 'Fill digits 1-9 without duplicates in every row, column, 3×3 box, and both main diagonals.',
+      variant_samurai_full_rules: 'Solve 5 overlapping 9×9 Sudoku grids arranged in a cross sharing corner 3×3 boxes.',
+      variant_jigsaw_full_rules: 'Fill digits 1-9 without duplicates in every row, column, and irregular 9-cell region.',
 
       // Profile Tab
       profile_default_name: 'Sudoku Player',
@@ -326,18 +438,20 @@ const I18n = (() => {
       stat_best_streak: 'Best Streak',
       stat_best_time: 'Best Time',
       stat_avg_time: 'Average Time',
+      profile_group_achievements: 'Match achievements',
+      profile_group_time: 'Time records',
 
       // Difficulties
       diff_easy: 'Easy',
       diff_medium: 'Medium',
       diff_hard: 'Hard',
       diff_modal_title: 'Select Difficulty',
-      diff_easy_clues: '38 - 45 given clues',
+      diff_easy_clues: 'Relaxing warmup',
       diff_easy_sub: 'Great for beginners',
-      diff_medium_clues: '30 - 35 given clues',
+      diff_medium_clues: 'Logic training',
       diff_medium_sub: 'Balanced challenge',
-      diff_hard_clues: '24 - 28 given clues',
-      diff_hard_sub: 'High difficulty with fewer given clues',
+      diff_hard_clues: 'Ultimate challenge',
+      diff_hard_sub: 'High difficulty with deep reasoning',
 
       // Gameplay Screen
       game_label_difficulty: 'Difficulty',
@@ -415,9 +529,9 @@ const I18n = (() => {
       tut_step1_title: '1. Basic Rules (Row, Column & 3×3 Box)',
       tut_step1_desc: 'Every <strong>row</strong>, <strong>column</strong>, and <strong>3×3 box</strong> must contain digits 1 through 9 with <strong>no duplicates</strong>.',
       tut_step2_title: '2. Lightning Mode (Fast-Fill)',
-      tut_step2_desc: 'Shortcut <code>F</code>. Select and lock a digit on the keypad, then rapidly click empty cells to place it without re-selecting each time. Once all 9 cells are filled, the button automatically fades away so you can focus on other digits.',
+      tut_step2_desc: 'Shortcut <code>F</code>. Lock a digit on the keypad, then tap empty cells repeatedly to fill fast.',
       tut_step3_title: '3. Auto Notes (Fast Candidates)',
-      tut_step3_desc: 'Shortcut <code>A</code>. Automatically calculates and fills all valid candidate numbers into every empty cell, helping you quickly identify single-candidate cells for faster reasoning. Toggle it off anytime to wipe all notes and keep the board clean.',
+      tut_step3_desc: 'Shortcut <code>A</code>. Auto-fills all valid candidates into empty cells. Toggle off anytime to clear notes.',
       tut_btn_start_play: 'Start Playing!',
 
       // Settings Modal
@@ -475,10 +589,10 @@ const I18n = (() => {
       sound_unmute: 'Unmute sound',
 
       // Mobile Notice
-      mobile_notice_badge: '100% PC Desktop Optimized',
+      mobile_notice_badge: 'Optimized for Desktop PC',
       mobile_notice_title: 'Best Experienced on Desktop PC',
-      mobile_notice_desc: 'Optimized for desktop computers (PC / Laptop) with mouse and keyboard controls.',
-      mobile_notice_note: 'Mobile layouts are not yet supported. Please open the game on a computer for the best experience.',
+      mobile_notice_desc: 'Designed for desktop screens (PC / Laptop) with mouse and keyboard controls.',
+      mobile_notice_note: 'Open on a computer for the most comfortable experience.',
       mobile_notice_spec: 'Recommended resolution: 1280 × 720 or higher',
       mobile_notice_dismiss: 'I understand, continue anyway'
     }
@@ -516,7 +630,11 @@ const I18n = (() => {
 
     // Re-render components that have dynamic content
     if (typeof Profile !== 'undefined' && Profile.render) Profile.render();
-    if (typeof Variants !== 'undefined' && Variants.init) Variants.init();
+    if (typeof Variants !== 'undefined') {
+      if (typeof Variants.render === 'function') Variants.render();
+      else if (typeof Variants.init === 'function') Variants.init();
+    }
+    if (typeof App !== 'undefined' && typeof App.onLanguageChange === 'function') App.onLanguageChange();
     if (typeof Tutorial !== 'undefined' && Tutorial.updateLanguage) Tutorial.updateLanguage();
     if (typeof UIControls !== 'undefined' && UIControls.updateLanguage) UIControls.updateLanguage();
     if (typeof Sound !== 'undefined' && Sound.updateUI) Sound.updateUI();

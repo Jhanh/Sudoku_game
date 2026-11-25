@@ -140,6 +140,9 @@ const Game = (() => {
       autoNotesUsed: state.autoNotesUsed || false,
       fastFillMode: state.fastFillMode,
       fastFillDigit: state.fastFillDigit,
+      isDaily: !!state.isDaily,
+      dailyDateStr: state.dailyDateStr || state.dailyDate || null,
+      dailyDate: state.dailyDate || state.dailyDateStr || null,
       isFinished: state.isFinished
     };
   }
@@ -217,12 +220,14 @@ const Game = (() => {
     const { puzzle, solution } = SudokuEngine.generate(difficulty);
     const settings = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
     const defaultFastFill = !!settings.fastFillDefault;
+    const givenArr = puzzle.map(v => v !== 0);
     state = {
       puzzle: [...puzzle],
       solution: [...solution],
       current: [...puzzle],
       notes: {},
-      given: puzzle.map(v => v !== 0),
+      given: givenArr,
+      fixed: givenArr,
       mistakes: 0,
       reviveCount: 0,
       hints: 3,
@@ -249,7 +254,58 @@ const Game = (() => {
       conflictCells: null,
       hintExplanation: null,
       isFinished: false,
-      isPaused: false
+      isPaused: false,
+      isDaily: false,
+      dailyDateStr: null,
+      dailyDate: null
+    };
+    save();
+    startTimer();
+    if (onUpdate) onUpdate(state);
+  }
+
+  function startFromPuzzle(puzzle, solution, difficulty, options = {}) {
+    const settings = (typeof Storage !== 'undefined' && Storage.getSettings) ? Storage.getSettings() : {};
+    const defaultFastFill = !!settings.fastFillDefault;
+    const givenArr = puzzle.map(v => v !== 0);
+    const resolvedDailyDate = options.dateStr || options.dailyDate || null;
+    state = {
+      puzzle: [...puzzle],
+      solution: [...solution],
+      current: [...puzzle],
+      notes: {},
+      given: givenArr,
+      fixed: givenArr,
+      mistakes: 0,
+      reviveCount: 0,
+      hints: 3,
+      hintsUsed: 0,
+      hintsBought: 0,
+      score: 0,
+      baseScore: 0,
+      perfectBonus: 0,
+      hintPenalties: 0,
+      wrongPenalties: 0,
+      autoNotesPenalty: 0,
+      correctCount: 0,
+      correctStreak: 0,
+      maxStreak: 0,
+      difficulty,
+      timer: 0,
+      undoStack: [],
+      selectedCell: null,
+      notesMode: false,
+      autoNotesMode: false,
+      autoNotesUsed: false,
+      fastFillMode: defaultFastFill,
+      fastFillDigit: null,
+      conflictCells: null,
+      hintExplanation: null,
+      isFinished: false,
+      isPaused: false,
+      isDaily: !!options.isDaily,
+      dailyDateStr: resolvedDailyDate,
+      dailyDate: resolvedDailyDate
     };
     save();
     startTimer();
@@ -259,8 +315,14 @@ const Game = (() => {
   function resume() {
     const saved = Storage.loadGame();
     if (!saved || saved.isFinished) return false;
+    const givenArr = Array.isArray(saved.given)
+      ? saved.given
+      : (Array.isArray(saved.fixed) ? saved.fixed : saved.puzzle.map(v => v !== 0));
+    const resumedDailyDate = saved.dailyDateStr || saved.dailyDate || null;
     state = {
       ...saved,
+      given: givenArr,
+      fixed: givenArr,
       reviveCount: saved.reviveCount ?? 0,
       hintsUsed: saved.hintsUsed ?? 0,
       hintsBought: saved.hintsBought ?? 0,
@@ -279,6 +341,9 @@ const Game = (() => {
       fastFillDigit: saved.fastFillDigit ?? null,
       conflictCells: null,
       hintExplanation: null,
+      isDaily: saved.isDaily ?? false,
+      dailyDateStr: resumedDailyDate,
+      dailyDate: resumedDailyDate,
       isPaused: false
     };
     startTimer();
@@ -503,8 +568,10 @@ const Game = (() => {
     state.baseScore = (state.baseScore || 0) + basePts;
     state.score = (state.score || 0) + pointsEarned;
 
-    // Automatically remove number from related notes in row, column, and box
-    removeRelatedNotes(row, col, num);
+    // Automatically remove number from related notes in row, column, and box when enabled
+    if (typeof Storage === 'undefined' || !Storage.getSettings || Storage.getSettings().autoClearNotes !== false) {
+      removeRelatedNotes(row, col, num);
+    }
 
     pushUndo({
       type: 'value',
@@ -526,6 +593,15 @@ const Game = (() => {
       }
       const breakdown = getScoreBreakdown(state);
       Storage.recordGameResult(state.difficulty, true, state.timer, state.mistakes, breakdown.finalScore);
+      if (state.isDaily && state.dailyDateStr && typeof Storage.saveDailyResult === 'function') {
+        Storage.saveDailyResult(state.dailyDateStr, {
+          result: 'win',
+          score: breakdown.finalScore,
+          time: state.timer,
+          mistakes: state.mistakes,
+          difficulty: state.difficulty
+        });
+      }
       Storage.clearGame();
       if (onUpdate) onUpdate(state);
       if (onGameOver) onGameOver('win', state, breakdown);
@@ -596,36 +672,37 @@ const Game = (() => {
   }
 
   function erase() {
-    if (!state || !state.selectedCell || state.isFinished || state.isPaused) return;
+    if (!state || !state.selectedCell || state.isFinished || state.isPaused) return false;
     const { row, col } = state.selectedCell;
     const i = idx(row, col);
-    if (state.given[i]) return;
+    if ((state.given && state.given[i]) || (state.fixed && state.fixed[i])) return false;
 
     const key = `${row},${col}`;
     const oldValue = state.current[i];
     const oldNotes = state.notes[key] ? [...state.notes[key]] : [];
 
-    if (oldValue === 0 && oldNotes.length === 0) return;
+    if (oldValue !== 0) {
+      // Protect already-correct cells from accidental deletion and combo-streak point-farming
+      if (oldValue === state.solution[i]) return false;
 
-    // If erasing a correct cell, adjust score
-    const wasCorrect = oldValue !== 0 && oldValue === state.solution[i];
-    let deductedScore = 0;
-    let deductedBase = 0;
-    if (wasCorrect) {
-      deductedBase = SCORE_PER_CELL[state.difficulty];
-      deductedScore = deductedBase;
-      state.score = Math.max(0, state.score - deductedScore);
-      state.baseScore = Math.max(0, (state.baseScore || 0) - deductedBase);
-      state.correctCount = Math.max(0, (state.correctCount || 0) - 1);
-      state.correctStreak = 0;
+      // Only erase wrong placements
+      state.current[i] = 0;
+      state.notes[key] = [];
+      pushUndo({ type: 'erase', row, col, oldValue, oldNotes, wasCorrect: false, deductedScore: 0, deductedBase: 0 });
+      save();
+      if (typeof Sound !== 'undefined' && Sound.playErase) Sound.playErase();
+      if (onUpdate) onUpdate(state);
+      return true;
     }
 
-    state.current[i] = 0;
+    if (oldNotes.length === 0) return false;
+
     state.notes[key] = [];
-    pushUndo({ type: 'erase', row, col, oldValue, oldNotes, wasCorrect, deductedScore, deductedBase });
+    pushUndo({ type: 'erase', row, col, oldValue: 0, oldNotes, wasCorrect: false, deductedScore: 0, deductedBase: 0 });
     save();
     if (typeof Sound !== 'undefined' && Sound.playErase) Sound.playErase();
     if (onUpdate) onUpdate(state);
+    return true;
   }
 
   function toggleNotes() {
@@ -736,7 +813,9 @@ const Game = (() => {
     state.notes[key] = [];
     state.given[i] = true; // Mark as given so it can't be erased
 
-    removeRelatedNotes(row, col, hintVal);
+    if (typeof Storage === 'undefined' || !Storage.getSettings || Storage.getSettings().autoClearNotes !== false) {
+      removeRelatedNotes(row, col, hintVal);
+    }
 
     // Don't add to undo stack (hints are permanent)
     state.selectedCell = { row, col };
@@ -756,6 +835,15 @@ const Game = (() => {
       }
       const breakdown = getScoreBreakdown(state);
       Storage.recordGameResult(state.difficulty, true, state.timer, state.mistakes, breakdown.finalScore);
+      if (state.isDaily && state.dailyDateStr && typeof Storage.saveDailyResult === 'function') {
+        Storage.saveDailyResult(state.dailyDateStr, {
+          result: 'win',
+          score: breakdown.finalScore,
+          time: state.timer,
+          mistakes: state.mistakes,
+          difficulty: state.difficulty
+        });
+      }
       Storage.clearGame();
       if (onUpdate) onUpdate(state);
       if (onGameOver) onGameOver('win', state, breakdown);
@@ -887,6 +975,15 @@ const Game = (() => {
     stopTimer();
     const breakdown = getScoreBreakdown(state);
     Storage.recordGameResult(state.difficulty, false, state.timer, state.mistakes, breakdown.finalScore);
+    if (state.isDaily && state.dailyDateStr && typeof Storage.saveDailyResult === 'function') {
+      Storage.saveDailyResult(state.dailyDateStr, {
+        result: 'lose',
+        score: breakdown.finalScore,
+        time: state.timer,
+        mistakes: state.mistakes,
+        difficulty: state.difficulty
+      });
+    }
     Storage.clearGame();
     if (onGameOver) onGameOver('total_mistakes_over', state, breakdown);
   }
@@ -911,6 +1008,15 @@ const Game = (() => {
     stopTimer();
     const breakdown = getScoreBreakdown(state);
     Storage.recordGameResult(state.difficulty, false, state.timer, state.mistakes, breakdown.finalScore);
+    if (state.isDaily && state.dailyDateStr && typeof Storage.saveDailyResult === 'function') {
+      Storage.saveDailyResult(state.dailyDateStr, {
+        result: 'lose',
+        score: breakdown.finalScore,
+        time: state.timer,
+        mistakes: state.mistakes,
+        difficulty: state.difficulty
+      });
+    }
     Storage.clearGame();
     if (onGameOver) onGameOver('give_up', state, breakdown);
   }
@@ -941,7 +1047,7 @@ const Game = (() => {
   }
 
   return {
-    start, resume, selectCell, placeNumber,
+    start, startFromPuzzle, resume, selectCell, placeNumber,
     undo, erase, toggleNotes, toggleAutoNotes, fillAllCandidates, toggleFastFill, selectFastFillDigit,
     useHint, buyExtraHint, getHintPermanentCost,
     getReviveCost, canRevive, revive, giveUpFromMistakes, modifyScore,

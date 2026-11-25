@@ -366,6 +366,141 @@ const SudokuEngine = (() => {
     return { puzzle, solution };
   }
 
+  /* ---------- seeded PRNG (Mulberry32) for deterministic daily puzzles ---------- */
+  function _seededRng(seed) {
+    let s = (seed >>> 0) || 1;
+    return function() {
+      s = (s + 0x6D2B79F5) >>> 0;
+      let t = s;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function _hashString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return hash >>> 0;
+  }
+
+  function shuffleWith(arr, rng) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  /**
+   * Determine daily puzzle difficulty deterministically by date string.
+   * Ratio: Easy 30%, Medium 50%, Hard 20%.
+   * @param {string} dateStr - Format YYYY-MM-DD
+   * @returns {'easy'|'medium'|'hard'}
+   */
+  function getDailyDifficulty(dateStr) {
+    const hash = _hashString('daily_diff_' + dateStr);
+    const val = hash % 100;
+    if (val < 30) return 'easy';       // 30%
+    if (val < 80) return 'medium';     // 50%
+    return 'hard';                     // 20%
+  }
+
+  /**
+   * Deterministically generate a unique Sudoku puzzle from date seed.
+   * @param {string} dateStr - Format YYYY-MM-DD
+   * @param {'easy'|'medium'|'hard'} [difficulty]
+   * @returns {{ puzzle: number[], solution: number[], difficulty: string }}
+   */
+  function generateFromSeed(dateStr, difficulty) {
+    const diff = difficulty || getDailyDifficulty(dateStr);
+    const seed = _hashString('daily_puzzle_' + dateStr + '_' + diff);
+    const rng = _seededRng(seed);
+
+    const givensRanges = {
+      easy:   [38, 45],
+      medium: [30, 35],
+      hard:   [24, 28]
+    };
+    const [minG, maxG] = givensRanges[diff] || [30, 35];
+    const targetGivens = minG + Math.floor(rng() * (maxG - minG + 1));
+    const targetRemove = 81 - targetGivens;
+
+    function fillBoardSeeded(board, rngFunc) {
+      for (let i = 0; i < 81; i++) {
+        if (board[i] === 0) {
+          const nums = shuffleWith([1, 2, 3, 4, 5, 6, 7, 8, 9], rngFunc);
+          const row = Math.floor(i / 9), col = i % 9;
+          for (const n of nums) {
+            if (isValidPlacement(board, row, col, n)) {
+              board[i] = n;
+              if (fillBoardSeeded(board, rngFunc)) return true;
+              board[i] = 0;
+            }
+          }
+          return false;
+        }
+      }
+      return true;
+    }
+
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const solution = new Array(81).fill(0);
+      fillBoardSeeded(solution, rng);
+
+      const puzzle = [...solution];
+      const positions = shuffleWith([...Array(81).keys()], rng);
+      let removed = 0;
+
+      for (const pos of positions) {
+        if (removed >= targetRemove) break;
+        const backup = puzzle[pos];
+        puzzle[pos] = 0;
+
+        if (countSolutions([...puzzle], 2) === 1) {
+          removed++;
+        } else {
+          puzzle[pos] = backup;
+        }
+      }
+
+      const actualGivens = 81 - removed;
+      const logic = solveLogical(puzzle);
+
+      if (diff === 'easy') {
+        if (logic.solved && logic.highestLevel === 1) {
+          return { puzzle, solution, difficulty: diff };
+        }
+      } else if (diff === 'medium') {
+        if (logic.solved && (logic.highestLevel === 2 || actualGivens <= 33)) {
+          return { puzzle, solution, difficulty: diff };
+        }
+      } else {
+        if (actualGivens <= 28) {
+          return { puzzle, solution, difficulty: diff };
+        }
+      }
+    }
+
+    // Deterministic fallback
+    const solution = new Array(81).fill(0);
+    fillBoardSeeded(solution, rng);
+    const puzzle = [...solution];
+    const positions = shuffleWith([...Array(81).keys()], rng);
+    let removed = 0;
+    for (const pos of positions) {
+      if (removed >= 81 - maxG) break;
+      const backup = puzzle[pos];
+      puzzle[pos] = 0;
+      if (countSolutions([...puzzle], 2) === 1) removed++;
+      else puzzle[pos] = backup;
+    }
+    return { puzzle, solution, difficulty: diff };
+  }
+
   /* ---------- private helper: build bitmask state from current board ---------- */
   function _buildBitmasks(current) {
     const rows = new Uint16Array(9);
@@ -579,6 +714,8 @@ const SudokuEngine = (() => {
   /* ---------- public ---------- */
   return {
     generate,
+    generateFromSeed,
+    getDailyDifficulty,
     isValidPlacement,
     solveLogical,
     countSolutions,

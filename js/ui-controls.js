@@ -150,7 +150,7 @@ const UIControls = (() => {
       popText = 'ULTRA! x1.7';
       normalText = 'x1.7';
     } else if (streak >= 41) {
-      iconName = 'crown';
+      iconName = 'brain-circuit';
       popText = 'MASTER! x2.0';
       normalText = 'x2.0';
     } else {
@@ -193,7 +193,7 @@ const UIControls = (() => {
       if (streak >= 41) {
         streakEl.className = 'streak-badge tier-4';
         if (!comboTimer) {
-          const icon = typeof Icons !== 'undefined' ? Icons.get('crown', { size: 13 }) : '';
+          const icon = typeof Icons !== 'undefined' ? Icons.get('brain-circuit', { size: 13 }) : '';
           streakEl.innerHTML = `${icon}<span>x2.0</span>`;
         }
       } else if (streak >= 31) {
