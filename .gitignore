@@ -3,16 +3,7 @@ desktop.ini
 .DS_Store
 .vscode/
 
-# AI Agent & Internal Dev Workspace
-.agents/
-.gemini/
-GEMINI.md
-forDev/
-devtools/
-
-# Local Testing, Roadmaps & Artifacts
+# Local Testing & Roadmaps
 *.log
 *.zip
 releases/
-test-*.js
-take-screenshots.js
